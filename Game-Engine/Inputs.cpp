@@ -1,72 +1,28 @@
 #include "Inputs.h"
 
-#include "Mem_leak.h"
+#include "Mem_Leak.h"
 
-// OpenGL
-#include <GLEW/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-using namespace glm;
-//
-
-#include <vector>
-
-struct Input
+Inputs::Inputs()
 {
-	void exec()
-	{
-		t(o);
-	};
 
-	inputs::Task t;
-	inputs::Obj* o;
 };
 
-class Inputs
+Inputs::~Inputs()
 {
-public:
-	Inputs()
-	{
 
-	};
-	~Inputs()
-	{
-
-	};
-
-	// Keys
-	void load() {
-
-	};
-	
-	static void do_keys(GLFWwindow* w, int key, int scancode, int action, int mods)
-	{
-
-	};
-
-	Inputs
-		*next = nullptr,
-		*prev = nullptr;
 };
 
-namespace inputs
+void Inputs::update()
 {
-	Inputs* INPUTS = nullptr;
 
-	void update()
-	{
-		glfwPollEvents();
-	};
+};
 
-	void next()
-	{
-		INPUTS = new Inputs();
-		glfwSetWindowUserPointer(glfwGetCurrentContext(), INPUTS);
-	};
+void Inputs::next()
+{
 
-	void prev()
-	{
+};
 
-	};
+void Inputs::prev()
+{
+
 };

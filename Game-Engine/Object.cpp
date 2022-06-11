@@ -2,25 +2,18 @@
 
 #include "Mem_Leak.h"
 
-#include "Engine.h"
+#include "Game.h"
 
-#include <vector>
+#include "Mesh.h"
 
-namespace obj
+#include "GLEW/glew.h"
+
+Object::Object()
 {
-	std::vector<Obj*> OBJS;
 
-	Obj::Obj(bool should_add)
-	{
-		index = OBJS.size();
+};
 
-		if (should_add)
-			OBJS.push_back(this);
-	};
-
-	void access(Stage s, unsigned char start)
-	{
-		for (size_t i = start; i < OBJS.size(); i += eng::THREAD_COUNT)
-			OBJS[i]->exec(s);
-	};
+Object::~Object()
+{
+	delete m;
 };

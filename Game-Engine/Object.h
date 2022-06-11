@@ -1,21 +1,22 @@
 #pragma once
 
-#include "Stages.hpp"
+class Game;
 
-namespace obj
+struct Mesh;
+
+class Object
 {
-	typedef unsigned char Stage;
-	
-	class Obj
-	{
-	public:
-		Obj(bool=true);
+public:
+	Object();
+	virtual ~Object();
 
-		virtual void exec(Stage&)=0;
+	Mesh* m = nullptr;
 
-		size_t index;
-	};
+	Game* game = nullptr;
+};
 
-	void access(Stage, unsigned char=0);
-	void clear();
+template <class T>
+class _Object : public Object
+{
+
 };

@@ -2,54 +2,120 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="Game.cpp">
+      <Filter>Engine\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Engine\Object</Filter>
+    <ClCompile Include="Objects.cpp">
+      <Filter>Engine\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Window.cpp">
-      <Filter>Window</Filter>
+      <Filter>Engine\Window</Filter>
     </ClCompile>
     <ClCompile Include="Inputs.cpp">
-      <Filter>Window</Filter>
+      <Filter>Engine\Inputs</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Engine\Objects\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Threadable.cpp">
+      <Filter>Engine\Threadable</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Debug">
       <UniqueIdentifier>{61581e31-9499-4f12-8523-ffd9c368a045}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine">
-      <UniqueIdentifier>{e6b95894-0b49-466b-9d79-aa83f74e8ebb}</UniqueIdentifier>
+      <UniqueIdentifier>{d4a18dcf-e1fc-4265-a7ac-21591c2e4c21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Object">
-      <UniqueIdentifier>{3d92d71b-0d06-4630-9e6e-9d863376393b}</UniqueIdentifier>
+    <Filter Include="Engine\Game">
+      <UniqueIdentifier>{07179748-b3df-4ce1-896c-139dccf1a49e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Window">
-      <UniqueIdentifier>{6ddb3402-736b-4a57-afd2-5d3b4b1f6a09}</UniqueIdentifier>
+    <Filter Include="Engine\Objects">
+      <UniqueIdentifier>{929f8c30-f31a-4e01-b14c-188748ec0fe0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Window\Inputs">
-      <UniqueIdentifier>{e97a09f3-7085-4362-82f0-5f72dc20fd08}</UniqueIdentifier>
+    <Filter Include="Engine\Window">
+      <UniqueIdentifier>{f9c5a9d6-c3b8-4064-a14e-21dae56612d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Inputs">
+      <UniqueIdentifier>{6fc3aa6c-1379-4e05-aec2-c704e66a9363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Objects\Object">
+      <UniqueIdentifier>{f455b022-25ee-4b59-a3b8-be06c926087b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Threadable">
+      <UniqueIdentifier>{1ee79bfe-d27d-4862-9e49-56995be5eb17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Mesh">
+      <UniqueIdentifier>{09249149-f998-48d5-ab54-0121eb2746dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Renderer">
+      <UniqueIdentifier>{bcc7c62c-b79b-4f61-8b80-b8178264fa98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{9c181469-0095-402e-ab18-addf801e4a7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Shader">
+      <UniqueIdentifier>{602d8709-42fb-4c08-8653-011f302aef99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Texture">
+      <UniqueIdentifier>{99b4884a-e635-4594-bcf3-d1ba93e1a646}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mem_Leak.h">
       <Filter>Debug</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Game.h">
+      <Filter>Engine\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Engine\Object</Filter>
+    <ClInclude Include="Objects.h">
+      <Filter>Engine\Objects</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Window</Filter>
+      <Filter>Engine\Window</Filter>
     </ClInclude>
     <ClInclude Include="Inputs.h">
-      <Filter>Window</Filter>
+      <Filter>Engine\Inputs</Filter>
     </ClInclude>
-    <ClInclude Include="Stages.hpp">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Object.h">
+      <Filter>Engine\Objects\Object</Filter>
     </ClInclude>
+    <ClInclude Include="Threadable.h">
+      <Filter>Engine\Threadable</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Texture</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="default.vert">
+      <Filter>Shaders</Filter>
+    </Text>
+    <Text Include="default.frag">
+      <Filter>Shaders</Filter>
+    </Text>
   </ItemGroup>
 </Project>

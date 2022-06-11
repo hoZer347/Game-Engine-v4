@@ -1,11 +1,36 @@
 #pragma once
 
-class Window;
-struct Engine;
+#include "Threadable.h"
 
-namespace win
+class Game;
+class Inputs;
+class Objects;
+
+struct GLFWwindow;
+struct Mesh;
+
+class Window : public Threadable
 {
-	Window* create(Engine*);
+public:
+	Window(Inputs*, Objects*, Game*);
+	virtual ~Window();
+	
+	void prex();
+	void exec();
+	void pstx();
 
-	void del(Window*);
+	int width=0, height=0;
+
+	unsigned int
+		_vtxs = 0,
+		_inds = 0,
+		_texs = 0,
+		_unfs = 0;
+
+protected:
+	Game* game			= nullptr;
+	Inputs* inputs		= nullptr;
+	Objects* objects	= nullptr;
+
+	GLFWwindow* w		= nullptr;
 };
