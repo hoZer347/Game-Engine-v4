@@ -10,129 +10,107 @@
 using namespace glm;
 //
 
-#include "Game.h"
-#include "Inputs.h"
-#include "Mesh.h"
-#include "Object.h"
-#include "Objects.h"
-
+#include "Engine.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #include <iostream>
 
-Window::Window(Inputs* i, Objects* o, Game* g)
+std::mutex windows_one_at_a_time;
+
+DEFINE_THREAD(Window, GLFWwindow,
+	GLuint _vtxs = 0;
+	GLuint _inds = 0;
+	GLuint _texs = 0;
+	GLuint _unfs = 0;
+	void init() override;
+	friend class CreateWindow; )
 {
-	game = g;
-	inputs = i;
-	objects = o;
+	glfwPollEvents();
+
+	if (glfwWindowShouldClose(o)) KILL = true;
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glfwSwapBuffers(o);
+
+	assign(this);
 };
 
-Window::~Window()
+DEFINE_TASK(CreateWindow, Window, )
 {
+	std::scoped_lock<std::mutex> guard(windows_one_at_a_time);
 
-};
-
-void render(Object* o)
-{
-	glUseProgram(o->m->shader);
-
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		o->m->vtxs.size() * sizeof(float),
-		o->m->vtxs.data(),
-		GL_DYNAMIC_DRAW);
-
-	glBufferData(
-		GL_ELEMENT_ARRAY_BUFFER,
-		o->m->inds.size() * sizeof(size_t),
-		o->m->inds.data(),
-		GL_DYNAMIC_DRAW);
-
-	glBufferData(
-		GL_TEXTURE_BUFFER,
-		o->m->texs.size() * sizeof(unsigned int),
-		o->m->texs.data(),
-		GL_DYNAMIC_DRAW);
-
-	glBufferData(
-		GL_UNIFORM_BUFFER,
-		o->m->unfs.size() * sizeof(unsigned int),
-		o->m->unfs.data(),
-		GL_DYNAMIC_DRAW);
-	
-	glDrawElements(GL_QUADS, (GLsizei)o->m->vtxs.size(), GL_UNSIGNED_INT, 0);
-};
-
-void Window::prex()
-{
 	glfwInit();
-	w = glfwCreateWindow(640, 640, "", nullptr, nullptr);
-	glfwMakeContextCurrent(w);
+	o->o = glfwCreateWindow(640, 640, "", nullptr, nullptr);
+	glfwMakeContextCurrent(o->GetObject());
 	glfwSwapInterval(0);
 	glewExperimental = true;
 	glewInit();
 
-	glGenBuffers(1, &_vtxs);
-	glGenBuffers(1, &_inds);
-	glGenBuffers(1, &_texs);
-	glGenBuffers(1, &_unfs);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, _vtxs);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _inds);
-	glBindBuffer(GL_TEXTURE_BUFFER, _texs);
-	glBindBuffer(GL_UNIFORM_BUFFER, _unfs);
+	glGenBuffers(1, &o->_vtxs);
+	glGenBuffers(1, &o->_inds);
+	glGenBuffers(1, &o->_texs);
+	glGenBuffers(1, &o->_unfs);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
-	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER,			o->_vtxs);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,	o->_inds);
+	glBindBuffer(GL_TEXTURE_BUFFER,			o->_texs);
+	glBindBuffer(GL_UNIFORM_BUFFER,			o->_unfs);
+
+	glfwSetWindowSizeCallback(o->GetObject(), [](GLFWwindow* w, int width, int height)
+	{
+		glViewport(0, 0, width, height);
+	});
 
 	glClearColor(.5, .5, .5, 0);
 
-	objects->add(
-		new Mesh({
-			{ 0, 0, 0,	1, 0, 0,	1, 1, 0,	0, 1, 0 },
-			{ 0,		1,			2,			3 },
-			{},
-			{}, shader::create("default")
-			})
-	);
-}
-
-void Window::exec()
-{
-	// Inputs
-	glfwPollEvents();
-
-	inputs->update();
-
-	if (glfwWindowShouldClose(w)) game->end();
-	//
-
-	// Rendering
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	glfwGetWindowSize(w, &width, &height);
-	glViewport(0, 0, width, height);
-
-	objects->get(render);
-
-	glfwSwapBuffers(w);
-	//
-
-	std::cout << glewGetErrorString(glGetError()) << std::endl;
-
-	stop();
+	delete this;
 };
 
-void Window::pstx()
+void Window::init()
 {
-	objects->get([](Object* o) { delete o; });
+	assign(CreateWindow::create(this).release());
 
-	glDeleteBuffers(1, &_vtxs);
-	glDeleteBuffers(1, &_inds);
-	glDeleteBuffers(1, &_texs);
-	glDeleteBuffers(1, &_unfs);
+	t = std::thread([this]() {
 
-	glfwDestroyWindow(w);
+		// Main thread (same as eng::Thread)
+		while (!KILL)
+		{
+			if (!tasks.empty())
+			{
+				tasks.front()->exec();
+				tasks.pop();
+			}
 
-	glfwTerminate();
-}
+			while (PAUSE) if (KILL) break;
+		};
+
+		// Emptying the task queue (same as eng::Thread)
+		while (!tasks.empty())
+			tasks.pop();
+
+		// Destructor
+		if (_vtxs) glDeleteBuffers(1, &_vtxs);
+		if (_inds) glDeleteBuffers(1, &_inds);
+		if (_texs) glDeleteBuffers(1, &_texs);
+		if (_unfs) glDeleteBuffers(1, &_unfs);
+		glfwDestroyWindow(o);
+		});
+};
+
+DEFINE_TASK(AddMesh, Window, )
+{
+	delete this;
+};
+
+namespace eng
+{
+	namespace wnd
+	{
+		std::unique_ptr<Thread> create()
+		{
+			return Window::create(nullptr);
+		};
+	};
+};
