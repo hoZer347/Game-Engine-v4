@@ -10,7 +10,7 @@
 using namespace glm;
 //
 
-// std includes
+// STD includes
 #include <iostream>
 #include <thread>
 //

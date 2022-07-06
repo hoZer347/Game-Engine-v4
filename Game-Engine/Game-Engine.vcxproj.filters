@@ -72,7 +72,6 @@
     <ClInclude Include="Attribute.hpp">
       <Filter>Engine\Data</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sprite.vert">

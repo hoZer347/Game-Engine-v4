@@ -158,7 +158,6 @@
     <ClInclude Include="Mem_Leak.h" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
