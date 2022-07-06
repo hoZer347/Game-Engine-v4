@@ -17,17 +17,15 @@ using namespace glm;
 
 // Local Includes
 #include "Engine.h"
+#include "HelperTasks.h"
 #include "Window.h"
+#include "Sprite.h"
 //
 
-inline unsigned int i = 0;
-
-DEFINE_TASK(Task, eng::Thread, )
-{
-	std::cout << ++i << std::endl;
-
-	delete this;
-};
+// STB image
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+//
 
 int main()
 {
@@ -35,23 +33,35 @@ int main()
 
 	eng::init();
 	
-	auto w0 = eng::wnd::create();
+	auto w0 = eng::wnd::create(640, 640, "Window");
+	auto w1 = eng::wnd::create(640, 640, "Window");
 
 	w0->init();
+	w1->init();
 
-	while (!w0->KILL)
+	auto spr = eng::spr::create(w0.get());
+	spr->vtxs = { -1, -1, 0, 0, 0,	1, -1, 0, 1, 0,		1, 1, 0, 1, 1,	-1, 1, 0, 0, 1 };
+	spr->inds = { 0, 1, 2, 3 };
+
+	spr->tex = eng::wnd::load_texture(w0.get(), "Resources/DK.png");
+
+	std::cout << spr->tex << std::endl;
+
+	while (!w0->KILL && !w1->KILL)
 	{
-		w0->assign(Task::create(w0.get()).release());
-
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		while (!w0->idle());
+		while (!w1->idle());
 	};
 
 	w0->join();
+	w1->join();
 
 	w0.reset();
+	w1.reset();
+
+	delete spr;
 
 	eng::close();
 
-	_CrtDumpMemoryLeaks();
 	return 0;
 };

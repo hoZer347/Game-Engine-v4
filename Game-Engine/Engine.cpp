@@ -2,7 +2,8 @@
 
 #include "Mem_Leak.h"
 
-#include "GLFW/glfw3.h"
+#include "Shader.hpp"
+#include "Texture.hpp"
 
 #include <iostream>
 #include <vector>
@@ -11,7 +12,7 @@ namespace eng
 {
 	void init()
 	{
-
+		stbi_set_flip_vertically_on_load(true);
 	};
 
 	void close()
@@ -22,6 +23,8 @@ namespace eng
 	void Thread::init()
 	{
 		t = std::thread([this]() {
+			onInit();
+
 			while (!KILL)
 			{
 				if (!tasks.empty())
@@ -30,23 +33,35 @@ namespace eng
 					tasks.pop();
 				}
 
+				for (auto& t : kernel)
+					t->exec();
+
+				exec();
+
 				while (PAUSE) if (KILL) break;
 			};
 
-			while (!tasks.empty())
-				tasks.pop();
+			onKill();
 			});
 	};
-
 	void Thread::join()
 	{
 		t.join();
 	};
-
-	void Thread::assign(Task* t)
+	void Thread::push(Task* t)
 	{
-		std::lock_guard<std::mutex> guard (mut);
+		std::lock_guard<std::mutex> guard (mut1);
 
 		tasks.push(t);
+	};
+	void Thread::assign(Task* t)
+	{
+		std::lock_guard<std::mutex> guard(mut2);
+
+		kernel.push_back(t);
+	};
+	void Thread::clear()
+	{
+		kernel.clear();
 	};
 };

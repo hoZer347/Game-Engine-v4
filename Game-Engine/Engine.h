@@ -12,36 +12,26 @@
 // NAME: class name of task
 // OBJ: type of object inside the task
 // CONTENT: additional functionality inside the class (can be left blank)
-#define DEFINE_TASK(NAME, OBJ, CONTENT)								\
+#define DEFINE_TASK(NAME, DATA, CONTENT)							\
 class NAME : public eng::Task										\
 {																	\
-protected:															\
-	NAME(OBJ* obj = nullptr)										\
-	{																\
-		o = obj;													\
-	};																\
-																	\
 public:																\
-	virtual ~NAME() { };											\
-																	\
-	OBJ* GetObject()												\
+	static std::unique_ptr<Task> create(DATA data)					\
 	{																\
-		return o;													\
-	};																\
-																	\
-	static std::unique_ptr<Task> create(OBJ* o)						\
-	{																\
-		return std::unique_ptr<Task>(new NAME(o));					\
+		return std::unique_ptr<Task>(new NAME(data));				\
 	};																\
 																	\
 	void exec() override;											\
 																	\
 	CONTENT															\
 																	\
+	friend class eng::Task;											\
+	friend class eng::Thread;										\
 	friend class std::unique_ptr<Task>;								\
 																	\
 protected:															\
-	OBJ* o;															\
+	NAME(DATA d) { data = d; };										\
+	DATA data;														\
 };																	\
 																	\
 void NAME::exec()													\
@@ -50,42 +40,29 @@ void NAME::exec()													\
 // NAME: class name of thread
 // OBJ: type of object inside the thread
 // CONTENT: additional functionality inside the class (can be left blank)
-#define DEFINE_THREAD(NAME, OBJ, CONTENT)							\
-class NAME : public eng::Task, public eng::Thread					\
+#define DEFINE_THREAD(NAME, DATA, CONTENT)							\
+class NAME : public eng::Thread										\
 {																	\
-protected:															\
-	NAME(OBJ* obj = nullptr)										\
-	{																\
-		o = obj;													\
-		assign(this);												\
-	};																\
-																	\
 public:																\
-	virtual ~NAME() { };											\
-																	\
-	OBJ* GetObject()												\
+	static std::unique_ptr<Thread> create(DATA data)				\
 	{																\
-		return o;													\
-	};																\
-																	\
-	static std::unique_ptr<Thread> create(OBJ* o)					\
-	{																\
-		return std::unique_ptr<Thread>(new NAME(o));				\
+		return std::unique_ptr<Thread>(new NAME(data));				\
 	};																\
 																	\
 	void exec() override;											\
 																	\
 	CONTENT															\
 																	\
+	friend class eng::Task;											\
+	friend class eng::Thread;										\
 	friend class std::unique_ptr<Thread>;							\
 																	\
 protected:															\
-	OBJ* o;															\
+	NAME(DATA d) { data = d; };										\
+	DATA data;														\
 };																	\
 																	\
 void NAME::exec()													\
-
-#define DEFINE_OBJECT(NAME, TYPE, CONTENT)
 
 namespace eng
 {
@@ -104,31 +81,30 @@ namespace eng
 	};
 
 	// Thread that executes tasks
-	class Thread
+	class Thread : public Task
 	{
 	public:
 		virtual ~Thread() { };
-		virtual void init();
+		void init();
 
+		virtual void onKill() { };
+		virtual void onInit() { };
+
+		bool idle() { return tasks.empty(); };
+		void push(Task*);
 		void assign(Task*);
+		void clear();
 		void join();
 
-		std::mutex mut;
+		std::mutex mut1;
+		std::mutex mut2;
 
 		bool KILL	= false;
 		bool PAUSE	= false;
 
-		friend class std::thread;
-
 	protected:
 		std::queue<Task*> tasks;
+		std::vector<Task*> kernel;
 		std::thread t;
-	};
-
-	// Object for storing / manipulating data
-	class Object
-	{
-	public:
-		virtual ~Object() { };
 	};
 };
