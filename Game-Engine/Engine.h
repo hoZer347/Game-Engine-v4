@@ -87,8 +87,8 @@ namespace eng
 		virtual ~Thread() { };
 		void init();
 
-		virtual void onKill() { };
 		virtual void onInit() { };
+		virtual void onKill() { };
 
 		bool idle() { return tasks.empty(); };
 		void push(Task*);

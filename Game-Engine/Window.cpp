@@ -37,10 +37,10 @@ namespace eng
 			// Deleted on Creation
 			WindowProperties* properties = nullptr;
 
-			unsigned int _vtxs = 0;
-			unsigned int _inds = 0;
-			unsigned int _texs = 0;
-			unsigned int _unfs = 0;
+			unsigned int _vtxs = 0,
+						 _inds = 0,
+						 _texs = 0,
+						 _unfs = 0;
 		};
 
 		DEFINE_THREAD(Window,

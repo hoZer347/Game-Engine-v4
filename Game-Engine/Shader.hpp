@@ -11,13 +11,13 @@
 
 namespace eng {
     class ShaderManager {
-        static inline std::unordered_map<std::string, GLint> shaders;
-        static inline std::unordered_map<std::string, GLint> programs;
+        static inline std::unordered_map<std::string, unsigned int> shaders;
+        static inline std::unordered_map<std::string, unsigned int> programs;
 
         static void load_shader(
             std::string file_name,
-            GLint shader_type,
-            GLint program) {
+            unsigned int shader_type,
+            unsigned int program) {
             if (shaders[file_name]) {
                 glAttachShader(program, shaders[file_name]);
                 return;
@@ -26,7 +26,7 @@ namespace eng {
             std::ifstream f(file_name.c_str());
 
             if (f.good()) {
-                GLint shader = glCreateShader(shader_type);
+                unsigned int shader = glCreateShader(shader_type);
 
                 std::string _fs((std::istreambuf_iterator<char>(f)),
                     std::istreambuf_iterator<char>());

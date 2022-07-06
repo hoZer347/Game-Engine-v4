@@ -38,7 +38,7 @@ namespace eng
 			delete this;
 		};
 
-		DEFINE_TASK(Sprite, SpriteData*, )
+		DEFINE_TASK(RenderSprite, SpriteData*, )
 		{
 			glUseProgram(data->shader);
 
@@ -72,7 +72,7 @@ namespace eng
 			SpriteData* spr = new SpriteData { };
 
 			thread->push(CreateSprite::create(spr).release());
-			thread->assign(Sprite::create(spr).release());
+			thread->assign(RenderSprite::create(spr).release());
 
 			return spr;
 		};

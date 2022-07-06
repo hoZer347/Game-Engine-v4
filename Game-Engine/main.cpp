@@ -33,19 +33,14 @@ int main()
 
 	eng::init();
 	
-	auto w0 = eng::wnd::create(640, 640, "Window");
-	auto w1 = eng::wnd::create(640, 640, "Window");
+	auto w0 = eng::wnd::create(1024, 1024, "Window");
+	auto w1 = eng::wnd::create(1024, 1024, "Window");
 
 	w0->init();
 	w1->init();
 
 	auto spr = eng::spr::create(w0.get());
-	spr->vtxs = { -1, -1, 0, 0, 0,	1, -1, 0, 1, 0,		1, 1, 0, 1, 1,	-1, 1, 0, 0, 1 };
-	spr->inds = { 0, 1, 2, 3 };
-
 	spr->tex = eng::wnd::load_texture(w0.get(), "Resources/DK.png");
-
-	std::cout << spr->tex << std::endl;
 
 	while (!w0->KILL && !w1->KILL)
 	{
