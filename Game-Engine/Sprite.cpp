@@ -16,9 +16,6 @@ namespace eng
 	{
 		DEFINE_TASK(CreateSprite, SpriteData*, )
 		{
-			data->atb1 = AttributeManager::create();
-			data->atb2 = AttributeManager::create();
-
 			data->shader = ShaderManager::create("Sprite");
 
 			glVertexAttribPointer(
