@@ -1,12 +1,13 @@
 #pragma once
 
-namespace eng {
-	class Thread;
-	class Task;
+#include "Engine.h"
 
 #include <memory>
 
 namespace eng {
+	class Thread;
+	class Task;
+
 	namespace inp
 	{
 		// Makes inputs execute on a thread
