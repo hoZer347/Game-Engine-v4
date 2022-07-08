@@ -14,8 +14,11 @@
     <ClCompile Include="Input.cpp">
       <Filter>Engine\Window\Input</Filter>
     </ClCompile>
-    <ClCompile Include="HelperTasks.cpp">
+    <ClCompile Include="Timing.cpp">
       <Filter>Engine\HelperTasks</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +46,9 @@
     <Filter Include="Engine\Data">
       <UniqueIdentifier>{6accf122-c4b9-4b2f-8067-d6d495ad69d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{597bd4c4-f812-4ffe-8833-26de487a564a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mem_Leak.h">
@@ -60,7 +66,7 @@
     <ClInclude Include="Input.h">
       <Filter>Engine\Window\Input</Filter>
     </ClInclude>
-    <ClInclude Include="HelperTasks.h">
+    <ClInclude Include="Timing.h">
       <Filter>Engine\HelperTasks</Filter>
     </ClInclude>
     <ClInclude Include="Texture.hpp">
@@ -71,6 +77,9 @@
     </ClInclude>
     <ClInclude Include="Attribute.hpp">
       <Filter>Engine\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -143,8 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="HelperTasks.cpp" />
+    <ClCompile Include="Timing.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -152,8 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attribute.hpp" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="HelperTasks.h" />
+    <ClInclude Include="Timing.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Mem_Leak.h" />
     <ClInclude Include="Shader.hpp" />

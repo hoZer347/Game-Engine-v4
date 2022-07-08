@@ -17,7 +17,7 @@ using namespace glm;
 
 // Local Includes
 #include "Engine.h"
-#include "HelperTasks.h"
+#include "Timing.h"
 #include "Window.h"
 #include "Sprite.h"
 //
@@ -47,12 +47,6 @@ int main()
 		while (!w0->idle());
 		while (!w1->idle());
 	};
-
-	w0->join();
-	w1->join();
-
-	w0.reset();
-	w1.reset();
 
 	delete spr;
 

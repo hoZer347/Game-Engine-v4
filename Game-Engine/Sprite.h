@@ -1,10 +1,5 @@
 #pragma once
 
-#include "Engine.h"
-
-#include "glm/glm.hpp"
-using namespace glm;
-
 #include "Attribute.hpp"
 
 #include <vector>
@@ -12,6 +7,9 @@ using namespace glm;
 
 namespace eng
 {
+	class Thread;
+	class Task;
+
 	namespace spr
 	{
 		struct SpriteData

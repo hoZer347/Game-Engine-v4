@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Engine.h"
-
-#include <string>
+#include <memory>
 
 namespace eng
 {
+	class Thread;
+	class Task;
+
 	namespace wnd
 	{
 		std::unique_ptr<Thread> create(int w, int h, const char* name);

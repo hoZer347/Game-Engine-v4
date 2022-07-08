@@ -84,6 +84,7 @@ namespace eng
 	class Thread : public Task
 	{
 	public:
+		Thread() { all_threads.push_back(this); }
 		virtual ~Thread() { };
 		void init();
 
@@ -95,12 +96,15 @@ namespace eng
 		void assign(Task*);
 		void clear();
 		void join();
+		bool joinable() { return t.joinable(); }
 
 		std::mutex mut1;
 		std::mutex mut2;
 
 		bool KILL	= false;
 		bool PAUSE	= false;
+
+		static inline std::vector<Thread*> all_threads;
 
 	protected:
 		std::queue<Task*> tasks;
