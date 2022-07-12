@@ -22,7 +22,7 @@ namespace eng {
 						*prev = nullptr;
 		};
 
-		DEFINE_TASK(Inputs, InputsData*, )
+		DEFINE_TASK(Inputs, InputsData, )
 		{
 			unsigned int i = 0;
 		};

@@ -8,10 +8,10 @@
 
 namespace eng
 {
-	namespace tsk
+	namespace tmg
 	{
 		// WAIT
-		DEFINE_TASK(Wait, bool*, )
+		DEFINE_TASK(Wait, bool, )
 		{
 			while (data);
 		};
@@ -22,18 +22,6 @@ namespace eng
 		// WAIT
 
 		// TIMERS
-		struct TimerData
-		{
-
-		};
-		DEFINE_THREAD(Timer, TimerData*, )
-		{
-
-		};
-		std::unique_ptr<Thread> timer(Thread* thread)
-		{
-
-		};
 		// TIMER
 	};
 };

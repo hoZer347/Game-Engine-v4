@@ -13,66 +13,67 @@
 
 namespace eng
 {
-	namespace spr
+	DEFINE_TASK(InitSprite, void*, )
 	{
-		DEFINE_TASK(CreateSprite, SpriteData*, )
-		{
-			data->shader = ShaderManager::create("Sprite");
+		SpriteData::shader = ShaderManager::create("Sprite");
 
-			glVertexAttribPointer(
-				data->atb1,
-				3,
-				GL_FLOAT, GL_FALSE,
-				5 * sizeof(float),
-				(void*)(0 * sizeof(float)));
+		glVertexAttribPointer(
+			SpriteData::atb1,
+			3,
+			GL_FLOAT, GL_FALSE,
+			5 * sizeof(float),
+			(void*)(0 * sizeof(float)));
 
-			glVertexAttribPointer(
-				data->atb2,
-				2,
-				GL_FLOAT, GL_FALSE,
-				5 * sizeof(float),
-				(void*)(3 * sizeof(float)));
+		glVertexAttribPointer(
+			SpriteData::atb2,
+			2,
+			GL_FLOAT, GL_FALSE,
+			5 * sizeof(float),
+			(void*)(3 * sizeof(float)));
+	};
 
-			delete this;
-		};
+	DEFINE_TASK(CreateSprite, void*, )
+	{
+		SpriteData::create();
 
-		DEFINE_TASK(RenderSprite, SpriteData*, )
-		{
-			glUseProgram(data->shader);
+		delete this;
+	};
 
-			glBindTexture(GL_TEXTURE_2D, data->tex);
+	DEFINE_TASK(RenderSprite, void*, )
+	{
+		for (auto& spr : SpriteData::data()) {
+			glUseProgram(spr.shader);
 
-			glEnableVertexAttribArray(data->atb1);
-			glEnableVertexAttribArray(data->atb2);
+			glBindTexture(GL_TEXTURE_2D, spr.tex);
+
+			glEnableVertexAttribArray(spr.atb1);
+			glEnableVertexAttribArray(spr.atb2);
 
 			glBufferData(
 				GL_ARRAY_BUFFER,
-				data->vtxs.size() * sizeof(float),
-				data->vtxs.data(),
+				spr.vtxs.size() * sizeof(float),
+				spr.vtxs.data(),
 				GL_DYNAMIC_DRAW);
 
 			glBufferData(
 				GL_ELEMENT_ARRAY_BUFFER,
-				data->inds.size() * sizeof(unsigned int),
-				data->inds.data(),
+				spr.inds.size() * sizeof(unsigned int),
+				spr.inds.data(),
 				GL_DYNAMIC_DRAW);
 
-			glDrawElements(GL_QUADS, (GLsizei)data->inds.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_QUADS, (GLsizei)spr.inds.size(), GL_UNSIGNED_INT, 0);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
 
-			glDisableVertexAttribArray(data->atb1);
-			glDisableVertexAttribArray(data->atb2);
+			glDisableVertexAttribArray(spr.atb1);
+			glDisableVertexAttribArray(spr.atb2);
 		};
+		SpriteData::unlock();
+	};
 
-		SpriteData* create(Thread* thread)
-		{
-			SpriteData* spr = new SpriteData { };
-
-			thread->push(CreateSprite::create(spr).release());
-			thread->assign(RenderSprite::create(spr).release());
-
-			return spr;
-		};
+	void SpriteData::init(Thread* thread)
+	{
+		thread->push(InitSprite::create(nullptr).release());
+		thread->assign(RenderSprite::create(nullptr).release());
 	};
 };

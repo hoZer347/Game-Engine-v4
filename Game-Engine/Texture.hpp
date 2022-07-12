@@ -10,11 +10,10 @@
 
 namespace eng {
 	class TextureManager {
-		static inline unsigned int intex;
 		static inline std::unordered_map<std::string, unsigned int> TEXS;
 	
 	public:
-		static unsigned int create(const char* file_name) {
+		static unsigned int create(const char* file_name, unsigned int type) {
 
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -31,7 +30,7 @@ namespace eng {
 			unsigned int texture; // IMPLEMENT HERE
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			//
 

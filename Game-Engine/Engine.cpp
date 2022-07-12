@@ -10,6 +10,19 @@
 
 namespace eng
 {
+	class Engine
+	{
+	public:
+		static void init()
+		{
+
+		};
+		
+
+
+	private:
+	};
+
 	DEFINE_THREAD(Helper, void*, )
 	{
 
@@ -21,7 +34,7 @@ namespace eng
 	{
 		stbi_set_flip_vertically_on_load(true);
 
-
+		Engine::init();
 	};
 
 	void close()

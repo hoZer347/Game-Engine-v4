@@ -13,6 +13,7 @@ using namespace glm;
 #include "Engine.h"
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "Camera.h"
 
 #include <atomic>
 #include <vector>
@@ -44,7 +45,7 @@ namespace eng
 		};
 
 		DEFINE_THREAD(Window,
-			WindowData*,
+			WindowData,
 			GLFWwindow* window = nullptr;
 			std::vector<Task*> inputs;
 			void onInit() override;
@@ -126,13 +127,13 @@ namespace eng
 			const char* f1 = nullptr;
 			const char* f2 = nullptr;
 			const char* f3 = nullptr;
+			unsigned int type = 0;
 			unsigned int ret = 0;
 			bool done = false;
 		};
-		
 
 		// LOADING SHADERS USING WINDOW
-		DEFINE_TASK(LoadShader, LoadData*, )
+		DEFINE_TASK(LoadShader, LoadData, )
 		{
 			if (data->f3)
 				data->ret = ShaderManager::create(data->f1, data->f2, data->f3);
@@ -181,9 +182,9 @@ namespace eng
 
 
 		// LOADING TEXTURES USING WINDOW
-		DEFINE_TASK(LoadTexture, LoadData*, )
+		DEFINE_TASK(LoadTexture, LoadData, )
 		{
-			data->ret = TextureManager::create(data->f1);
+			data->ret = TextureManager::create(data->f1, data->type);
 
 			data->done = true;
 
@@ -191,9 +192,10 @@ namespace eng
 			data = nullptr;
 			delete this;
 		}
-		unsigned int load_texture(Thread* thread, const char* file_name)
+		unsigned int load_texture(Thread* thread, const char* file_name, unsigned int type)
 		{
 			LoadData* data = new LoadData({ file_name });
+			data->type = type;
 
 			thread->push(LoadTexture::create(data).release());
 

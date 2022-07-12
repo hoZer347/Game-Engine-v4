@@ -12,7 +12,5 @@ namespace eng
 		// Generates a task that waits for b to be true
 		std::unique_ptr<Task> wait(bool* b);
 
-		// Generates a timer
-		std::unique_ptr<Thread> timer(Thread* thread);
 	};
 };
