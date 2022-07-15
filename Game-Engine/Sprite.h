@@ -7,17 +7,19 @@
 #include <vector>
 #include <map>
 
+#include <iostream>
+
 namespace eng
 {
-	DEFINE_OBJECT(SpriteData)
+	struct Sprite
 	{
 		std::vector<float> vtxs =
-			{
-				-1, -1,  0,  0,  0,
-				 1, -1,  0,  1,  0,	
-				 1,  1,  0,  1,  1,
-				-1,  1,  0,  0,  1,
-			};
+		{
+			-1, -1,  0,  0,  0,
+			 1, -1,  0,  1,  0,
+			 1,  1,  0,  1,  1,
+			-1,  1,  0,  0,  1,
+		};
 
 		std::vector<unsigned int> inds = { 0, 1, 2, 3 };
 		unsigned int tex = 0;
@@ -27,6 +29,6 @@ namespace eng
 			atb1 = AttributeManager::create(),
 			atb2 = AttributeManager::create();
 
-		static void init(Thread* thread);
+		static void init(Thread * thread);
 	};
 };

@@ -16,7 +16,9 @@ using namespace glm;
 //
 
 // Local Includes
+#define ENG_DEBUG
 #include "Engine.h"
+using namespace eng;
 #include "Timing.h"
 #include "Window.h"
 #include "Sprite.h"
@@ -38,27 +40,23 @@ int main()
 
 	w0->init();
 	w1->init();
-	eng::SpriteData::init(w0.get());
-
+	eng::Sprite::init(w0.get());
 	
-	eng::SpriteData::create(2);
+	Object<Sprite>::create(2);
 
-	eng::SpriteData::lock();
-	eng::SpriteData::data()[0].tex = eng::wnd::load_texture(w0.get(), "Resources/stone.png", GL_RGB);
-	eng::SpriteData::unlock();
+	Object<Sprite>::access([&w0](Sprite& spr) {
+		wnd::load_texture(spr.tex, w0.get(), "Resources/stone.png", GL_RGB);
+		}, 0);
 
-	eng::SpriteData::lock();
-	eng::SpriteData::data()[1].tex = eng::wnd::load_texture(w0.get(), "Resources/DK.png", GL_RGBA);
-	eng::SpriteData::unlock();
+	Object<Sprite>::access([&w0](Sprite& spr) {
+		wnd::load_texture(spr.tex, w0.get(), "Resources/DK.png", GL_RGBA);
+		}, 1);
 
 	while (!w0->KILL || !w1->KILL)
 	{
 		while (!w0->idle());
 		while (!w1->idle());
 	};
-
-	//delete spr1;
-	//delete spr2;
 
 	eng::close();
 

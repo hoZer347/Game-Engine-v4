@@ -27,7 +27,7 @@ namespace eng {
 			//
 
 			// Creating OPENGL Texture
-			unsigned int texture; // IMPLEMENT HERE
+			unsigned int texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, data);

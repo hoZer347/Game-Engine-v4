@@ -7,12 +7,13 @@
 #include <vector>
 #include <queue>
 #include <mutex>
+#include <functional>
 
 // Used to define a task that contain a certain type of object
 // NAME: class name of task
 // OBJ: type of object inside the task
-// CONTENT: additional functionality inside the class (can be left blank)
-#define DEFINE_TASK(NAME, DATA, CONTENT)									\
+// ...: additional functionality inside the class (can be left blank)
+#define DEFINE_TASK(NAME, DATA, ...)										\
 class NAME : public eng::Task												\
 {																			\
 public:																		\
@@ -23,7 +24,7 @@ public:																		\
 																			\
 	void exec() override;													\
 																			\
-	CONTENT																	\
+	__VA_ARGS__																\
 																			\
 	friend class eng::Task;													\
 	friend class eng::Thread;												\
@@ -39,8 +40,8 @@ void NAME::exec()															\
 // Used to define a thread that executes tasks (you create the first task it executes)
 // NAME: class name of thread
 // OBJ: type of object inside the thread
-// CONTENT: additional functionality inside the class (can be left blank)
-#define DEFINE_THREAD(NAME, DATA, CONTENT)									\
+// ...: additional functionality inside the class (can be left blank)
+#define DEFINE_THREAD(NAME, DATA, ...)										\
 class NAME : public eng::Thread												\
 {																			\
 public:																		\
@@ -51,7 +52,7 @@ public:																		\
 																			\
 	void exec() override;													\
 																			\
-	CONTENT																	\
+	__VA_ARGS__																\
 																			\
 	friend class eng::Task;													\
 	friend class eng::Thread;												\
@@ -63,11 +64,6 @@ protected:																	\
 };																			\
 																			\
 void NAME::exec()															\
-
-// Starts a class definition the inherits from eng::Object
-// NAME: class name of object
-#define DEFINE_OBJECT(NAME)													\
-struct NAME : public eng::Object<NAME>										\
 
 namespace eng
 {
@@ -118,36 +114,45 @@ namespace eng
 	};
 
 	template <typename T>
-	struct Object
+	class Object
 	{
 	public:
-		static std::vector<T>& data()
-		{
-			return objs;
-		};
+		virtual ~Object() { };
 
-		static void lock()
+		// Creates blank objects
+		// num_objs: number of objects to create
+		static void create(size_t num_objs = 1)
 		{
 			data_access.lock();
-		};
-
-		static void unlock()
-		{
+			data.reserve(num_objs);
+			for (size_t i = 0; i < num_objs; i++)
+				data.push_back(T());
 			data_access.unlock();
 		};
 
-		static void create(unsigned int num_objs=1)
+		// Access some objects of this class type using a lambda
+		// f: lambda used on object(s)
+		// begin: the index to start in the data array
+		// end: the index to end in the data array (-1 mean only stop at the end)
+		static void access(std::function<void(T&)> f = {}, size_t begin = 0, size_t end = -1)
 		{
 			data_access.lock();
-
-			for (int i = 0; i < num_objs; i++)
-				objs.push_back(T());
-			
+			if (end == -1) end = begin + 1;
+			for (size_t i = begin; i < end; i++)
+				f(data[i]);
 			data_access.unlock();
 		};
 
-	protected:
+		static size_t size()			{ return data.size(); };
+		static std::mutex& get_mutex()	{ return data_access; };
+
+		friend class std::vector<T>;
+
+	private:
+		Object() { };
 		static inline std::mutex data_access;
-		static inline std::vector<T> objs;
+		static inline std::vector<T> data;
 	};
+
+	void debug();
 };

@@ -29,7 +29,8 @@ namespace eng
 
 		struct WindowData
 		{
-			struct WindowProperties {
+			struct WindowProperties
+			{
 				int w = 0;
 				int h = 0;
 				const char* name = "";
@@ -53,6 +54,8 @@ namespace eng
 			)
 		{
 			glfwPollEvents();
+
+			Camera::update();
 
 			if (glfwWindowShouldClose(window)) KILL = true;
 
@@ -93,13 +96,9 @@ namespace eng
 
 			glGenBuffers(1, &data->_vtxs);
 			glGenBuffers(1, &data->_inds);
-			glGenBuffers(1, &data->_texs);
-			glGenBuffers(1, &data->_unfs);
 
 			glBindBuffer(GL_ARRAY_BUFFER,			data->_vtxs);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,	data->_inds);
-			glBindBuffer(GL_TEXTURE_BUFFER,			data->_texs);
-			glBindBuffer(GL_UNIFORM_BUFFER,			data->_unfs);
 		};
 
 		void Window::onKill()
@@ -111,8 +110,6 @@ namespace eng
 
 			glDeleteBuffers(1, &data->_vtxs);
 			glDeleteBuffers(1, &data->_inds);
-			glDeleteBuffers(1, &data->_texs);
-			glDeleteBuffers(1, &data->_unfs);
 
 			glfwDestroyWindow(window);
 		};
@@ -124,12 +121,11 @@ namespace eng
 		
 		struct LoadData
 		{
+			unsigned int& ret;
 			const char* f1 = nullptr;
 			const char* f2 = nullptr;
 			const char* f3 = nullptr;
 			unsigned int type = 0;
-			unsigned int ret = 0;
-			bool done = false;
 		};
 
 		// LOADING SHADERS USING WINDOW
@@ -142,41 +138,27 @@ namespace eng
 			else
 				data->ret = ShaderManager::create(data->f1);
 
-			data->done = true;
-
 			delete data;
 			data = nullptr;
 			delete this;
 		};
-		unsigned int load_shader(Thread* thread, const char* f1)
+		void load_shader(unsigned int& shader, Thread* thread, const char* f1)
 		{
-			LoadData* data = new LoadData({ f1 });
+			LoadData* data = new LoadData({ shader, f1 });
 
 			thread->push(LoadShader::create(data).release());
-
-			while (!data->done);
-
-			return data->ret;
 		};
-		unsigned int load_shader(Thread* thread, const char* f1, const char* f2)
+		void load_shader(unsigned int& shader, Thread* thread, const char* f1, const char* f2)
 		{
-			LoadData* data = new LoadData({ f1, f2 });
+			LoadData* data = new LoadData({ shader, f1, f2 });
 
 			thread->push(LoadShader::create(data).release());
-
-			while (!data->done);
-
-			return data->ret;
 		};
-		unsigned int load_shader(Thread* thread, const char* f1, const char* f2, const char* f3)
+		void load_shader(unsigned int& shader, Thread* thread, const char* f1, const char* f2, const char* f3)
 		{
-			LoadData* data = new LoadData({ f1, f2, f3 });
+			LoadData* data = new LoadData({ shader, f1, f2, f3 });
 
 			thread->push(LoadShader::create(data).release());
-
-			while (!data->done);
-
-			return data->ret;
 		};
 		// LOADING SHADERS USING WINDOW
 
@@ -186,22 +168,16 @@ namespace eng
 		{
 			data->ret = TextureManager::create(data->f1, data->type);
 
-			data->done = true;
-
 			delete data;
 			data = nullptr;
 			delete this;
 		}
-		unsigned int load_texture(Thread* thread, const char* file_name, unsigned int type)
+		void load_texture(unsigned int& texture, Thread* thread, const char* file_name, unsigned int type)
 		{
-			LoadData* data = new LoadData({ file_name });
+			LoadData* data = new LoadData({ texture, file_name });
 			data->type = type;
 
 			thread->push(LoadTexture::create(data).release());
-
-			while (!data->done);
-
-			return data->ret;
 		};
 		// LOADING TEXTURES USING WINDOW
 	};

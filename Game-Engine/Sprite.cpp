@@ -4,6 +4,8 @@
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+using namespace glm;
 
 #include "Attribute.hpp"
 #include "Shader.hpp"
@@ -15,33 +17,27 @@ namespace eng
 {
 	DEFINE_TASK(InitSprite, void*, )
 	{
-		SpriteData::shader = ShaderManager::create("Sprite");
+		Sprite::shader = ShaderManager::create("Sprite");
 
 		glVertexAttribPointer(
-			SpriteData::atb1,
+			Sprite::atb1,
 			3,
 			GL_FLOAT, GL_FALSE,
 			5 * sizeof(float),
 			(void*)(0 * sizeof(float)));
 
 		glVertexAttribPointer(
-			SpriteData::atb2,
+			Sprite::atb2,
 			2,
 			GL_FLOAT, GL_FALSE,
 			5 * sizeof(float),
 			(void*)(3 * sizeof(float)));
-	};
-
-	DEFINE_TASK(CreateSprite, void*, )
-	{
-		SpriteData::create();
 
 		delete this;
 	};
-
 	DEFINE_TASK(RenderSprite, void*, )
 	{
-		for (auto& spr : SpriteData::data()) {
+		Object<Sprite>::access([](Sprite& spr) {
 			glUseProgram(spr.shader);
 
 			glBindTexture(GL_TEXTURE_2D, spr.tex);
@@ -67,11 +63,10 @@ namespace eng
 
 			glDisableVertexAttribArray(spr.atb1);
 			glDisableVertexAttribArray(spr.atb2);
-		};
-		SpriteData::unlock();
+		}, 0, Object<Sprite>::size());
 	};
 
-	void SpriteData::init(Thread* thread)
+	void Sprite::init(Thread* thread)
 	{
 		thread->push(InitSprite::create(nullptr).release());
 		thread->assign(RenderSprite::create(nullptr).release());

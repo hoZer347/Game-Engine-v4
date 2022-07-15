@@ -4,37 +4,16 @@
 
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "Window.h"
 
 #include <iostream>
 #include <vector>
 
 namespace eng
 {
-	class Engine
-	{
-	public:
-		static void init()
-		{
-
-		};
-		
-
-
-	private:
-	};
-
-	DEFINE_THREAD(Helper, void*, )
-	{
-
-	};
-
-	inline Helper* Helpers = nullptr;
-
 	void init()
 	{
 		stbi_set_flip_vertically_on_load(true);
-
-		Engine::init();
 	};
 
 	void close()
@@ -91,5 +70,10 @@ namespace eng
 	void Thread::clear()
 	{
 		kernel.clear();
+	};
+
+	void debug()
+	{
+
 	};
 };
