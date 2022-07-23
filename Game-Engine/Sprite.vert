@@ -1,15 +1,18 @@
 #version 450
 
-layout (location = 0) in vec3 vtx;
-layout (location = 1) in vec2 cdr;
+in vec4 vtx;
+in vec4 cdr;
+in vec4 clr;
+in vec4 nrm;
 
-layout (location = 0) uniform mat4 mvp;
+layout (location = 0) uniform mat4 mvp = mat4(1);
 
 out vec2 _cdr;
 
+
 void main()
 {
-	_cdr = cdr;
+	_cdr = vec2(cdr);
 
-	gl_Position = mvp * vec4(vtx, 1);
+	gl_Position = vtx;
 }

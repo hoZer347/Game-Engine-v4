@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Mem_Leak.h"
 
 #include "GLEW/glew.h"
@@ -41,7 +43,8 @@ namespace eng {
         };
 
     public:
-        static unsigned int create(const char* file_name) {
+        static unsigned int create(const char* file_name)
+        {
             std::string f = file_name;
 
             if (programs[f])
@@ -55,15 +58,15 @@ namespace eng {
 
             glLinkProgram(program);
 
-            shaders[f] = program;
-
-            return program;
+            return shaders[f] = program;
         };
 
         static unsigned int create(
             const char* vs_file_name,
-            const char* fs_file_name) {
+            const char* fs_file_name)
+        {
             std::string f;
+            
             f += vs_file_name;
             f += fs_file_name;
 
@@ -85,7 +88,8 @@ namespace eng {
         static unsigned int create(
             const char* vs_file_name,
             const char* gs_file_name,
-            const char* fs_file_name) {
+            const char* fs_file_name)
+        {
             std::string f;
 
             f += vs_file_name;
@@ -104,7 +108,6 @@ namespace eng {
             glLinkProgram(program);
 
             shaders[f] = program;
-
             return program;
         };
 

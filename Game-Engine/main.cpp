@@ -12,53 +12,44 @@ using namespace glm;
 
 // STD includes
 #include <iostream>
-#include <thread>
 //
 
 // Local Includes
-#define ENG_DEBUG
 #include "Engine.h"
 using namespace eng;
-#include "Timing.h"
-#include "Window.h"
-#include "Sprite.h"
-//
-
-// STB image
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 //
 
 int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	eng::init();
+	Material mat;
+	std::vector<Mesh> m = { Mesh(
+		{
+			Vtx({vec4(0, 0, 0, 1), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+			Vtx({vec4(1, 0, 0, 1), vec4(1, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+			Vtx({vec4(1, 1, 0, 1), vec4(1, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+			Vtx({vec4(0, 0, 0, 1), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+			Vtx({vec4(0, 1, 0, 1), vec4(0, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+			Vtx({vec4(1, 1, 0, 1), vec4(1, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
+		}, { 0, 1, 2, 3, 4, 5 }
+	) };
+	mat.draw_mode = GL_TRIANGLES;
 
-	auto w0 = eng::wnd::create(1024, 1024, "Window");
-	auto w1 = eng::wnd::create(1024, 1024, "Window");
+	Thread<0>::init();
+	Thread<1>::init();
+	Thread<2>::init();
 
-	w0->init();
-	w1->init();
-	eng::Sprite::init(w0.get());
-	
-	Object<Sprite>::create(2);
+	Renderer::open_window<0>();
+	Text::init<0>();
+	Input::init<2>();
+	Renderer::render_this<0>(mat, m);
+	//Renderer::load_shader<0>(mat, "Sprite");
+	//Renderer::load_texture<0>(mat, "Resources/DK.png", GL_RGBA);
+	Renderer::load_shader<0>(mat, "Text");
+	Text::load_font<0>(mat, "Resources/alagard.ttf");
 
-	Object<Sprite>::access([&w0](Sprite& spr) {
-		wnd::load_texture(spr.tex, w0.get(), "Resources/stone.png", GL_RGB);
-		}, 0);
-
-	Object<Sprite>::access([&w0](Sprite& spr) {
-		wnd::load_texture(spr.tex, w0.get(), "Resources/DK.png", GL_RGBA);
-		}, 1);
-
-	while (!w0->KILL || !w1->KILL)
-	{
-		while (!w0->idle());
-		while (!w1->idle());
-	};
-
-	eng::close();
+	Thread<0>::join();
 
 	return 0;
 };

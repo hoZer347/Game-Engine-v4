@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
@@ -6,6 +8,7 @@
 
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 namespace eng {
@@ -13,7 +16,9 @@ namespace eng {
 		static inline std::unordered_map<std::string, unsigned int> TEXS;
 	
 	public:
-		static unsigned int create(const char* file_name, unsigned int type) {
+		static unsigned int create(const char* file_name, unsigned int type)
+		{
+			stbi_set_flip_vertically_on_load(true);
 
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -35,11 +40,13 @@ namespace eng {
 			//
 
 			// Deallocation
-			stbi_image_free(data);
 			glBindTexture(GL_TEXTURE_2D, 0);
+			stbi_image_free(data);
 			//
 
-			return TEXS[s] = texture;
+			TEXS[s] = texture;
+
+			return texture;
 		};
 	};
 };

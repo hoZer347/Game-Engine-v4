@@ -1,158 +1,126 @@
 #pragma once
 
-#include "Mem_Leak.h"
+#include "Thread.h"
+#include "Mesh.h"
 
-#include <memory>
-#include <thread>
-#include <vector>
-#include <queue>
-#include <mutex>
-#include <functional>
-
-// Used to define a task that contain a certain type of object
-// NAME: class name of task
-// OBJ: type of object inside the task
-// ...: additional functionality inside the class (can be left blank)
-#define DEFINE_TASK(NAME, DATA, ...)										\
-class NAME : public eng::Task												\
-{																			\
-public:																		\
-	static std::unique_ptr<Task> create(DATA* data)							\
-	{																		\
-		return std::unique_ptr<Task>(new NAME(data));						\
-	};																		\
-																			\
-	void exec() override;													\
-																			\
-	__VA_ARGS__																\
-																			\
-	friend class eng::Task;													\
-	friend class eng::Thread;												\
-	friend class std::unique_ptr<Task>;										\
-																			\
-protected:																	\
-	NAME(DATA* d) { data = d;};												\
-	DATA* data;																\
-};																			\
-																			\
-void NAME::exec()															\
-
-// Used to define a thread that executes tasks (you create the first task it executes)
-// NAME: class name of thread
-// OBJ: type of object inside the thread
-// ...: additional functionality inside the class (can be left blank)
-#define DEFINE_THREAD(NAME, DATA, ...)										\
-class NAME : public eng::Thread												\
-{																			\
-public:																		\
-	static std::unique_ptr<Thread> create(DATA* data)						\
-	{																		\
-		return std::unique_ptr<Thread>(new NAME(data));						\
-	};																		\
-																			\
-	void exec() override;													\
-																			\
-	__VA_ARGS__																\
-																			\
-	friend class eng::Task;													\
-	friend class eng::Thread;												\
-	friend class std::unique_ptr<Thread>;									\
-																			\
-protected:																	\
-	NAME(DATA* d) { data = d; };											\
-	DATA* data;																\
-};																			\
-																			\
-void NAME::exec()															\
+#include <iostream>
 
 namespace eng
 {
-	// Sets up everything the engine needs
-	void init();
+	struct Renderer {
 
-	// Gets rid of everything the engine uses by default
-	void close();
-
-	// Task that can be performed
-	class Task
-	{
-	public:
-		virtual ~Task() { };
-		virtual void exec()=0;
-	};
-
-	// Thread that executes tasks
-	class Thread : public Task
-	{
-	public:
-		Thread() { all_threads.push_back(this); }
-		virtual ~Thread() { };
-		void init();
-
-		virtual void onInit() { };
-		virtual void onKill() { };
-
-		bool idle() { return tasks.empty(); };
-		void push(Task*);
-		void assign(Task*);
-		void clear();
-		void join();
-		bool joinable() { return t.joinable(); }
-
-		bool KILL	= false;
-		bool PAUSE	= false;
-
-		static inline std::vector<Thread*> all_threads;
-
-	protected:
-		std::mutex mut1;
-		std::mutex mut2;
-
-		std::queue<Task*> tasks;
-		std::vector<Task*> kernel;
-		std::thread t;
-	};
-
-	template <typename T>
-	class Object
-	{
-	public:
-		virtual ~Object() { };
-
-		// Creates blank objects
-		// num_objs: number of objects to create
-		static void create(size_t num_objs = 1)
+		template<ThreadID ID>
+		static void open_window(const char* title="", int width=640, int height=640)
 		{
-			data_access.lock();
-			data.reserve(num_objs);
-			for (size_t i = 0; i < num_objs; i++)
-				data.push_back(T());
-			data_access.unlock();
+			Thread<ID>::push([title, width, height]()
+				{
+					setup(title, width, height);
+					Thread<ID>::assign(update);
+				});
 		};
 
-		// Access some objects of this class type using a lambda
-		// f: lambda used on object(s)
-		// begin: the index to start in the data array
-		// end: the index to end in the data array (-1 mean only stop at the end)
-		static void access(std::function<void(T&)> f = {}, size_t begin = 0, size_t end = -1)
+		template <ThreadID ID>
+		static void render_this(Material& mat, std::vector<Mesh>& m)
 		{
-			data_access.lock();
-			if (end == -1) end = begin + 1;
-			for (size_t i = begin; i < end; i++)
-				f(data[i]);
-			data_access.unlock();
+			Thread<ID>::assign([&mat, &m]()
+				{
+					render_this(mat, m);
+				});
 		};
 
-		static size_t size()			{ return data.size(); };
-		static std::mutex& get_mutex()	{ return data_access; };
+		template <ThreadID ID>
+		static void load_texture(Material& mat, const char* file_name, unsigned int type)
+		{
+			Thread<ID>::push([&mat, file_name, type]()
+				{
+					mat.texs.push_back(load_texture(file_name, type));
+				});
+		};
 
-		friend class std::vector<T>;
+		template <ThreadID ID>
+		static void load_shader(Material& mat, const char* f1)
+		{
+			Thread<ID>::push([&mat, f1]()
+				{
+					mat.shader = load_shader(f1);
+				});
+		};
+
+		template <ThreadID ID>
+		static void load_shader(Material& mat, const char* f1, const char* f2)
+		{
+			Thread<ID>::push([&mat, f1, f2]()
+				{
+					mat.shader = load_shader(f1, f2);
+				});
+		};
+
+		template <ThreadID ID>
+		static void load_shader(Material& mat, const char* f1, const char* f2, const char* f3)
+		{
+			Thread<ID>::push([&mat, f1, f2, f3]()
+				{
+					mat.shader = load_shader(f1, f2, f3);
+				});
+		};
 
 	private:
-		Object() { };
-		static inline std::mutex data_access;
-		static inline std::vector<T> data;
+		static bool test_for_window();
+		static void setup(const char* title, int width, int height);
+		static void update();
+		static unsigned int load_shader (const char* f1);
+		static unsigned int load_shader (const char* f1, const char* f2);
+		static unsigned int load_shader (const char* f1, const char* f2, const char* f3);
+		static unsigned int load_texture(const char* file_name, unsigned int type);
+		static void render_this(Material& mat, std::vector<Mesh>& m);
 	};
 
-	void debug();
+	// Interact With the Text Rendering Engine
+	struct Text
+	{
+		template <ThreadID ID>
+		static void init()
+		{
+			Thread<ID>::push(_init);
+		};
+
+		template <ThreadID ID>
+		static void load_font(Material& mat, const char* file_name)
+		{
+			Thread<ID>::push([&mat, file_name]()
+				{
+					load_font(mat, file_name);
+				});
+		};
+
+	private:
+		static void load_font(Material& mat, const char* file_name);
+		static void _init();
+	};
+
+	// Interact With the Input Engine
+	struct Input
+	{
+		template <ThreadID ID>
+		static void init()
+		{
+			Thread<ID>::push(_init);
+		};
+
+	private:
+		static void _init();
+	};
+
+	// Interact with the Sound Engine
+	struct Sound
+	{
+		template <ThreadID ID>
+		static void init()
+		{
+			Thread<ID>::push(_init);
+		};
+
+	private:
+		static void _init();
+	};
 };
