@@ -5,21 +5,14 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Engine\Window</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Engine\Window\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Timing.cpp">
-      <Filter>Engine\HelperTasks</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Debug">
@@ -28,20 +21,11 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{0f587ed5-6e1f-4550-a9b9-d702c086708f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Window">
-      <UniqueIdentifier>{657d29f6-761c-42b1-87e6-744d95cf7b73}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Sprite">
       <UniqueIdentifier>{dc61b617-c016-40ee-84ab-0a64b350a738}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Sprite\Shader">
       <UniqueIdentifier>{2df1936d-fbbf-4d2d-a17c-a445424ebe92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Window\Input">
-      <UniqueIdentifier>{e326a0d6-73e8-4e27-9d8c-11b04667ee34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\HelperTasks">
-      <UniqueIdentifier>{ffe53b48-29e0-4350-a095-7eea90c6ea12}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Data">
       <UniqueIdentifier>{6accf122-c4b9-4b2f-8067-d6d495ad69d3}</UniqueIdentifier>
@@ -57,17 +41,8 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Engine\Window</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Engine\Sprite</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Engine\Window\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Timing.h">
-      <Filter>Engine\HelperTasks</Filter>
     </ClInclude>
     <ClInclude Include="Texture.hpp">
       <Filter>Engine\Data</Filter>
@@ -81,6 +56,8 @@
     <ClInclude Include="Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sprite.vert">
