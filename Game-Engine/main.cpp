@@ -31,12 +31,7 @@ int main()
 
 	Mesh mesh =
 	{
-		{
-			{ vec4(0, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
-			{ vec4(1, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
-			{ vec4(1, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
-			{ vec4(0, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
-		},  { 0, 1, 2, 3 }
+		
 	};
 
 	Mesh mesh1 =
@@ -66,7 +61,7 @@ int main()
 	};
 
 	wnd::bind(w0, matl, mesh, GL_QUADS);
-
+	Thread<2>::init();
 
 	while (true)
 	{
