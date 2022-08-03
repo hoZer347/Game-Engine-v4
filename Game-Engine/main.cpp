@@ -61,7 +61,6 @@ int main()
 	};
 
 	wnd::bind(w0, matl, mesh, GL_QUADS);
-	Thread<2>::init();
 
 	while (true)
 	{
