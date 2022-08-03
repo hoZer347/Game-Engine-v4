@@ -43,7 +43,37 @@ namespace eng {
         };
 
     public:
-        static unsigned int create(const char* file_name)
+        static unsigned int create(std::vector<std::string> file_names)
+        {
+            if (file_names.size() == 1)
+                return create(file_names.back());
+
+            std::string f;
+
+            for (auto& file : file_names)
+                f += file;
+
+            if (programs[f])
+                return programs[f];
+
+            unsigned int program = glCreateProgram();
+
+            for (auto& file : file_names)
+            {
+                     if (file.find(".vert") != std::string::npos) load_shader(file, GL_VERTEX_SHADER, program);
+                else if (file.find(".geom") != std::string::npos) load_shader(file, GL_GEOMETRY_SHADER, program);
+                else if (file.find(".frag") != std::string::npos) load_shader(file, GL_FRAGMENT_SHADER, program);
+                else if (file.find(".comp") != std::string::npos) load_shader(file, GL_COMPUTE_SHADER, program);
+                else if (file.find(".tess") != std::string::npos) load_shader(file, GL_TESS_CONTROL_SHADER, program);
+                else if (file.find(".eval") != std::string::npos) load_shader(file, GL_TESS_EVALUATION_SHADER, program);
+            };
+
+            glLinkProgram(program);
+
+            return programs[f] = program;
+        };
+
+        static unsigned int create(std::string file_name)
         {
             std::string f = file_name;
 
@@ -55,60 +85,13 @@ namespace eng {
             load_shader(f + ".vert", GL_VERTEX_SHADER, program);
             load_shader(f + ".geom", GL_GEOMETRY_SHADER, program);
             load_shader(f + ".frag", GL_FRAGMENT_SHADER, program);
+            load_shader(f + ".comp", GL_COMPUTE_SHADER, program);
+            load_shader(f + ".tess", GL_TESS_CONTROL_SHADER, program);
+            load_shader(f + ".eval", GL_TESS_EVALUATION_SHADER, program);
 
             glLinkProgram(program);
 
             return shaders[f] = program;
-        };
-
-        static unsigned int create(
-            const char* vs_file_name,
-            const char* fs_file_name)
-        {
-            std::string f;
-            
-            f += vs_file_name;
-            f += fs_file_name;
-
-            if (programs[f])
-                return programs[f];
-
-            unsigned int program = glCreateProgram();
-
-            load_shader(vs_file_name, GL_VERTEX_SHADER, program);
-            load_shader(fs_file_name, GL_FRAGMENT_SHADER, program);
-
-            glLinkProgram(program);
-
-            shaders[f] = program;
-
-            return program;
-        };
-
-        static unsigned int create(
-            const char* vs_file_name,
-            const char* gs_file_name,
-            const char* fs_file_name)
-        {
-            std::string f;
-
-            f += vs_file_name;
-            f += gs_file_name;
-            f += fs_file_name;
-
-            if (programs[f])
-                return programs[f];
-
-            unsigned int program = glCreateProgram();
-
-            load_shader(vs_file_name, GL_VERTEX_SHADER, program);
-            load_shader(gs_file_name, GL_GEOMETRY_SHADER, program);
-            load_shader(fs_file_name, GL_FRAGMENT_SHADER, program);
-
-            glLinkProgram(program);
-
-            shaders[f] = program;
-            return program;
         };
 
         static void resources() {

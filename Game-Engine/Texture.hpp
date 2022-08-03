@@ -16,10 +16,8 @@ namespace eng {
 		static inline std::unordered_map<std::string, unsigned int> TEXS;
 	
 	public:
-		static unsigned int create(const char* file_name, unsigned int type)
+		static unsigned int create(std::string file_name, unsigned int type)
 		{
-			stbi_set_flip_vertically_on_load(true);
-
 			// Catching Duplicates
 			std::string s = std::string(file_name);
 			if (TEXS[s])
@@ -28,7 +26,7 @@ namespace eng {
 
 			// Creating Image Data
 			int height, width, nrChannels;
-			unsigned char* data = stbi_load(file_name, &width, &height, &nrChannels, 0);
+			unsigned char* data = stbi_load(file_name.c_str(), &width, &height, &nrChannels, 0);
 			//
 
 			// Creating OPENGL Texture
@@ -47,6 +45,17 @@ namespace eng {
 			TEXS[s] = texture;
 
 			return texture;
+		};
+
+		static std::vector<unsigned int> create(std::vector<std::pair<std::string, unsigned int>> texture_files)
+		{
+			std::vector<unsigned int> ret;
+
+			ret.reserve(texture_files.size());
+			for (auto& f : texture_files)
+				ret.emplace_back(create(f.first, f.second));
+
+			return ret;
 		};
 	};
 };

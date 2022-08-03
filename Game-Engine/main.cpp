@@ -16,6 +16,8 @@ using namespace glm;
 
 // Local Includes
 #include "Engine.h"
+#include "Thread.h"
+#include "Data.h"
 using namespace eng;
 //
 
@@ -23,33 +25,56 @@ int main()
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	Material mat;
-	std::vector<Mesh> m = { Mesh(
+	open();
+
+	auto w0 = wnd::open();
+
+	Mesh mesh =
+	{
 		{
-			Vtx({vec4(0, 0, 0, 1), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-			Vtx({vec4(1, 0, 0, 1), vec4(1, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-			Vtx({vec4(1, 1, 0, 1), vec4(1, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-			Vtx({vec4(0, 0, 0, 1), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-			Vtx({vec4(0, 1, 0, 1), vec4(0, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-			Vtx({vec4(1, 1, 0, 1), vec4(1, 1, 0, 0), vec4(0, 0, 0, 0), vec4(0, 0, 0, 0)}),
-		}, { 0, 1, 2, 3, 4, 5 }
-	) };
-	mat.draw_mode = GL_TRIANGLES;
+			{ vec4(0, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
+			{ vec4(1, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
+			{ vec4(1, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
+			{ vec4(0, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
+		},  { 0, 1, 2, 3 }
+	};
 
-	Thread<0>::init();
-	Thread<1>::init();
-	Thread<2>::init();
+	Mesh mesh1 =
+	{
+		{
+			{ vec4(0, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
+			{ vec4(1, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
+			{ vec4(1, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
+			{ vec4(0, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
+		},  { 0, 1, 2, 3 }
+	};
 
-	Renderer::open_window<0>();
-	Text::init<0>();
-	Input::init<2>();
-	Renderer::render_this<0>(mat, m);
-	//Renderer::load_shader<0>(mat, "Sprite");
-	//Renderer::load_texture<0>(mat, "Resources/DK.png", GL_RGBA);
-	Renderer::load_shader<0>(mat, "Text");
-	Text::load_font<0>(mat, "Resources/alagard.ttf");
+	Mesh mesh2 =
+	{
+		{
+			{ vec4( 0,  0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
+			{ vec4(-1,  0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
+			{ vec4(-1, -1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
+			{ vec4( 0, -1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
+		},  { 0, 1, 2, 3 }
+	};
 
-	Thread<0>::join();
+	Matl matl =
+	{
+		{ "Sprite" },
+		{ { "Resources/DK.png", GL_RGBA } },
+	};
+
+	wnd::bind(w0, matl, mesh, GL_QUADS);
+
+
+	while (true)
+	{
+		mesh = mesh1;
+		mesh = mesh2;
+	};
+
+	close();
 
 	return 0;
 };

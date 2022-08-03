@@ -1,6 +1,5 @@
 #version 450
 
-in vec4 _clr;
 in vec2 _cdr;
 
 layout (binding = 0) uniform sampler2D tex;

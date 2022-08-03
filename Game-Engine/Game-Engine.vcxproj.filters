@@ -2,21 +2,23 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Engine\Rendering\Mesh</Filter>
+    <ClCompile Include="Window.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Thread.cpp">
       <Filter>Engine\Thread</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Engine\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Text.cpp">
       <Filter>Engine\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Sound.cpp">
-      <Filter>Engine\Rendering</Filter>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Engine\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -26,20 +28,17 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{0f587ed5-6e1f-4550-a9b9-d702c086708f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{a06c3572-dbab-4782-8df2-aef7e54c6121}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Thread">
-      <UniqueIdentifier>{45d171d4-ba9c-44ef-acb2-fb6de2d23ed2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Rendering">
       <UniqueIdentifier>{88233da3-b18b-4838-9963-b86f7a083ab0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Rendering\Mesh">
-      <UniqueIdentifier>{0eacd9a2-503f-4ac4-9396-abc2d80a9990}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Rendering\Shader">
       <UniqueIdentifier>{6accf122-c4b9-4b2f-8067-d6d495ad69d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Thread">
+      <UniqueIdentifier>{701e2fe2-de6e-42d3-ae1f-dc89bc06d25b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\UI">
+      <UniqueIdentifier>{65deabb6-dcf1-4643-a42e-8dae98e182b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,14 +51,17 @@
     <ClInclude Include="Shader.hpp">
       <Filter>Engine\Rendering\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Engine\Rendering\Mesh</Filter>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Engine\Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Thread.h">
       <Filter>Engine\Thread</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Menu.h">
+      <Filter>Engine\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
