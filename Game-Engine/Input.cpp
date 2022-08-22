@@ -21,6 +21,10 @@ namespace eng
 	};
 
 	Thread* thread;
+	static inline bool	KILL = false,
+						SHOULD_USE_MODS = false;
+	
+	static inline std::stack<std::vector<Func>> on_updates;
 	static inline std::stack<std::unordered_map<_int64, Task>> inputs;
 
 	namespace input
@@ -35,18 +39,25 @@ namespace eng
 
 					glfwSetMouseButtonCallback(window, [](GLFWwindow*, int binding, int action, int mods)
 						{
-							invoke(binding, action, mods);
+							invoke(binding, action, mods*SHOULD_USE_MODS);
 						});
 
 					glfwSetKeyCallback(window, [](GLFWwindow*, int binding, int, int action, int mods)
 						{
-							invoke(binding, action, mods);
+							invoke(binding, action, mods*SHOULD_USE_MODS);
 						});
 
 					return false;
 				});
 
-			// TODO: add on_update function here
+			((Thread*)source)->push([]()
+				{
+					if (!on_updates.empty())
+						for (auto& task : on_updates.top())
+							task();
+
+					return !KILL;
+				});
  		};
 
 		void bind(Task task, int binding, int action, int mods)
@@ -85,6 +96,22 @@ namespace eng
 				}, binding, mods);
 		};
 
+		void bind(Func on_update, int mods)
+		{
+			thread->push([on_update]()
+				{
+					if (!on_updates.empty())
+						on_updates.top().push_back(on_update);
+
+					return false;
+				});
+		};
+
+		void set_use_mods(bool b)
+		{
+			SHOULD_USE_MODS = b;
+		};
+
 		void invoke(int binding, int action, int mods)
 		{
 			thread->push([binding, action, mods]()
@@ -111,6 +138,7 @@ namespace eng
 			thread->push([]()
 			{
 				inputs.push({});
+				on_updates.push({});
 
 				return false;
 			});
@@ -122,6 +150,9 @@ namespace eng
 			{
 				if (!inputs.empty())
 					inputs.pop();
+
+				if (!on_updates.empty())
+					on_updates.pop();
 
 				return false;
 			});

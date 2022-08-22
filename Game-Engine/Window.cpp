@@ -27,6 +27,8 @@ namespace eng
 	{
 		Window(const char* title, int width, int height) : Thread()
 		{
+			NUM_THREADS++;
+
 			push([this, title, width, height]()
 				{
 					create_window_one_at_a_time.lock();

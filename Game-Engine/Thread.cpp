@@ -8,6 +8,8 @@ namespace eng
 {
 	Thread::Thread()
 	{
+		NUM_THREADS++;
+
 		thread = std::thread([this]()
 			{
 				tasks.push(new Task([this]()
@@ -35,6 +37,8 @@ namespace eng
 						tasks.pop();
 					};
 				};
+
+				NUM_THREADS--;
 			});
 	};
 

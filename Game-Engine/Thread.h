@@ -7,12 +7,17 @@
 #include <memory>
 #include <thread>
 #include <mutex>
+#include <atomic>
+
+#include <iostream>
 
 #include <iostream>
 
 namespace eng
 {
 	typedef std::function<bool()> Task;
+
+	inline std::atomic<unsigned int> NUM_THREADS;
 
 	struct Thread
 	{

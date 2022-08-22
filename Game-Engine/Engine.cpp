@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Thread.h"
 #include <thread>
 
 #include <iostream>
@@ -24,6 +25,11 @@ namespace eng
 		{
 			debug_window = wnd::open("Debug", 1024, 1024);
 		};
+	};
+
+	void join()
+	{
+		while (NUM_THREADS > 1);
 	};
 
 	void close()

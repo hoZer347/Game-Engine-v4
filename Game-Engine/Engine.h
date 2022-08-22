@@ -7,6 +7,9 @@ namespace eng
 	// Return type is whether or not to delete after invocation
 	typedef std::function<bool()> Task;
 
+	// Same as Task, but does not return a value
+	typedef std::function<void()> Func;
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Window.cpp //
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +43,6 @@ namespace eng
 	// Input.cpp //
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	struct Thread;
-
 	namespace input
 	{
 		void open(Window* source);
@@ -51,7 +52,9 @@ namespace eng
 		void bind(Task task, int binding, int action, int mods);
 		void bind(Task on_press, Task on_release, int binding, int mods);
 		void bind(Task on_hold, bool& flag, int binding, int mods);
-		void bind(Task on_update, bool& flag, int mods);
+		void bind(Func on_update, int mods);
+
+		void set_use_mods(bool b=false);
 
 		void next();
 		void prev();
@@ -68,6 +71,7 @@ namespace eng
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	void open(bool debug=false);
+	void join();
 	void close();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////

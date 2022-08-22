@@ -59,18 +59,38 @@ int main()
 		{
 			std::cout << "Test1" << std::endl;
 
+			input::next();
+
+			input::bind([]()
+				{
+					std::cout << "Test2" << std::endl;
+
+					input::prev();
+
+					return false;
+				}, GLFW_MOUSE_BUTTON_1, GLFW_RELEASE, 0);
+
 			return false;
-		}, []()
+		}, GLFW_MOUSE_BUTTON_1, GLFW_PRESS, 0);
+
+	input::bind([w0]()
 		{
-			std::cout << "Test2" << std::endl;
+			GLFWwindow* window = glfwGetCurrentContext();
 
-			return false;
-		}, GLFW_MOUSE_BUTTON_1, 0);
+			Camera& cam = wnd::get_cam(w0);
 
-	while (w0)
-	{
-		
-	};
+			if (glfwGetKey(window, GLFW_KEY_W)) cam.trns					*= translate(vec3(0, 0,  0.001));
+			if (glfwGetKey(window, GLFW_KEY_S)) cam.trns					*= translate(vec3(0, 0, -0.001));
+			if (glfwGetKey(window, GLFW_KEY_A)) cam.trns					*= translate(vec3( 0.001, 0, 0));
+			if (glfwGetKey(window, GLFW_KEY_D)) cam.trns					*= translate(vec3(-0.001, 0, 0));
+			if (glfwGetKey(window, GLFW_KEY_SPACE)) cam.trns				*= translate(vec3(0, -0.001, 0));
+			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) cam.trns			*= translate(vec3(0,  0.001, 0));
+
+		}, 0);
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+	join();
 
 	close();
 
