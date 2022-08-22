@@ -4,6 +4,7 @@
 
 #include "Data.h"
 #include "Thread.h"
+#include "Camera.h"
 
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
@@ -22,22 +23,6 @@ std::mutex mut;
 
 namespace eng
 {
-	struct RenderObj
-	{
-		RenderObj(Mesh& mesh, Matl& matl, unsigned int draw_mode) :
-			mesh(mesh), draw_mode(draw_mode)
-		{
-			shader = ShaderManager::create(matl.shader_files);
-			textures = TextureManager::create(matl.texture_files);
-		};
-
-		~RenderObj() { };
-
-		unsigned int shader, draw_mode;
-		std::vector<unsigned int> textures;
-		Mesh& mesh;
-	};
-
 	struct Window : public Thread
 	{
 		Window(const char* title, int width, int height) : Thread()
@@ -113,36 +98,38 @@ namespace eng
 
 								glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-								mut.lock();
-								for (auto& o : render_objs)
-									if (o)
-										{
-											glUseProgram(o->shader);
+								cam.update();
 
-											for (auto& tex : o->textures)
-												glBindTexture(GL_TEXTURE_2D, tex);
+								if (glfwWindowShouldClose(window))
+									KILL = true;
 
-											glBufferData(
-												GL_ARRAY_BUFFER,
-												o->mesh.vtxs.size() * sizeof(Vtx),
-												o->mesh.vtxs.data(),
-												GL_DYNAMIC_DRAW);
+								for (auto& r : render_objs)
+								{
+									glUseProgram(r->shader);
 
-											glBufferData(
-												GL_ELEMENT_ARRAY_BUFFER,
-												o->mesh.inds.size() * sizeof(unsigned int),
-												o->mesh.inds.data(),
-												GL_STATIC_DRAW);
+									for (auto& tex : r->textures)
+										glBindTexture(GL_TEXTURE_2D, tex);
 
-											glDrawElements(o->draw_mode, (GLsizei)o->mesh.inds.size(), GL_UNSIGNED_INT, nullptr);
+									glBufferData(
+										GL_ARRAY_BUFFER,
+										r->mesh->vtxs.size() * sizeof(Vtx),
+										r->mesh->vtxs.data(),
+										GL_DYNAMIC_DRAW);
 
-											for (auto& tex : o->textures)
-												glBindTexture(GL_TEXTURE_2D, 0);
-										};
-								mut.unlock();
+									glBufferData(
+										GL_ELEMENT_ARRAY_BUFFER,
+										r->mesh->inds.size() * sizeof(unsigned int),
+										r->mesh->inds.data(),
+										GL_STATIC_DRAW);
+
+									glDrawElements(r->draw_mode, (GLsizei)r->mesh->inds.size(), GL_UNSIGNED_INT, nullptr);
+
+									for (auto& tex : r->textures)
+										glBindTexture(GL_TEXTURE_2D, 0);
+								};
 
 								glfwPollEvents();
-							}
+							};
 
 							return true;
 						});
@@ -151,17 +138,23 @@ namespace eng
 				});
 		};
 
-		void on_kill()
+		void load(RenderObj*& r, Matl& matl, Mesh& mesh, unsigned int draw_mode = 0x0007)
 		{
-			glDeleteBuffers(1, &_vtxs);
-			glDeleteBuffers(1, &_inds);
-
-			glfwDestroyWindow(window);
+			r = new RenderObj(mesh, draw_mode);
+			r->shader = shader_manager.create(matl.shader_files);
+			r->textures = texture_manager.create(matl.texture_files);
+			render_objs.push_back(r);
 		};
 
 		unsigned int _vtxs=0, _inds=0;
 
+		Camera cam;
+
+		ShaderManager shader_manager;
+		TextureManager texture_manager;
+
 		std::vector<RenderObj*> render_objs;
+
 		GLFWwindow* window = nullptr;
 	};
 
@@ -178,20 +171,21 @@ namespace eng
 			window = nullptr;
 		};
 
-		void bind(Window* window, Matl& matl, Mesh& mesh, unsigned int draw_mode)
+		Camera& get_cam(Window* window)
 		{
-			RenderObj* _r;
+			return window->cam;
+		};
 
-			window->push([&_r, window, &matl, &mesh, draw_mode]()
-			{
-				RenderObj* r = new RenderObj(mesh, matl, draw_mode);
+		void bind(RenderObj*& render_obj, Window* window, Matl& matl, Mesh& mesh, unsigned int draw_mode)
+		{
+			window->push([&render_obj, window, &matl, &mesh, draw_mode]()
+				{
+					window->load(render_obj, matl, mesh, draw_mode);
 
-				_r = r;
+					return false;
+				});
 
-				window->render_objs.push_back(r);
-
-				return false;
-			});
+			while (!render_obj);
 		};
 	};
 };

@@ -12,11 +12,12 @@
 #include <iostream>
 
 namespace eng {
-    class ShaderManager {
-        static inline std::unordered_map<std::string, unsigned int> shaders;
-        static inline std::unordered_map<std::string, unsigned int> programs;
+    struct ShaderManager {
+    private:
+        std::unordered_map<std::string, unsigned int> shaders;
+        std::unordered_map<std::string, unsigned int> programs;
 
-        static void load_shader(
+        void load_shader(
             std::string file_name,
             unsigned int shader_type,
             unsigned int program) {
@@ -43,7 +44,7 @@ namespace eng {
         };
 
     public:
-        static unsigned int create(std::vector<std::string> file_names)
+        unsigned int create(std::vector<std::string> file_names)
         {
             if (file_names.size() == 1)
                 return create(file_names.back());
@@ -73,7 +74,7 @@ namespace eng {
             return programs[f] = program;
         };
 
-        static unsigned int create(std::string file_name)
+        unsigned int create(std::string file_name)
         {
             std::string f = file_name;
 
@@ -92,11 +93,6 @@ namespace eng {
             glLinkProgram(program);
 
             return shaders[f] = program;
-        };
-
-        static void resources() {
-            std::cout << shaders.size() << std::endl;
-            std::cout << programs.size() << std::endl;
         };
     };
 };

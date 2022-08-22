@@ -6,6 +6,7 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/gtx/transform.hpp>
 #include <glm/glm.hpp>
 using namespace glm;
 //
@@ -17,55 +18,58 @@ using namespace glm;
 // Local Includes
 #include "Engine.h"
 #include "Thread.h"
+#include "Camera.h"
 #include "Data.h"
 using namespace eng;
 //
 
 int main()
 {
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
 	open();
 
 	auto w0 = wnd::open();
+	auto w1 = wnd::open();
+	auto w2 = wnd::open();
 
-	Mesh mesh =
-	{
-		
-	};
+	RenderObj* r;
 
-	Mesh mesh1 =
-	{
-		{
-			{ vec4(0, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
-			{ vec4(1, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
-			{ vec4(1, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
-			{ vec4(0, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
-		},  { 0, 1, 2, 3 }
-	};
-
-	Mesh mesh2 =
-	{
-		{
-			{ vec4( 0,  0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
-			{ vec4(-1,  0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
-			{ vec4(-1, -1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
-			{ vec4( 0, -1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
-		},  { 0, 1, 2, 3 }
-	};
-
-	Matl matl =
-	{
+	Matl matl = {
 		{ "Sprite" },
 		{ { "Resources/DK.png", GL_RGBA } },
 	};
-
-	wnd::bind(w0, matl, mesh, GL_QUADS);
-
-	while (true)
+	Mesh mesh =
 	{
-		mesh = mesh1;
-		mesh = mesh2;
+		{
+			{ vec4(0, 0, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1) },
+			{ vec4(1, 0, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1) },
+			{ vec4(1, 1, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1) },
+			{ vec4(0, 1, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1) },
+		},  { 0, 1, 2, 3 }
+	};
+
+	wnd::bind(r, w0, matl, mesh, GL_QUADS);
+
+	input::open(w0);
+	input::open(w1);
+	input::open(w2);
+
+	input::next();
+
+	input::bind([]()
+		{
+			std::cout << "Test1" << std::endl;
+
+			return false;
+		}, []()
+		{
+			std::cout << "Test2" << std::endl;
+
+			return false;
+		}, GLFW_MOUSE_BUTTON_1, 0);
+
+	while (w0)
+	{
+		
 	};
 
 	close();

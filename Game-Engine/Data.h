@@ -28,4 +28,21 @@ namespace eng
 		std::vector<std::string> shader_files;
 		std::vector<std::pair<std::string, unsigned int>> texture_files;
 	};
+
+	struct Window;
+	struct alignas(64) RenderObj
+	{
+	protected:
+		friend struct Window;
+		RenderObj(Mesh& mesh, unsigned int draw_mode = 0x0007) :
+			mesh(&mesh), draw_mode(draw_mode)
+		{ };
+
+		virtual ~RenderObj()
+		{ mesh = nullptr; };
+
+		unsigned int shader=0, draw_mode=0;
+		std::vector<unsigned int> textures;
+		Mesh* mesh = nullptr;
+	};
 };

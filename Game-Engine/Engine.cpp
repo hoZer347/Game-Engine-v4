@@ -16,6 +16,8 @@ namespace eng
 
 	void open(bool debug)
 	{
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+		
 		stbi_set_flip_vertically_on_load(true);
 
 		if (debug)

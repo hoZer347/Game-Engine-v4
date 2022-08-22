@@ -12,11 +12,10 @@
 #include "stb_image.h"
 
 namespace eng {
-	class TextureManager {
-		static inline std::unordered_map<std::string, unsigned int> TEXS;
+	struct TextureManager {
+		std::unordered_map<std::string, unsigned int> TEXS;
 	
-	public:
-		static unsigned int create(std::string file_name, unsigned int type)
+		unsigned int create(std::string file_name, unsigned int type)
 		{
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -47,7 +46,7 @@ namespace eng {
 			return texture;
 		};
 
-		static std::vector<unsigned int> create(std::vector<std::pair<std::string, unsigned int>> texture_files)
+		std::vector<unsigned int> create(std::vector<std::pair<std::string, unsigned int>> texture_files)
 		{
 			std::vector<unsigned int> ret;
 

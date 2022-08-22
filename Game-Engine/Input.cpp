@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-static inline std::mutex mut;
-
 namespace eng
 {
 	union i_conv
@@ -22,49 +20,85 @@ namespace eng
 		_int16 input[4];
 	};
 
-	inline _int64 conv(_int16 binding, _int16 action, _int16 mods)
-	{
-		return i_conv({ .input = { binding, action, mods, 0 } }).index;
-	};
-
-	static inline std::stack<std::unordered_map<_int64, Task>> task_stack;
+	Thread* thread;
+	static inline std::stack<std::unordered_map<_int64, Task>> inputs;
 
 	namespace input
 	{
 		void open(Window* source)
 		{
-			static_cast<Thread*>((void*)source)->push([]()
+			thread = (Thread*)source;
+
+			((Thread*)source)->push([]()
 				{
 					GLFWwindow* window = glfwGetCurrentContext();
 
 					glfwSetMouseButtonCallback(window, [](GLFWwindow*, int binding, int action, int mods)
 						{
-							if (task_stack.empty())
-								return;
-
-							_int64 i = conv(binding, action, mods);
-
-							if (task_stack.top().count(i))
-								task_stack.top()[i];
+							invoke(binding, action, mods);
 						});
 
 					glfwSetKeyCallback(window, [](GLFWwindow*, int binding, int, int action, int mods)
 						{
-							
+							invoke(binding, action, mods);
 						});
+
+					return false;
+				});
+
+			// TODO: add on_update function here
+ 		};
+
+		void bind(Task task, int binding, int action, int mods)
+		{
+			thread->push([task, binding, action, mods]()
+				{
+					i_conv i = { .input = { (short)binding, (short)action, (short)mods, 0 } };
+
+					if (!inputs.empty())
+						inputs.top()[i.index] = task;
 
 					return false;
 				});
 		};
 
-		void close()
+		void bind(Task on_press, Task on_release, int binding, int mods)
 		{
-			
+			bind(on_press, binding, GLFW_PRESS, mods);
+			bind(on_release, binding, GLFW_RELEASE, mods);
 		};
 
-		void bind(Task task, int binding, int action, int mods)
+		void bind(Task on_hold, bool& flag, int binding, int mods)
 		{
-			
+			input::bind([&flag, on_hold]()
+				{
+					flag = true;
+
+					thread->push(on_hold);
+
+					return false;
+				}, [&flag]()
+				{
+					flag = false;
+
+					return false;
+				}, binding, mods);
+		};
+
+		void invoke(int binding, int action, int mods)
+		{
+			thread->push([binding, action, mods]()
+			{
+				if (!inputs.empty())
+				{
+					i_conv i = { .input = { (short)binding, (short)action, (short)mods, 0 } };
+
+					if (inputs.top().count(i.index))
+						inputs.top()[i.index]();
+				};
+
+				return false;
+			});
 		};
 
 		void set_interval(long long interval)
@@ -74,16 +108,23 @@ namespace eng
 
 		void next()
 		{
-			mut.lock();
-			task_stack.push({});
-			mut.unlock();
+			thread->push([]()
+			{
+				inputs.push({});
+
+				return false;
+			});
 		};
 
 		void prev()
 		{
-			mut.lock();
-			task_stack.pop();
-			mut.unlock();
+			thread->push([]()
+			{
+				if (!inputs.empty())
+					inputs.pop();
+
+				return false;
+			});
 		};
 	};
 };

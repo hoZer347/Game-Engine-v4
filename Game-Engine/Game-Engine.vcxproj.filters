@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Window.cpp">
-      <Filter>Engine\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -14,12 +11,12 @@
     <ClCompile Include="Text.cpp">
       <Filter>Engine\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Engine\UI</Filter>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Debug">
@@ -36,9 +33,6 @@
     </Filter>
     <Filter Include="Engine\Thread">
       <UniqueIdentifier>{701e2fe2-de6e-42d3-ae1f-dc89bc06d25b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\UI">
-      <UniqueIdentifier>{65deabb6-dcf1-4643-a42e-8dae98e182b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,8 +54,8 @@
     <ClInclude Include="Thread.h">
       <Filter>Engine\Thread</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.h">
-      <Filter>Engine\UI</Filter>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

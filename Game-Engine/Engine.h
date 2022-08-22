@@ -15,6 +15,9 @@ namespace eng
 
 	struct Matl;
 	struct Mesh;
+	
+	struct Camera;
+
 	struct RenderObj;
 
 	namespace wnd
@@ -22,7 +25,9 @@ namespace eng
 		Window* open(const char* title = "Title", int width = 640, int height = 640);
 		void close(Window* window);
 
-		void bind(Window* window, Matl& matl, Mesh& mesh, unsigned int draw_mode);
+		Camera& get_cam(Window* window);
+
+		void bind(RenderObj*& render_obj, Window* window, Matl& matl, Mesh& mesh, unsigned int draw_mode);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,10 +45,13 @@ namespace eng
 	namespace input
 	{
 		void open(Window* source);
-		void close();
-		
+
 		void set_interval(long long interval);
-		void bind(Task task, int binding=0, int action=1, int mods=0);
+		void invoke(int binding, int action, int mods);
+		void bind(Task task, int binding, int action, int mods);
+		void bind(Task on_press, Task on_release, int binding, int mods);
+		void bind(Task on_hold, bool& flag, int binding, int mods);
+		void bind(Task on_update, bool& flag, int mods);
 
 		void next();
 		void prev();

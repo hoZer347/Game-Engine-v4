@@ -8,17 +8,18 @@
 #include <thread>
 #include <mutex>
 
+#include <iostream>
+
 namespace eng
 {
 	typedef std::function<bool()> Task;
 
 	struct Thread
 	{
-		virtual ~Thread();
+		~Thread();
 
 		void push(Task task);
 		void push(Task* task);
-		virtual void on_kill() { };
 
 		static Thread* create();
 
