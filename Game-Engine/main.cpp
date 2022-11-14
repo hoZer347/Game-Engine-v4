@@ -17,82 +17,77 @@ using namespace glm;
 
 // Local Includes
 #include "Engine.h"
-#include "Thread.h"
-#include "Camera.h"
+#include "Renderables.h"
 #include "Data.h"
 using namespace eng;
 //
 
+// STB Image
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+//
+
+static inline std::atomic<int> _i = 0;
+
 int main()
 {
-	open();
+	auto w0 = Data<Window>::create();
+	auto t0 = Data<Thread>::create();
+	auto t1 = Data<Thread>::create();
+	auto t2 = Data<Thread>::create();
+	auto m0 = Data<Mesh>::create();
 
-	auto w0 = wnd::open();
-	auto w1 = wnd::open();
-	auto w2 = wnd::open();
-
-	RenderObj* r;
-
-	Matl matl = {
-		{ "Sprite" },
-		{ { "Resources/DK.png", GL_RGBA } },
-	};
-	Mesh mesh =
-	{
+	w0->assign([]()
 		{
-			{ vec4(0, 0, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1) },
-			{ vec4(1, 0, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1) },
-			{ vec4(1, 1, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1) },
-			{ vec4(0, 1, -5, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1) },
-		},  { 0, 1, 2, 3 }
-	};
-
-	wnd::bind(r, w0, matl, mesh, GL_QUADS);
-
-	input::open(w0);
-	input::open(w1);
-	input::open(w2);
-
-	input::next();
-
-	input::bind([]()
+			std::cout << _i++ << std::endl;
+		});
+	t0->assign([]()
 		{
-			std::cout << "Test1" << std::endl;
+			std::cout << _i++ << std::endl;
+		});
+	t1->assign([]()
+		{
+			std::cout << _i++ << std::endl;
+		});
+	t2->assign([]()
+		{
+			std::cout << _i++ << std::endl;
+		});
 
-			input::next();
-
-			input::bind([]()
+	Buffer<Mesh::r_Obj>::create();
+	Buffer<Mesh::r_Obj>::access([](auto vec)
+		{
+			vec[0]->vtxs =
+			{
 				{
-					std::cout << "Test2" << std::endl;
+					{ vec4(0, 0, 0, 1), vec4(1), vec4(1), vec4(0, 0, 0, 0), },
+					{ vec4(1, 0, 0, 1), vec4(1), vec4(1), vec4(1, 0, 0, 0), },
+					{ vec4(1, 1, 0, 1), vec4(1), vec4(1), vec4(1, 1, 0, 0), },
+					{ vec4(0, 1, 0, 1), vec4(1), vec4(1), vec4(0, 1, 0, 0), },
+				}
+			};
+			vec[0]->inds = { 0, 1, 2, 3 };
+		});
 
-					input::prev();
+	Sync<0, 4>::create({ w0, t0, t1, t2 });
 
-					return false;
-				}, GLFW_MOUSE_BUTTON_1, GLFW_RELEASE, 0);
+	m0->load(w0);
+	m0->load_shader({ "Sprite" });
+	m0->load_textures({ { "Resources/DK.png", GL_RGBA } });
 
-			return false;
-		}, GLFW_MOUSE_BUTTON_1, GLFW_PRESS, 0);
+	std::cout << "Test1" << std::endl;
+	w0.reset();
+	std::cout << "Test2" << std::endl;
+	t0.reset();
+	std::cout << "Test3" << std::endl;
+	t1.reset();
+	std::cout << "Test4" << std::endl;
+	t2.reset();
+	std::cout << "Test5" << std::endl;
 
-	input::bind([w0]()
-		{
-			GLFWwindow* window = glfwGetCurrentContext();
+	while (w0 && t0 && t1 && t2);
 
-			Camera& cam = wnd::get_cam(w0);
-
-			if (glfwGetKey(window, GLFW_KEY_W)) cam.trns					*= translate(vec3(0, 0,  0.001));
-			if (glfwGetKey(window, GLFW_KEY_S)) cam.trns					*= translate(vec3(0, 0, -0.001));
-			if (glfwGetKey(window, GLFW_KEY_A)) cam.trns					*= translate(vec3( 0.001, 0, 0));
-			if (glfwGetKey(window, GLFW_KEY_D)) cam.trns					*= translate(vec3(-0.001, 0, 0));
-			if (glfwGetKey(window, GLFW_KEY_SPACE)) cam.trns				*= translate(vec3(0, -0.001, 0));
-			if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT)) cam.trns			*= translate(vec3(0,  0.001, 0));
-
-		}, 0);
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-	join();
-
-	close();
+	//while (!w0->get_kill());
 
 	return 0;
 };

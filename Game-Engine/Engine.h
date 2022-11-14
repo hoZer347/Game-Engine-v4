@@ -1,81 +1,152 @@
 #pragma once
 
+#include "Data.h"
+
+#include <mutex>
+#include <queue>
+#include <vector>
+#include <thread>
+#include <memory>
+#include <barrier>
 #include <functional>
+
+#include <iostream>
+
+struct GLFWwindow;
+
+#define print(...) std::cout << __VA_ARGS__ << std::endl;
 
 namespace eng
 {
-	// Return type is whether or not to delete after invocation
-	typedef std::function<bool()> Task;
+	typedef std::shared_ptr<std::function<void()>> Task;
+	#define create_task(task) std::make_shared<std::function<void()>>(task)
 
-	// Same as Task, but does not return a value
-	typedef std::function<void()> Func;
+	struct TextureManager;
+	struct ShaderManager;
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Window.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	struct Window;
-
-	struct Matl;
-	struct Mesh;
-	
 	struct Camera;
 
-	struct RenderObj;
-
-	namespace wnd
+	struct Thread
 	{
-		Window* open(const char* title = "Title", int width = 640, int height = 640);
-		void close(Window* window);
+		virtual ~Thread();
 
-		Camera& get_cam(Window* window);
+		void push(Task task);
+		void assign(Task task);
+		void assign_on_kill(Task task);
 
-		void bind(RenderObj*& render_obj, Window* window, Matl& matl, Mesh& mesh, unsigned int draw_mode);
-	};
+		void push(std::function<void()> task);
+		void assign(std::function<void()> task);
+		void assign_on_kill(std::function<void()> task);
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Window.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		void modify(std::function<void(std::vector<Task>&)> vec_func);
 		
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Input.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+		void clean();
 
-	namespace input
-	{
-		void open(Window* source);
+		bool get_kill() { return KILL; };
 
-		void set_interval(long long interval);
-		void invoke(int binding, int action, int mods);
-		void bind(Task task, int binding, int action, int mods);
-		void bind(Task on_press, Task on_release, int binding, int mods);
-		void bind(Task on_hold, bool& flag, int binding, int mods);
-		void bind(Func on_update, int mods);
+	protected:
+		friend struct Data<Thread>;
+		Thread();
 
-		void set_use_mods(bool b=false);
+		bool				KILL = false;
+		std::thread			thread;
 
-		void next();
-		void prev();
+	private:
+		std::mutex			mut;
+
+		std::queue<Task>	singletons;
+		std::vector<Task>	on_kill;
+		std::vector<Task>	tasks;
 	};
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Input.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	struct Window : public Thread
+	{
+		virtual ~Window();
 
+		void load_shader(std::vector<std::string> file_names, unsigned int& shader);
+		void load_textures(std::vector<std::pair<std::string, unsigned int>> file_names, std::vector<unsigned int>& textures);
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Engine.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
+	protected:
+		friend struct Data<Window>;
+		Window();
 
-	void open(bool debug=false);
-	void join();
+	private:
+		std::shared_ptr<TextureManager>	t_mgr;
+		std::shared_ptr<ShaderManager>	s_mgr;
+		std::shared_ptr<Camera>			camera;
+
+		unsigned int	_vtxs=0, _inds=0;
+		GLFWwindow*		glfw_window	= nullptr;
+	};
+
+	template <size_t ID, size_t SIZE>
+	struct Sync
+	{
+		
+		// Syncs together a number of threads, return the task they use to do so
+		// delete the returned task to stop the syncing
+		static inline Task create(
+			std::vector<std::shared_ptr<Thread>> threads,
+			bool pauseable = false)
+		{
+			Task ret;
+
+			threads[0]->assign_on_kill([]()
+				{
+					Sync<ID, SIZE>::task.reset();
+				});
+
+			if (pauseable)
+				ret = std::make_shared<std::function<void()>>([]()
+					{
+						Sync<ID, SIZE>::bar.arrive_and_wait();
+						while (Sync<ID, SIZE>::PAUSE);
+					});
+			else
+				ret = std::make_shared<std::function<void()>>([]()
+					{
+						Sync<ID, SIZE>::bar.arrive_and_wait();
+					});
+			
+			for (auto& thread : threads)
+				thread->assign(ret);
+
+			return ret;
+		};
+
+		// Set the task to run at the start of every cycle
+		static inline void set_task(Task t)
+		{
+			mut.lock();
+			task = t;
+			mut.unlock();
+		};
+
+		// Resume the threads
+		static inline void play()
+		{
+			PAUSE = false;
+		}
+
+		// Pause the threads
+		static inline void pause()
+		{
+			PAUSE = true;
+		}
+
+	private:
+		static inline std::atomic<bool>	PAUSE = true;
+		static inline Task				task = create_task([]() {});
+		static inline std::mutex		mut;
+		static inline std::barrier		bar = std::barrier(SIZE, []() noexcept
+			{
+				Sync<ID, SIZE>::mut.lock();
+				(*Sync<ID, SIZE>::task)();
+				Sync<ID, SIZE>::mut.unlock();
+			});
+		Sync() { };
+	};
+
+	void start();
 	void close();
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Engine.cpp //
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-
 };

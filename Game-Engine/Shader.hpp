@@ -13,7 +13,6 @@
 
 namespace eng {
     struct ShaderManager {
-    private:
         std::unordered_map<std::string, unsigned int> shaders;
         std::unordered_map<std::string, unsigned int> programs;
 
@@ -43,7 +42,6 @@ namespace eng {
             };
         };
 
-    public:
         unsigned int create(std::vector<std::string> file_names)
         {
             if (file_names.size() == 1)
@@ -91,7 +89,7 @@ namespace eng {
             load_shader(f + ".eval", GL_TESS_EVALUATION_SHADER, program);
 
             glLinkProgram(program);
-
+            
             return shaders[f] = program;
         };
     };

@@ -1,6 +1,9 @@
-#include "Engine.h"
 #include "Camera.h"
-#include "Thread.h"
+
+#include "Engine.h"
+
+#include <GLEW/glew.h>
+#include <GLFW/glfw3.h>
 
 namespace eng
 {
@@ -26,14 +29,5 @@ namespace eng
 		glUniformMatrix4fv(6, 1, GL_FALSE, &roll[0][0]);
 		glUniformMatrix4fv(7, 1, GL_FALSE, &ptch[0][0]);
 		glUniformMatrix4fv(8, 1, GL_FALSE, &yaww[0][0]);
-
-		vec4 buh = vec4(1, 0, 0, 1);
-
-		glUniform4fv(9, 1, &buh[0]);
-	};
-
-	namespace cam
-	{
-		
 	};
 };

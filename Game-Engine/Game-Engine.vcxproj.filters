@@ -1,22 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Data.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Thread.cpp">
-      <Filter>Engine\Thread</Filter>
-    </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>Engine\Rendering</Filter>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Renderables.cpp">
+      <Filter>Engine\Renderables</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Rendering</Filter>
+      <Filter>Engine\Features</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="Data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Debug">
@@ -25,14 +22,17 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{0f587ed5-6e1f-4550-a9b9-d702c086708f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Rendering">
-      <UniqueIdentifier>{88233da3-b18b-4838-9963-b86f7a083ab0}</UniqueIdentifier>
+    <Filter Include="Game">
+      <UniqueIdentifier>{3a4c3b07-ca94-425a-ac95-3b1306039f03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Rendering\Shader">
+    <Filter Include="Engine\Shader">
       <UniqueIdentifier>{6accf122-c4b9-4b2f-8067-d6d495ad69d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Thread">
-      <UniqueIdentifier>{701e2fe2-de6e-42d3-ae1f-dc89bc06d25b}</UniqueIdentifier>
+    <Filter Include="Engine\Features">
+      <UniqueIdentifier>{9ce6d07c-ced6-40c1-bc44-86c7464f0ff4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Renderables">
+      <UniqueIdentifier>{7fc117d2-720a-4d30-aa2d-6f059f25afcc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,38 +40,38 @@
       <Filter>Debug</Filter>
     </ClInclude>
     <ClInclude Include="Texture.hpp">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Shader.hpp">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Engine\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread.h">
-      <Filter>Engine\Thread</Filter>
+    <ClInclude Include="Renderables.h">
+      <Filter>Engine\Renderables</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>Engine\Rendering</Filter>
+      <Filter>Engine\Features</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Sprite.frag">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
     </None>
     <None Include="Sprite.vert">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
     </None>
     <None Include="Text.vert">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Text.frag">
-      <Filter>Engine\Rendering\Shader</Filter>
+      <Filter>Engine\Shader</Filter>
     </Text>
   </ItemGroup>
 </Project>
