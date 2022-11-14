@@ -7,7 +7,6 @@
 #include <vector>
 #include <thread>
 #include <memory>
-#include <barrier>
 #include <functional>
 
 #include <iostream>
@@ -18,8 +17,8 @@ struct GLFWwindow;
 
 namespace eng
 {
-	typedef std::shared_ptr<std::function<void()>> Task;
-	#define create_task(task) std::make_shared<std::function<void()>>(task)
+	typedef std::shared_ptr<std::function<bool()>> Task;
+	#define create_task(task) std::make_shared<std::function<bool()>>(task)
 
 	struct TextureManager;
 	struct ShaderManager;
@@ -30,16 +29,14 @@ namespace eng
 	{
 		virtual ~Thread();
 
-		void push(Task task);
 		void assign(Task task);
 		void assign_on_kill(Task task);
 
-		void push(std::function<void()> task);
-		void assign(std::function<void()> task);
-		void assign_on_kill(std::function<void()> task);
+		void assign(std::function<bool()> task);
+		void assign_on_kill(std::function<bool()> task);
 
 		void modify(std::function<void(std::vector<Task>&)> vec_func);
-		
+
 		void clean();
 
 		bool get_kill() { return KILL; };
@@ -54,7 +51,6 @@ namespace eng
 	private:
 		std::mutex			mut;
 
-		std::queue<Task>	singletons;
 		std::vector<Task>	on_kill;
 		std::vector<Task>	tasks;
 	};
@@ -82,68 +78,41 @@ namespace eng
 	template <size_t ID, size_t SIZE>
 	struct Sync
 	{
-		
-		// Syncs together a number of threads, return the task they use to do so
-		// delete the returned task to stop the syncing
-		static inline Task create(
-			std::vector<std::shared_ptr<Thread>> threads,
-			bool pauseable = false)
+		static void sync(std::vector<std::shared_ptr<Thread>> threads)
 		{
-			Task ret;
-
-			threads[0]->assign_on_kill([]()
-				{
-					Sync<ID, SIZE>::task.reset();
-				});
-
-			if (pauseable)
-				ret = std::make_shared<std::function<void()>>([]()
-					{
-						Sync<ID, SIZE>::bar.arrive_and_wait();
-						while (Sync<ID, SIZE>::PAUSE);
-					});
-			else
-				ret = std::make_shared<std::function<void()>>([]()
-					{
-						Sync<ID, SIZE>::bar.arrive_and_wait();
-					});
-			
 			for (auto& thread : threads)
-				thread->assign(ret);
+				thread->assign([]()
+					{
+						if (count >= 0)
+						{
+							count++;
+							while (count < SIZE || PAUSE);
+							count--;
+						};
 
-			return ret;
+						return true;
+					});
 		};
 
-		// Set the task to run at the start of every cycle
-		static inline void set_task(Task t)
+		static void desync()
 		{
-			mut.lock();
-			task = t;
-			mut.unlock();
+			count = -1;
 		};
 
-		// Resume the threads
-		static inline void play()
-		{
-			PAUSE = false;
-		}
-
-		// Pause the threads
-		static inline void pause()
+		static void pause(bool wait = false)
 		{
 			PAUSE = true;
-		}
+			while (wait && !(count < SIZE));
+		};
+
+		static void play()
+		{
+			PAUSE = false;
+		};
 
 	private:
-		static inline std::atomic<bool>	PAUSE = true;
-		static inline Task				task = create_task([]() {});
-		static inline std::mutex		mut;
-		static inline std::barrier		bar = std::barrier(SIZE, []() noexcept
-			{
-				Sync<ID, SIZE>::mut.lock();
-				(*Sync<ID, SIZE>::task)();
-				Sync<ID, SIZE>::mut.unlock();
-			});
+		static inline std::atomic<int>	count = 0;
+		static inline std::atomic<bool>	PAUSE = false;
 		Sync() { };
 	};
 

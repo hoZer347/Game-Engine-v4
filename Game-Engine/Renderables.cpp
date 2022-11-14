@@ -20,52 +20,70 @@ namespace eng
 		window->load_textures(file_names, texs);
 	};
 
-	Mesh::Mesh()
-	{ };
-
-	void Mesh::load(std::shared_ptr<Window> window)
+	void Renderable::load(std::shared_ptr<Window> window)
 	{
-		this->window = window;
+		Renderable::window = window;
 
-		window->assign([this]()
+		window->assign([]()
 			{
-				glUseProgram(shader);
+				auto& m_vec = Buffer<Mesh>::view_vec();
 
-				for (auto& tex : texs)
-					glBindTexture(GL_TEXTURE_2D, tex);
+				for (auto i = 0; i < m_vec.size(); i++)
+					m_vec[0]->render();
 
-				auto& vec = Buffer<Mesh::r_Obj>::view_vec();
-
-				for (auto i = 0; i < vec.size(); i++)
-				{
-					glBufferData(
-						GL_ARRAY_BUFFER,
-						vec[i]->vtxs.size() * sizeof(Vtx),
-						vec[i]->vtxs.data(),
-						GL_DYNAMIC_DRAW);
-
-					glBufferData(
-						GL_ELEMENT_ARRAY_BUFFER,
-						vec[i]->inds.size() * sizeof(unsigned int),
-						vec[i]->inds.data(),
-						GL_STATIC_DRAW);
-						glDrawElements(draw_mode, (GLsizei)vec[i]->inds.size(), GL_UNSIGNED_INT, nullptr);
-				};
-
-				for (auto& tex : texs)
-					glBindTexture(GL_TEXTURE_2D, 0);
+				return should_draw.load();
 			});
 	};
 
-	Sprite::Sprite()
+	void Mesh::render()
 	{
-		
+		glUseProgram(shader);
+
+		for (auto& tex : texs)
+			glBindTexture(GL_TEXTURE_2D, tex);
+
+		glBufferData(
+			GL_ARRAY_BUFFER,
+			vtxs.size() * sizeof(Vtx),
+			vtxs.data(),
+			GL_DYNAMIC_DRAW);
+
+		glBufferData(
+			GL_ELEMENT_ARRAY_BUFFER,
+			inds.size() * sizeof(unsigned int),
+			inds.data(),
+			GL_STATIC_DRAW);
+
+		glDrawElements(draw_mode, (GLsizei)inds.size(), GL_UNSIGNED_INT, nullptr);
+
+		for (auto& tex : texs)
+			glBindTexture(GL_TEXTURE_2D, 0);
 	};
 
-	void Sprite::load(std::shared_ptr<Window> window)
+	void Mesh::test()
 	{
-		this->window = window;
+		auto w0 = Data<Window>::create();
 
+		Buffer<Mesh>::create();
+		Buffer<Mesh>::access([w0](auto vec)
+			{
+				vec[0]->vtxs =
+				{
+					{
+						{ vec4(0, 0, 0, 1), vec4(1), vec4(1), vec4(0, 0, 0, 0), },
+						{ vec4(1, 0, 0, 1), vec4(1), vec4(1), vec4(1, 0, 0, 0), },
+						{ vec4(1, 1, 0, 1), vec4(1), vec4(1), vec4(1, 1, 0, 0), },
+						{ vec4(0, 1, 0, 1), vec4(1), vec4(1), vec4(0, 1, 0, 0), },
+					}
+				};
+				vec[0]->inds = { 0, 1, 2, 3 };
 
+				vec[0]->load(w0);
+				vec[0]->load_shader({ "Sprite" });
+				vec[0]->load_textures({ { "Resources/DK.png", GL_RGBA } });
+			});
+		Buffer<Mesh>::swap();
+
+		while (!w0->get_kill());
 	};
 };

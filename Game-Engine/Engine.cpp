@@ -26,16 +26,13 @@ namespace eng
 			{
 				while (!KILL)
 				{
-					while (!singletons.empty() && !KILL)
-					{
-						if (singletons.front())
-							(*singletons.front())();
-						singletons.pop();
-					};
-
+					mut.lock();
+					
 					for (auto& t : tasks)
-						if (t)
-							(*t)();
+						if (t && !(*t)())
+							t = nullptr;
+
+					mut.unlock();
 				};
 
 				for (auto& t : on_kill)
@@ -48,39 +45,21 @@ namespace eng
 	{
 		KILL = true;
 
-		std::cout << "Buh" << std::endl;
-
 		if (thread.joinable())
 			thread.join();
-
-		std::cout << "Test" << std::endl;
 	};
 
-	void Thread::push(std::function<void()> task)
+	void Thread::assign(std::function<bool()> task)
 	{
 		mut.lock();
-		singletons.push(std::make_shared<std::function<void()>>(task));
-		mut.unlock();
-	};
-	
-	void Thread::assign(std::function<void()> task)
-	{
-		mut.lock();
-		tasks.push_back(std::make_shared<std::function<void()>>(task));
+		tasks.push_back(std::make_shared<std::function<bool()>>(task));
 		mut.unlock();
 	};
 
-	void Thread::assign_on_kill(std::function<void()> task)
+	void Thread::assign_on_kill(std::function<bool()> task)
 	{
 		mut.lock();
-		on_kill.push_back(std::make_shared<std::function<void()>>(task));
-		mut.unlock();
-	};
-
-	void Thread::push(Task task)
-	{
-		mut.lock();
-		singletons.push(task);
+		on_kill.push_back(std::make_shared<std::function<bool()>>(task));
 		mut.unlock();
 	};
 
@@ -124,7 +103,7 @@ namespace eng
 		t_mgr(std::make_shared<TextureManager>()),
 		camera(std::make_unique<Camera>())
 	{
-		push([this]()
+		assign([this]()
 			{
 				create_window_one_at_a_time.lock();
 				
@@ -185,6 +164,8 @@ namespace eng
 				glEnableVertexAttribArray(1);
 				glEnableVertexAttribArray(2);
 				glEnableVertexAttribArray(3);
+
+				return false;
 			});
 
 		assign([this]()
@@ -202,11 +183,15 @@ namespace eng
 
 					glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 				}
+
+				return true;
 			});
 
 		assign_on_kill([this]()
 			{
 				glfwDestroyWindow(glfw_window);
+
+				return false;
 			});
 	};
 	
@@ -217,30 +202,24 @@ namespace eng
 
 	void Window::load_shader(std::vector<std::string> file_names, unsigned int& shader)
 	{
-		bool b = false;
-
-		push([this, &b, file_names, &shader]()
+		assign([this, file_names, &shader]()
 			{
 				shader = s_mgr->create(file_names);
 
-				b = true;
+				return false;
 			});
-
-		while (!b);
 	};
 
 	void Window::load_textures(std::vector<std::pair<std::string, unsigned int>> file_names, std::vector<unsigned int>& textures)
 	{
-		bool b = false;
-
-		push([this, &b, file_names, &textures]()
+		assign([this, file_names, &textures]()
 			{
-				textures = t_mgr->create(file_names);
+				auto vec = t_mgr->create(file_names);
 
-				b = true;
+				textures.insert(textures.end(), vec.begin(), vec.end());
+
+				return false;
 			});
-
-		while (!b);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////

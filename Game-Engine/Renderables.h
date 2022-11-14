@@ -19,43 +19,41 @@ namespace eng
 	{
 		void load_shader(std::vector<std::string> file_names);
 		void load_textures(std::vector<std::pair<std::string, unsigned int>> file_names);
-		virtual void load(std::shared_ptr<Window> window)=0;
+		static void load(std::shared_ptr<Window> window);
+		virtual void render()=0;
 
-		struct alignas(64) Vtx
-		{
-			vec4 data[4];
-		};
+		struct alignas(64) Vtx { vec4 data[4]; };
 
-		struct r_Obj
-		{
-			std::vector<Vtx>			vtxs;
-			std::vector<unsigned int>	inds;
-		};
-
+		std::vector<Vtx>			vtxs;
+		std::vector<unsigned int>	inds;
 		std::vector<unsigned int>	texs;
 
 		unsigned int
 			shader = 0,
 			draw_mode = 0x0007;
 
-		std::shared_ptr<Window> window;
+	protected:
+		static inline std::atomic<bool> should_draw = true;
+		static inline std::shared_ptr<Window> window;
 	};
 
 	struct Mesh : public Renderable
 	{
-		void load(std::shared_ptr<Window> window);
+		void render() override;
+
+		static void test();
 
 	protected:
 		friend struct Data<Mesh>;
-		Mesh();
+		friend struct Buffer<Mesh>;
+		Mesh() { };
 	};
 
 	struct Sprite : public Renderable
 	{
-		void load(std::shared_ptr<Window> window);
-
 	protected:
-		friend struct Data<Sprite>;
-		Sprite();
+		friend struct Data<Mesh>;
+		friend struct Buffer<Mesh>;
+		Sprite() { };
 	};
 };
