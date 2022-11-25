@@ -230,15 +230,16 @@ namespace eng
 
 	void start()
 	{
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 		stbi_set_flip_vertically_on_load(true);
 	};
 
 	void close()
 	{
-		Data<Thread>::access([](auto vec)
+		Data<Thread>::access([](auto& i)
 			{
-				for (auto& i : vec)
-					i.reset();
+				i.reset();
 			});
 		glfwTerminate();
 	};

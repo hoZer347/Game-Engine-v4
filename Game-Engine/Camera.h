@@ -25,7 +25,7 @@ namespace eng
 				ptch	= mat4(1),
 				yaww	= mat4(1);
 
-		vec3	eye		= vec3(0, 0, 1),
+		vec3	eye		= vec3(0, 0, 5),
 				ctr		= vec3(0),
 				up		= vec3(0, 1, 0);
 

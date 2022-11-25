@@ -26,10 +26,10 @@ namespace eng
 
 		window->assign([]()
 			{
-				auto& m_vec = Buffer<Mesh>::view_vec();
-
-				for (auto i = 0; i < m_vec.size(); i++)
-					m_vec[0]->render();
+				Buffer<Mesh>::view([](const auto& i)
+				{
+					i->render();
+				});
 
 				return should_draw.load();
 			});
@@ -65,15 +65,15 @@ namespace eng
 		auto w0 = Data<Window>::create();
 
 		Buffer<Mesh>::create();
-		Buffer<Mesh>::access([w0](auto vec)
+		Buffer<Mesh>::modify([w0](auto vec)
 			{
 				vec[0]->vtxs =
 				{
 					{
-						{ vec4(0, 0, 0, 1), vec4(1), vec4(1), vec4(0, 0, 0, 0), },
-						{ vec4(1, 0, 0, 1), vec4(1), vec4(1), vec4(1, 0, 0, 0), },
-						{ vec4(1, 1, 0, 1), vec4(1), vec4(1), vec4(1, 1, 0, 0), },
-						{ vec4(0, 1, 0, 1), vec4(1), vec4(1), vec4(0, 1, 0, 0), },
+						{ vec4(-1, -1, 0, 1), vec4(1), vec4(1), vec4(0, 0, 0, 0), },
+						{ vec4( 1, -1, 0, 1), vec4(1), vec4(1), vec4(1, 0, 0, 0), },
+						{ vec4( 1,  1, 0, 1), vec4(1), vec4(1), vec4(1, 1, 0, 0), },
+						{ vec4(-1,  1, 0, 1), vec4(1), vec4(1), vec4(0, 1, 0, 0), },
 					}
 				};
 				vec[0]->inds = { 0, 1, 2, 3 };

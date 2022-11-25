@@ -44,16 +44,7 @@ namespace eng
 		static void test();
 
 	protected:
-		friend struct Data<Mesh>;
 		friend struct Buffer<Mesh>;
 		Mesh() { };
-	};
-
-	struct Sprite : public Renderable
-	{
-	protected:
-		friend struct Data<Mesh>;
-		friend struct Buffer<Mesh>;
-		Sprite() { };
 	};
 };

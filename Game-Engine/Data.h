@@ -5,15 +5,14 @@
 #include <memory>
 #include <functional>
 
+// TODO: Include Memory Tracking
+
 namespace eng
 {
-	
 	// Creates and maintains a thread-safe data set in a vector
 	template <typename T, size_t ID=0>
-	struct Data : public std::shared_ptr<T>
+	struct Data
 	{
-	public:
-		
 		// Creates new object and returns its pointer
 		static std::shared_ptr<T> create()
 		{
@@ -42,11 +41,19 @@ namespace eng
 		};
 
 		// Access the memory vector inside this context using a lambda
-		// ProTip: sub out std::vector<std::shared_ptr<T>>& for "auto"
-		static void access(std::function<void(std::vector<std::shared_ptr<T>>&)> f)
+		static void modify(std::function<void(std::vector<std::shared_ptr<T>>&)> f)
 		{
 			Data<T, ID>::mut.lock();
 			f(Data<T, ID>::vec);
+			Data<T, ID>::mut.unlock();
+		};
+
+		// Iterates over memory vector, executes function over every element
+		static void access(std::function<void(std::shared_ptr<T>&)> f)
+		{
+			Data<T, ID>::mut.lock();
+			for (auto& i : vec)
+				f(i);
 			Data<T, ID>::mut.unlock();
 		};
 
@@ -70,6 +77,7 @@ namespace eng
 		static inline std::vector<std::shared_ptr<T>>	vec;
 	};
 
+	// Duplicates memory for safe parallel rendering and updating
 	template <typename T, size_t ID=0>
 	struct Buffer
 	{
@@ -88,21 +96,29 @@ namespace eng
 			mut.unlock();
 		};
 
-		// Gives access the the immuteable vector
-		static const std::vector<std::shared_ptr<T>>& view_vec()
-		{
-			mut.lock();
-			const std::vector<std::shared_ptr<T>>& ret = immuteable;
-			mut.unlock();
-
-			return ret;
-		};
-
 		// Executes a function over the muteable vector
-		static void access(std::function<void(std::vector<std::shared_ptr<T>>&)> f)
+		static void modify(std::function<void(std::vector<std::shared_ptr<T>>&)> f)
 		{
 			mut.lock();
 			f(muteable);
+			mut.unlock();
+		};
+
+		// Executes a function over every element in the muteable vector
+		static void access(std::function<void(std::shared_ptr<T>&)> f)
+		{
+			mut.lock();
+			for (auto& i : muteable)
+				f(i);
+			mut.unlock();
+		};
+
+		// Executes a function over every element in the immuteable vector
+		static void view(std::function<void(const std::shared_ptr<T>&)> f)
+		{
+			mut.lock();
+			for (auto& i : immuteable)
+				f(i);
 			mut.unlock();
 		};
 
