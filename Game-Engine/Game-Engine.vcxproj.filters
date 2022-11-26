@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Data.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -14,7 +11,18 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Features</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Input.cpp">
+      <Filter>Engine\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Engine\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="Task.cpp">
+      <Filter>Engine\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Debug">
@@ -37,17 +45,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Mem_Leak.h">
-      <Filter>Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.hpp">
       <Filter>Engine\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Shader.hpp">
       <Filter>Engine\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
@@ -58,7 +60,18 @@
     <ClInclude Include="Camera.h">
       <Filter>Engine\Features</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="Input.h">
+      <Filter>Engine\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Engine\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>Engine\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Sprite.frag">

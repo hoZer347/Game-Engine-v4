@@ -1,5 +1,5 @@
 // Debug
-#include "Mem_Leak.h"
+#define DEBUG
 //
 
 // OpenGL
@@ -31,7 +31,8 @@ int main()
 {
 	start();
 
-	Mesh::test();
+	Data<int>::create();
+	Data<int>::create(50);
 
 	close();
 

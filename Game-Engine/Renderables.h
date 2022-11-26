@@ -33,8 +33,8 @@ namespace eng
 			draw_mode = 0x0007;
 
 	protected:
-		static inline std::atomic<bool> should_draw = true;
-		static inline std::shared_ptr<Window> window;
+		static inline std::atomic<bool>			should_draw = true;
+		static inline std::shared_ptr<Window>	window;
 	};
 
 	struct Mesh : public Renderable

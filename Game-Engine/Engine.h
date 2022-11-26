@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Data.h"
+#include "Task.h"
 
 #include <mutex>
 #include <queue>
@@ -13,13 +14,8 @@
 
 struct GLFWwindow;
 
-#define print(...) std::cout << __VA_ARGS__ << std::endl;
-
 namespace eng
 {
-	typedef std::shared_ptr<std::function<bool()>> Task;
-	#define create_task(task) std::make_shared<std::function<bool()>>(task)
-
 	struct TextureManager;
 	struct ShaderManager;
 
@@ -39,7 +35,21 @@ namespace eng
 
 		void clean();
 
-		bool get_kill() { return KILL; };
+		inline bool get_kill() { return KILL; };
+
+		inline size_t size(bool ret_on_kill = false)
+		{
+			size_t ret;
+
+			mut.lock();
+			if (ret_on_kill)
+				ret = on_kill.size();
+			else
+				ret = tasks.size();
+			mut.unlock();
+
+			return ret;
+		};
 
 	protected:
 		friend struct Data<Thread>;

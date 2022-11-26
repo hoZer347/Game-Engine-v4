@@ -5,7 +5,26 @@
 #include <memory>
 #include <functional>
 
-// TODO: Include Memory Tracking
+#ifdef DEBUG
+#define DEBUG_MODE 1
+
+#include <iostream>
+
+namespace eng
+{
+	
+};
+
+#define LOG_CREATE(x) std::cout << "Created " << typeid(T).name() << ": " << x << std::endl
+#define LOG_CREATES(x) std::cout << "Created " << (size_t)x << " of " << typeid(T).name() << std::endl
+
+#else
+#define DEBUG_MODE 0
+#define DEBUG_TRACK
+
+#define LOG_CREATE(x)
+
+#endif
 
 namespace eng
 {
@@ -19,6 +38,7 @@ namespace eng
 			Data<T, ID>::mut.lock();
 			Data<T, ID>::vec.emplace_back(new T());
 			std::shared_ptr<T> ret = std::shared_ptr<T>(Data<T, ID>::vec.back());
+			LOG_CREATE(ret);
 			Data<T, ID>::mut.unlock();
 
 			return ret;
@@ -35,6 +55,7 @@ namespace eng
 			for (; amount > 0; amount--)
 				Data<T, ID>::vec.emplace_back(new T());
 
+			LOG_CREATES(amount);
 			Data<T, ID>::mut.unlock();
 
 			return ret;
@@ -62,15 +83,13 @@ namespace eng
 		{
 			size_t ret=0;
 			Data<T, ID>::mut.lock();
-			for (auto i : Data<T, ID>::vec)
-				if (i)
-					ret++;
+			ret = vec.size();
 			Data<T, ID>::mut.unlock();
 
 			return ret;
 		};
 
-	protected:
+	private:
 		Data() { };
 
 		static inline std::mutex						mut;
@@ -131,7 +150,9 @@ namespace eng
 		};
 
 	private:
-		static inline std::mutex mut;
-		static inline std::vector<std::shared_ptr<T>> muteable, immuteable;
+		Buffer() { };
+
+		static inline std::mutex						mut;
+		static inline std::vector<std::shared_ptr<T>>	muteable, immuteable;
 	};
 };

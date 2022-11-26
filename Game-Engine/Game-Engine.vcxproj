@@ -145,19 +145,22 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderables.cpp" />
+    <ClCompile Include="Task.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Mem_Leak.h" />
     <ClInclude Include="Renderables.h" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="Task.h" />
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <ItemGroup>
