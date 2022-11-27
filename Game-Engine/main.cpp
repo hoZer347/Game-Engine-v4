@@ -1,7 +1,3 @@
-// Debug
-#define DEBUG
-//
-
 // OpenGL
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
@@ -16,6 +12,8 @@ using namespace glm;
 //
 
 // Local Includes
+#define LOG_DATA_CREATE
+
 #include "Engine.h"
 #include "Renderables.h"
 #include "Data.h"
@@ -31,8 +29,11 @@ int main()
 {
 	start();
 
+	
+
 	Data<int>::create();
 	Data<int>::create(50);
+	Buffer<int>::create(50);
 
 	close();
 

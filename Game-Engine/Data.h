@@ -5,25 +5,14 @@
 #include <memory>
 #include <functional>
 
-#ifdef DEBUG
-#define DEBUG_MODE 1
-
 #include <iostream>
 
-namespace eng
-{
-	
-};
-
+#ifdef LOG_DATA_CREATE
 #define LOG_CREATE(x) std::cout << "Created " << typeid(T).name() << ": " << x << std::endl
-#define LOG_CREATES(x) std::cout << "Created " << (size_t)x << " of " << typeid(T).name() << std::endl
-
+#define LOG_CREATES(x) std::cout << "Created " << x << " of " << typeid(T).name() << std::endl
 #else
-#define DEBUG_MODE 0
-#define DEBUG_TRACK
-
 #define LOG_CREATE(x)
-
+#define LOG_CREATES(x)
 #endif
 
 namespace eng
@@ -35,9 +24,10 @@ namespace eng
 		// Creates new object and returns its pointer
 		static std::shared_ptr<T> create()
 		{
-			Data<T, ID>::mut.lock();
+			Data<T, ID>::mut.lock();	
 			Data<T, ID>::vec.emplace_back(new T());
 			std::shared_ptr<T> ret = std::shared_ptr<T>(Data<T, ID>::vec.back());
+			
 			LOG_CREATE(ret);
 			Data<T, ID>::mut.unlock();
 
@@ -48,14 +38,15 @@ namespace eng
 		static size_t create(size_t amount)
 		{
 			Data<T, ID>::mut.lock();
+
 			Data<T, ID>::vec.reserve(amount);
+			LOG_CREATES(amount);
 
 			size_t ret = Data<T, ID>::vec.size();
 
 			for (; amount > 0; amount--)
 				Data<T, ID>::vec.emplace_back(new T());
 
-			LOG_CREATES(amount);
 			Data<T, ID>::mut.unlock();
 
 			return ret;
@@ -105,7 +96,9 @@ namespace eng
 		{
 			mut.lock();
 			muteable.reserve(amount);
+			LOG_CREATES(amount);
 			immuteable.reserve(amount);
+			LOG_CREATES(amount);
 
 			for (; amount > 0; amount--)
 			{
