@@ -53,6 +53,7 @@ namespace eng
 		std::thread							thread;
 
 	private:
+		std::atomic<size_t>					num_procs;
 		std::mutex							mut;
 		std::vector<std::shared_ptr<Task>>	tasks;
 	};

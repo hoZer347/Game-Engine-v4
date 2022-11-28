@@ -31,6 +31,7 @@ namespace eng
 						if (task && !(*task)())
 							task = nullptr;
 					mut.unlock();
+					while (num_procs);
 				};
 			});
 	};
@@ -45,15 +46,19 @@ namespace eng
 
 	void Thread::assign(Task task)
 	{
+		num_procs++;
 		mut.lock();
 		tasks.emplace_back(new Task(task));
+		num_procs--;
 		mut.unlock();
 	};
 
 	void Thread::modify(std::function<void(std::vector<std::shared_ptr<Task>>&)> vec_func)
 	{
+		num_procs++;
 		mut.lock();
 		vec_func(tasks);
+		num_procs--;
 		mut.unlock();
 	};
 
