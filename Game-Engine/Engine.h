@@ -28,8 +28,7 @@ namespace eng
 		void assign(Task task);
 
 		void kill() { KILL = true; }
-		void modify(std::function<void(std::vector<std::shared_ptr<Task>>&)> vec_func);
-
+		
 		void clean();
 
 		inline bool get_kill() { return KILL; };
