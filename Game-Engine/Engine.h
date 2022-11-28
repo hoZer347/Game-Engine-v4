@@ -26,12 +26,9 @@ namespace eng
 		virtual ~Thread();
 
 		void assign(Task task);
-		void assign_on_kill(Task task);
 
-		void assign(std::function<bool()> task);
-		void assign_on_kill(std::function<bool()> task);
-
-		void modify(std::function<void(std::vector<Task>&)> vec_func);
+		void kill() { KILL = true; }
+		void modify(std::function<void(std::vector<std::shared_ptr<Task>>&)> vec_func);
 
 		void clean();
 
@@ -42,10 +39,7 @@ namespace eng
 			size_t ret;
 
 			mut.lock();
-			if (ret_on_kill)
-				ret = on_kill.size();
-			else
-				ret = tasks.size();
+			ret = tasks.size();
 			mut.unlock();
 
 			return ret;
@@ -55,14 +49,12 @@ namespace eng
 		friend struct Data<Thread>;
 		Thread();
 
-		bool				KILL = false;
-		std::thread			thread;
+		std::atomic<bool>					KILL = false;
+		std::thread							thread;
 
 	private:
-		std::mutex			mut;
-
-		std::vector<Task>	on_kill;
-		std::vector<Task>	tasks;
+		std::mutex							mut;
+		std::vector<std::shared_ptr<Task>>	tasks;
 	};
 
 	struct Window : public Thread

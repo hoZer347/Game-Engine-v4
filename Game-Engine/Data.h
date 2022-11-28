@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#ifdef LOG_DATA_CREATE
+#ifdef LOG_DATA_CREATES
 #define LOG_CREATE(x) std::cout << "Created " << typeid(T).name() << ": " << x << std::endl
 #define LOG_CREATES(x) std::cout << "Created " << x << " of " << typeid(T).name() << std::endl
 #else
@@ -34,8 +34,8 @@ namespace eng
 			return ret;
 		};
 
-		// Creates new object(s) and returns its index in the memory vector
-		static size_t create(size_t amount)
+		// Creates new object(s) based on given args and returns its index in the memory vector
+		static size_t create(size_t amount, auto... args)
 		{
 			Data<T, ID>::mut.lock();
 
@@ -45,7 +45,7 @@ namespace eng
 			size_t ret = Data<T, ID>::vec.size();
 
 			for (; amount > 0; amount--)
-				Data<T, ID>::vec.emplace_back(new T());
+				Data<T, ID>::vec.emplace_back(new T(args...));
 
 			Data<T, ID>::mut.unlock();
 
@@ -74,7 +74,7 @@ namespace eng
 		{
 			size_t ret=0;
 			Data<T, ID>::mut.lock();
-			ret = vec.size();
+			ret = Data<T, ID>::vec.size();
 			Data<T, ID>::mut.unlock();
 
 			return ret;
@@ -91,61 +91,63 @@ namespace eng
 	template <typename T, size_t ID=0>
 	struct Buffer
 	{
-		// Creates an amount of objects (default 1)
-		static void create(size_t amount=1)
+		// Creates an amount of objects, with given args
+		static void create(size_t amount, auto... args)
 		{
-			mut.lock();
-			muteable.reserve(amount);
+			Buffer<T, ID>::mut1.lock();
+			Buffer<T, ID>::muteable.reserve(amount);
 			LOG_CREATES(amount);
-			immuteable.reserve(amount);
+			Buffer<T, ID>::immuteable.reserve(amount);
 			LOG_CREATES(amount);
 
 			for (; amount > 0; amount--)
 			{
-				muteable.emplace_back(new T());
-				immuteable.emplace_back(new T());
+				Buffer<T, ID>::muteable.emplace_back(new T(args...));
+				Buffer<T, ID>::immuteable.emplace_back(new T(args...));
 			};
-			mut.unlock();
+			Buffer<T, ID>::mut1.unlock();
 		};
 
 		// Executes a function over the muteable vector
 		static void modify(std::function<void(std::vector<std::shared_ptr<T>>&)> f)
 		{
-			mut.lock();
-			f(muteable);
-			mut.unlock();
+			Buffer<T, ID>::mut1.lock();
+			f(Buffer<T, ID>::muteable);
+			Buffer<T, ID>::mut1.unlock();
 		};
 
 		// Executes a function over every element in the muteable vector
 		static void access(std::function<void(std::shared_ptr<T>&)> f)
 		{
-			mut.lock();
-			for (auto& i : muteable)
+			Buffer<T, ID>::mut1.lock();
+			for (auto& i : Buffer<T, ID>::muteable)
 				f(i);
-			mut.unlock();
+			Buffer<T, ID>::mut1.unlock();
 		};
 
 		// Executes a function over every element in the immuteable vector
 		static void view(std::function<void(const std::shared_ptr<T>&)> f)
 		{
-			mut.lock();
-			for (auto& i : immuteable)
+			Buffer<T, ID>::mut2.lock();
+			for (auto& i : Buffer<T, ID>::immuteable)
 				f(i);
-			mut.unlock();
+			Buffer<T, ID>::mut2.unlock();
 		};
 
 		// Swaps the muteable and immutable vectors
 		static void swap()
 		{
-			mut.lock();
-			muteable.swap(immuteable);
-			mut.unlock();
+			Buffer<T, ID>::mut1.lock();
+			Buffer<T, ID>::mut2.lock();
+			Buffer<T, ID>::muteable.swap(Buffer<T, ID>::immuteable);
+			Buffer<T, ID>::mut2.unlock();
+			Buffer<T, ID>::mut1.unlock();
 		};
 
 	private:
 		Buffer() { };
 
-		static inline std::mutex						mut;
+		static inline std::mutex						mut1, mut2;
 		static inline std::vector<std::shared_ptr<T>>	muteable, immuteable;
 	};
 };

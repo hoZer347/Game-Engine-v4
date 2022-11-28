@@ -27,17 +27,11 @@ namespace eng
 				while (!KILL)
 				{
 					mut.lock();
-					
-					for (auto& t : tasks)
-						if (t && !(*t)())
-							t = nullptr;
-
+					for (auto& task : tasks)
+						if (task && !(*task)())
+							task = nullptr;
 					mut.unlock();
 				};
-
-				for (auto& t : on_kill)
-					if (t)
-						(*t)();
 			});
 	};
 
@@ -49,35 +43,14 @@ namespace eng
 			thread.join();
 	};
 
-	void Thread::assign(std::function<bool()> task)
-	{
-		mut.lock();
-		tasks.push_back(std::make_shared<std::function<bool()>>(task));
-		mut.unlock();
-	};
-
-	void Thread::assign_on_kill(std::function<bool()> task)
-	{
-		mut.lock();
-		on_kill.push_back(std::make_shared<std::function<bool()>>(task));
-		mut.unlock();
-	};
-
 	void Thread::assign(Task task)
 	{
 		mut.lock();
-		tasks.push_back(task);
+		tasks.emplace_back(new Task(task));
 		mut.unlock();
 	};
 
-	void Thread::assign_on_kill(Task task)
-	{
-		mut.lock();
-		on_kill.push_back(task);
-		mut.unlock();
-	};
-
-	void Thread::modify(std::function<void(std::vector<Task>&)> vec_func)
+	void Thread::modify(std::function<void(std::vector<std::shared_ptr<Task>>&)> vec_func)
 	{
 		mut.lock();
 		vec_func(tasks);
@@ -86,9 +59,11 @@ namespace eng
 
 	void Thread::clean()
 	{
-		mut.lock();
-		tasks.erase(std::remove_if(tasks.begin(), tasks.end(), [](Task t) { return !(bool)t; }), tasks.end());
-		mut.unlock();
+		assign([this]()
+			{
+				tasks.erase(std::remove_if(tasks.begin(), tasks.end(), [](std::shared_ptr<Task>& t) { return !(bool)t; }), tasks.end());
+				return false;
+			});
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +147,7 @@ namespace eng
 			{
 				if (glfw_window)
 				{
+					// TODO: remove
 					if (glfwWindowShouldClose(glfw_window))
 						KILL = true;
 
@@ -186,18 +162,11 @@ namespace eng
 
 				return true;
 			});
-
-		assign_on_kill([this]()
-			{
-				glfwDestroyWindow(glfw_window);
-
-				return false;
-			});
 	};
 	
 	Window::~Window()
 	{
-		
+		glfwDestroyWindow(glfw_window);
 	};
 
 	void Window::load_shader(std::vector<std::string> file_names, unsigned int& shader)
@@ -237,10 +206,6 @@ namespace eng
 
 	void close()
 	{
-		Data<Thread>::access([](auto& i)
-			{
-				i.reset();
-			});
 		glfwTerminate();
 	};
 

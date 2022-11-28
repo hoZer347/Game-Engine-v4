@@ -64,7 +64,7 @@ namespace eng
 	{
 		auto w0 = Data<Window>::create();
 
-		Buffer<Mesh>::create();
+		Buffer<Mesh>::create(1);
 		Buffer<Mesh>::modify([w0](auto vec)
 			{
 				vec[0]->vtxs =
