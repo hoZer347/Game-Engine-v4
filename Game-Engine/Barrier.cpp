@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Barrier.h"
 
 namespace loom
 {

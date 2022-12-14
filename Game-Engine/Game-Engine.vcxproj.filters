@@ -8,11 +8,8 @@
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="Thread.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Sync.cpp" />
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Barrier.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -35,10 +32,7 @@
     <ClInclude Include="Shader.hpp">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="Thread.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Sync.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Barrier.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
 </Project>

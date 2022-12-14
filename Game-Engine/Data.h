@@ -5,16 +5,14 @@ using namespace glm;
 
 #include <vector>
 
+#include <iostream>
+
 namespace loom
 {
 #ifndef VTX_IMPL
-	struct alignas(64) Vtx
+	struct alignas(64) Vtx final
 	{
 		vec4 data[4] = { vec4(0), vec4(0), vec4(0), vec4(0), };
-		mat4 mat;
-		float floats[16];
-
-		~Vtx() { };
 	};
 #else
 	VTX_IMPL;
@@ -23,7 +21,7 @@ namespace loom
 #ifndef MESH_IMPL
 	typedef uint32_t Ind;
 
-	struct alignas(64) Mesh
+	struct alignas(64) Mesh final
 	{
 		std::vector<Vtx> vtxs;
 		std::vector<Ind> inds;
@@ -36,8 +34,12 @@ namespace loom
 	typedef uint32_t Texture;
 	typedef uint32_t DrawMode;
 
-	struct Renderable
+	struct Renderable final
 	{
+		Shader shader = 0;
+		DrawMode draw_mode = 0x0007;
 		
+		std::vector<Mesh>		meshes;
+		std::vector<Texture>	textures;
 	};
 };

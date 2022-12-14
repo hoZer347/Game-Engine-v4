@@ -8,15 +8,26 @@
 
 namespace loom
 {
-	template <typename T, size_t ID>
-	struct Buffer
+	template <typename T>
+	struct Buffer final
 	{
+	private:
 		typedef std::function<void(T&)>			Edit;
 		typedef std::function<void(const T&)>	View;
 
-		_NODISCARD static inline Task _allocate(size_t amount, auto... args)
+		std::vector<T>	_toAdd;
+		std::vector<T>	_mutable;
+		std::vector<T>	_immutable;
+
+	public:
+		Buffer()
+		{ };
+
+		_NODISCARD T& operator[](size_t i) { return _mutable[i]; }
+
+		_NODISCARD Task _allocate(size_t amount, auto... args) noexcept
 		{
-			return [amount, args...]()
+			return [this, amount, args...]()
 			{
 				_toAdd.reserve(amount);
 				for (auto i = 0; i < amount; i++)
@@ -24,27 +35,27 @@ namespace loom
 			};
 		};
 
-		_NODISCARD static inline Task _edit(Edit edit)
+		_NODISCARD Task _edit(Edit edit) const noexcept
 		{
-			return [edit]() noexcept
+			return [this, edit]()
 			{
 				for (auto& t : _mutable)
 					edit(t);
 			};
 		};
 
-		_NODISCARD static inline Task _view(View view)
+		_NODISCARD Task _view(View view) const noexcept
 		{
-			return [view]() noexcept
+			return [this, view]()
 			{
 				for (auto& t : _mutable)
 					view(t);
 			};
 		};
 
-		_NODISCARD static inline Task _swap()
+		_NODISCARD Task _update() noexcept
 		{
-			return []() noexcept
+			return [this]()
 			{
 				_mutable.swap(_immutable);
 

@@ -65,6 +65,7 @@ namespace loom {
                 else if (file.find(".comp") != std::string::npos) load_shader(file, GL_COMPUTE_SHADER, program);
                 else if (file.find(".tess") != std::string::npos) load_shader(file, GL_TESS_CONTROL_SHADER, program);
                 else if (file.find(".eval") != std::string::npos) load_shader(file, GL_TESS_EVALUATION_SHADER, program);
+                else std::cout << "Couldn't find " << file << std::endl;
             };
 
             glLinkProgram(program);

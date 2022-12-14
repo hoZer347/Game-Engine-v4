@@ -13,9 +13,10 @@
 
 namespace loom {
 	struct TextureManager {
-		std::unordered_map<std::string, unsigned int> TEXS;
+		std::unordered_map<std::string, uint32_t> TEXS;
 
-		unsigned int create(std::string file_name, unsigned int type)
+	private:
+		uint32_t create(std::string file_name, uint32_t type)
 		{
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -46,9 +47,10 @@ namespace loom {
 			return texture;
 		};
 
-		std::vector<unsigned int> create(std::vector<std::pair<std::string, unsigned int>> texture_files)
+	public:
+		std::vector<uint32_t> create(std::vector<std::pair<std::string, uint32_t>> texture_files)
 		{
-			std::vector<unsigned int> ret;
+			std::vector<uint32_t> ret;
 
 			ret.reserve(texture_files.size());
 			for (auto& f : texture_files)
