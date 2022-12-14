@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Task.h"
-#include "System.h"
-
 #include "glm/glm.hpp"
 using namespace glm;
+
+#include <vector>
 
 namespace loom
 {
@@ -18,28 +17,26 @@ namespace loom
 		~Vtx() { };
 	};
 #else
-	VTX_IMPL
+	VTX_IMPL;
 #endif
 
-#ifndef DATA_IMPL
+#ifndef MESH_IMPL
 	typedef uint32_t Ind;
 
-	struct alignas(64) Data
+	struct alignas(64) Mesh
 	{
 		std::vector<Vtx> vtxs;
 		std::vector<Ind> inds;
 	};
 #else
-	DATA_IMPL
+	MESH_IMPL;
 #endif
-
-	struct Window;
 
 	typedef uint32_t Shader;
 	typedef uint32_t Texture;
 	typedef uint32_t DrawMode;
 
-	struct Rendarable
+	struct Renderable
 	{
 		
 	};
