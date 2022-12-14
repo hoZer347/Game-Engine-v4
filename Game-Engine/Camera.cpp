@@ -22,10 +22,10 @@ namespace loom
 			proj = perspective(fovy, (float)w / (float)h, near, far);
 			view = lookAt(eye, ctr, up);
 			rotn = yaww * ptch * roll;
-			mode = rotn * trns;
+			mode = trns * rotn;
 			mvp = proj * view * mode;
 
-			glUniformMatrix4fv(4, 1, GL_TRUE, value_ptr(mvp));
+			glUniformMatrix4fv(4, 1, GL_FALSE, value_ptr(mvp));
 			//glUniformMatrix4fv(5, 1, GL_FALSE, value_ptr(mode));
 			//glUniformMatrix4fv(6, 1, GL_FALSE, value_ptr(view));
 			//glUniformMatrix4fv(7, 1, GL_FALSE, value_ptr(proj));
