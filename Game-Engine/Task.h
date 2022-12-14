@@ -1,21 +1,19 @@
 #pragma once
 
-#include "Data.h"
-
-#include <memory>
 #include <functional>
 
-namespace eng
+namespace loom
 {
 	struct Task
 	{
 		Task(auto task)
-		{ this->task = std::make_shared<std::function<bool()>>(task); };
+		: task(task)
+		{ };
 
-		inline bool operator()()	{ return (*task)();  };
-		inline operator bool()		{ return (bool)task; };
+		inline void operator=(Task& task) { this->task = task; };
+		inline void operator()() { task(); };
 
 	private:
-		std::shared_ptr<std::function<bool()>> task;
+		std::function<void()> task;
 	};
 };

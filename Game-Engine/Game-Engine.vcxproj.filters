@@ -5,88 +5,36 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Renderables.cpp">
-      <Filter>Engine\Renderables</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Engine\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Engine\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="Task.cpp">
-      <Filter>Engine\Features</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug.cpp">
-      <Filter>Debug</Filter>
-    </ClCompile>
+    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Debug">
-      <UniqueIdentifier>{61581e31-9499-4f12-8523-ffd9c368a045}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine">
       <UniqueIdentifier>{0f587ed5-6e1f-4550-a9b9-d702c086708f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{3a4c3b07-ca94-425a-ac95-3b1306039f03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Shader">
-      <UniqueIdentifier>{6accf122-c4b9-4b2f-8067-d6d495ad69d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Features">
-      <UniqueIdentifier>{9ce6d07c-ced6-40c1-bc44-86c7464f0ff4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Renderables">
-      <UniqueIdentifier>{7fc117d2-720a-4d30-aa2d-6f059f25afcc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Engine\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.hpp">
-      <Filter>Engine\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Renderables.h">
-      <Filter>Engine\Renderables</Filter>
+    <ClInclude Include="Data.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="Texture.hpp">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Engine\Features</Filter>
+    <ClInclude Include="Shader.hpp">
+      <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Engine\Features</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Engine\Features</Filter>
-    </ClInclude>
-    <ClInclude Include="Task.h">
-      <Filter>Engine\Features</Filter>
-    </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Debug</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Sprite.frag">
-      <Filter>Engine\Shader</Filter>
-    </None>
-    <None Include="Sprite.vert">
-      <Filter>Engine\Shader</Filter>
-    </None>
-    <None Include="Text.vert">
-      <Filter>Engine\Shader</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Text.frag">
-      <Filter>Engine\Shader</Filter>
-    </Text>
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="Game.h" />
   </ItemGroup>
 </Project>

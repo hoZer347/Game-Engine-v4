@@ -8,12 +8,13 @@
 
 #include <iostream>
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-namespace eng {
+namespace loom {
 	struct TextureManager {
 		std::unordered_map<std::string, unsigned int> TEXS;
-	
+
 		unsigned int create(std::string file_name, unsigned int type)
 		{
 			// Catching Duplicates

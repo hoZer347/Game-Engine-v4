@@ -9,11 +9,12 @@
 
 #include <iostream>
 
-namespace eng {
+namespace loom {
     struct ShaderManager {
         std::unordered_map<std::string, unsigned int> shaders;
         std::unordered_map<std::string, unsigned int> programs;
 
+    private:
         void load_shader(
             std::string file_name,
             unsigned int shader_type,
@@ -40,6 +41,7 @@ namespace eng {
             };
         };
 
+    public:
         unsigned int create(std::vector<std::string> file_names)
         {
             if (file_names.size() == 1)
