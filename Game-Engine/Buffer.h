@@ -2,7 +2,6 @@
 
 #include "Task.h"
 
-#include <mutex>
 #include <vector>
 #include <functional>
 
@@ -20,18 +19,16 @@ namespace loom
 		std::vector<T>	_immutable;
 
 	public:
-		Buffer()
-		{ };
-
-		_NODISCARD T& operator[](size_t i) { return _mutable[i]; }
-
-		_NODISCARD Task _allocate(size_t amount, auto... args) noexcept
+		_NODISCARD Task _allocate(size_t amount, Edit edit = [](T&) { }) noexcept
 		{
-			return [this, amount, args...]()
+			return [this, amount, edit]()
 			{
 				_toAdd.reserve(amount);
 				for (auto i = 0; i < amount; i++)
-					_toAdd.emplace_back(args...);
+				{
+					_toAdd.emplace_back();
+					edit(_toAdd.back());
+				};
 			};
 		};
 

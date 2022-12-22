@@ -22,7 +22,13 @@ namespace loom
 			rotn = yaww * ptch * roll;
 			mode = trns * rotn;
 			mvp = proj * view * mode;
+		};
+	};
 
+	Task Camera::_load()
+	{
+		return [this]()
+		{
 			glUniformMatrix4fv(4, 1, GL_FALSE, value_ptr(mvp));
 			//glUniformMatrix4fv(5, 1, GL_FALSE, value_ptr(mode));
 			//glUniformMatrix4fv(6, 1, GL_FALSE, value_ptr(view));

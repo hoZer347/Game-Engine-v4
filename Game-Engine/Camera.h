@@ -10,6 +10,7 @@ namespace loom
 	struct Camera
 	{
 		Task _update();
+		Task _load();
 
 		mat4	trns = mat4(1),
 				yaww = mat4(1),

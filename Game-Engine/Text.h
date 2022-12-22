@@ -1,4 +1,4 @@
-#include "Barrier.h"
+#pragma once
 
 namespace loom
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Task.h"
+
 #include "glm/glm.hpp"
 using namespace glm;
 
@@ -9,37 +11,36 @@ using namespace glm;
 
 namespace loom
 {
-#ifndef VTX_IMPL
+	template <typename T> struct Buffer;
+
 	struct alignas(64) Vtx final
 	{
 		vec4 data[4] = { vec4(0), vec4(0), vec4(0), vec4(0), };
 	};
-#else
-	VTX_IMPL;
-#endif
 
-#ifndef MESH_IMPL
-	typedef uint32_t Ind;
+	typedef uint32_t _ID;
+	typedef _ID Shader;
+	typedef _ID Texture;
+	typedef _ID Texture_Type;
+	typedef _ID DrawMode;
+	typedef _ID Ind;
+	typedef std::vector<Ind> Inds;
+	typedef std::vector<Vtx> Vtxs;
 
-	struct alignas(64) Mesh final
+	struct Mesh final
 	{
-		std::vector<Vtx> vtxs;
-		std::vector<Ind> inds;
+		Vtxs		vtxs;
+		Inds		inds;
+
+		mat4		trns = mat4(1);
+		DrawMode	draw_mode;
+		Shader		shader;
+		Texture		texture;
 	};
-#else
-	MESH_IMPL;
-#endif
 
-	typedef uint32_t Shader;
-	typedef uint32_t Texture;
-	typedef uint32_t DrawMode;
-
-	struct Renderable final
+	namespace geo
 	{
-		Shader shader = 0;
-		DrawMode draw_mode = 0x0007;
-		
-		std::vector<Mesh>		meshes;
-		std::vector<Texture>	textures;
+		_NODISCARD Task _create_square	(Buffer<Mesh>& buffer);
+		_NODISCARD Task _create_cube	(Buffer<Mesh>& buffer);
 	};
 };

@@ -5,4 +5,6 @@
 namespace loom
 {
 	typedef std::function<void()> Task;
+
+	static Task null = []() { };
 };

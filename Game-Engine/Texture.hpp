@@ -3,6 +3,8 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
+#include "Data.h"
+
 #include <unordered_map>
 #include <string>
 
@@ -13,10 +15,9 @@
 
 namespace loom {
 	struct TextureManager {
-		std::unordered_map<std::string, uint32_t> TEXS;
+		std::unordered_map<std::string, Texture> TEXS;
 
-	private:
-		uint32_t create(std::string file_name, uint32_t type)
+		Texture create(std::string file_name, Texture type)
 		{
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -33,7 +34,7 @@ namespace loom {
 			unsigned int texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, type, width, height, 0, type, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, (GLint)type, width, height, 0, (GLint)type, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 			//
 
@@ -45,18 +46,6 @@ namespace loom {
 			TEXS[s] = texture;
 
 			return texture;
-		};
-
-	public:
-		std::vector<uint32_t> create(std::vector<std::pair<std::string, uint32_t>> texture_files)
-		{
-			std::vector<uint32_t> ret;
-
-			ret.reserve(texture_files.size());
-			for (auto& f : texture_files)
-				ret.emplace_back(create(f.first, f.second));
-
-			return ret;
 		};
 	};
 };
