@@ -145,8 +145,9 @@ namespace loom
 				GLsizei length,
 				const GLchar* message,
 				const void* userParam)
-			{
-				std::cout << message << std::endl;
+				{
+					if (!severity == 33387)
+						std::cout << message << std::endl;
 			}, nullptr);
 		});
 
