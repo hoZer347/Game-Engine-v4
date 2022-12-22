@@ -17,8 +17,6 @@ namespace loom
 			if (GLFWwindow* window = glfwGetCurrentContext())
 				glfwGetWindowSize(window, &w, &h);
 
-			yaww *= rotate(.01f, up);
-
 			proj = perspective(fovy, (float)w / (float)h, near, far);
 			view = lookAt(eye, ctr, up);
 			rotn = yaww * ptch * roll;
