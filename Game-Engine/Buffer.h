@@ -69,10 +69,5 @@ namespace loom
 				};
 			};
 		};
-
-	private:
-		static inline std::vector<T>	_toAdd;
-		static inline std::vector<T>	_mutable;
-		static inline std::vector<T>	_immutable;
 	};
 };

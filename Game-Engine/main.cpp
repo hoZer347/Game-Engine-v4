@@ -25,7 +25,8 @@ int main()
 
 	Buffer<Renderable> b0;
 	Camera cam;
-	cam.trns = translate(vec3(0, 0, -1));
+	cam.trns *= translate(vec3(0, 0, 5));
+
 	b0._allocate(1)();
 	b0._update()();
 	b0[0].meshes.push_back({

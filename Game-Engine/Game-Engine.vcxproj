@@ -167,6 +167,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Enums.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Barrier.h" />
