@@ -16,7 +16,7 @@ namespace loom
 				ptch = mat4(1),
 				roll = mat4(1);
 
-		vec3	eye = vec3(0, 0, 1),
+		vec3	eye = vec3(0, 0, -1),
 				ctr = vec3(0, 0, 0),
 				up  = vec3(0, 1, 0);
 
@@ -27,6 +27,10 @@ namespace loom
 	private:
 		int		w=1, h=1;
 		
+		vec4	_x = vec4(1, 0, 0, 1),
+				_y = vec4(0, 1, 0, 1),
+				_z = vec4(0, 0, 1, 1);
+
 		mat4	mvp  = mat4(1),
 				mode = mat4(1),
 				view = mat4(1),
