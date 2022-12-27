@@ -29,7 +29,7 @@ int main()
 	
 	open_window(t0);
 
-	assign_on_init(t0, geo::_create_square(b0));
+	assign_on_init(t0, geo::_create_squares(b0, 100));
 
 	assign(t0, cam._update());
 	assign(t0, b0._update());

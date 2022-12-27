@@ -66,7 +66,7 @@ namespace loom
 				glViewport(0, 0, w, h);
 			});
 
-			//glfwSwapInterval(0);
+			glfwSwapInterval(0);
 
 			glEnable(GL_TEXTURE_2D);
 
@@ -156,6 +156,15 @@ namespace loom
 					//close();
 
 				glfwSwapBuffers(window);
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+				double timer = glfwGetTime();
+				timer = timer * 1000;
+				glfwSetTime(0);
+				std::string s = "FPS: " + std::to_string((unsigned int)timer);
+
+				glfwSetWindowTitle(window, s.c_str());
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -40,7 +40,7 @@ namespace loom
 
 	namespace geo
 	{
-		_NODISCARD Task _create_square	(Buffer<Mesh>& buffer);
-		_NODISCARD Task _create_cube	(Buffer<Mesh>& buffer);
+		_NODISCARD Task _create_squares	(Buffer<Mesh>& buffer, size_t amount=1);
+		_NODISCARD Task _create_cubes	(Buffer<Mesh>& buffer, size_t amount=1);
 	};
 };
