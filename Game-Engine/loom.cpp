@@ -161,6 +161,8 @@ namespace loom
 						glBindTexture(GL_TEXTURE_2D, texture.first);
 						for (auto& draw_mode : texture.second)
 						{
+							glUniformMatrix4fv(4, 1, GL_FALSE, &draw_mode.second->trns[0][0]);
+
 							glBufferData(
 								GL_ARRAY_BUFFER,
 								draw_mode.second->vtxs.size() * sizeof(Vtx),
@@ -317,7 +319,8 @@ namespace loom
 		Thread& loader,
 		Shader& shader,
 		Texture& texture,
-		DrawMode& draw_mode)
+		DrawMode& draw_mode,
+		bool replace)
 	{
 		assign_once(loader, [&mesh, &shader, &texture, &draw_mode]()
 		{

@@ -22,11 +22,13 @@ namespace loom
 	typedef uint32_t Ind;
 	//
 
-	// Object Types
+	
 	typedef ID Shader;
 	typedef ID Texture;
 	typedef ID DrawMode;
+	//
 
+	// Object Types
 	typedef std::function<void()>	Task;
 	typedef std::vector<Task>		Tasks;
 

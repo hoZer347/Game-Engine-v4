@@ -71,6 +71,7 @@ namespace loom
 		Thread& loader,
 		Shader& shader,
 		Texture& texture,
-		DrawMode& draw_mode);
+		DrawMode& draw_mode,
+		bool replace = false); // TODO: Pump instead of replace the mesh
 	//
 };
