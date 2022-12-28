@@ -1,46 +1,69 @@
 #pragma once
 
-#include "Task.h"
+#include <String>
+#include <memory>
+#include <vector>
+#include <thread>
+#include <functional>
+#include <unordered_set>
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 using namespace glm;
 
-#include <vector>
-
-#include <iostream>
+#ifndef MAX_THREADS
+#define MAX_THREADS 256
+#endif
 
 namespace loom
 {
-	template <typename T> struct Buffer;
+	// Enumeration Types
+	typedef uint32_t ID;
+	typedef uint32_t TYPE;
+	typedef uint32_t Ind;
+	//
+
+	// Object Types
+	typedef ID Shader;
+	typedef ID Texture;
+	typedef ID DrawMode;
+
+	typedef std::function<void()>	Task;
+	typedef std::vector<Task>		Tasks;
+
+	struct Buffer;
+	struct Thread;
+	typedef std::vector<Thread*> Threads;
 
 	struct alignas(64) Vtx final
 	{
-		vec4 data[4] = { vec4(0), vec4(0), vec4(0), vec4(0), };
+		vec4 pos;
+		vec4 clr;
+		vec4 nrm;
+		vec4 cdr;
 	};
 
-	typedef uint32_t _ID;
-	typedef _ID Shader;
-	typedef _ID Texture;
-	typedef _ID Texture_Type;
-	typedef _ID DrawMode;
-	typedef _ID Ind;
-	typedef std::vector<Ind> Inds;
 	typedef std::vector<Vtx> Vtxs;
+	typedef std::vector<Ind> Inds;
 
-	struct Mesh final
+	struct alignas(128) Mesh final
 	{
-		Vtxs		vtxs;
-		Inds		inds;
+		Vtxs vtxs;
+		Inds inds;
 
-		mat4		trns = mat4(1);
-		DrawMode	draw_mode;
-		Shader		shader;
-		Texture		texture;
+		mat4 trns;
 	};
 
-	namespace geo
+	typedef std::vector<Mesh> Meshs;
+
+	struct Thread final
 	{
-		_NODISCARD Task _create_squares	(Buffer<Mesh>& buffer, size_t amount=1);
-		_NODISCARD Task _create_cubes	(Buffer<Mesh>& buffer, size_t amount=1);
+		Tasks on_init;
+		Tasks on_exec;
+		Tasks on_once;
+		Tasks on_kill;
+
+		bool KILL = false;
+		std::thread thread;
 	};
+	//
 };

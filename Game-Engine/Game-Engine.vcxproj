@@ -155,39 +155,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="loom.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Rendering.cpp" />
-    <ClCompile Include="Task.cpp" />
-    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="Enums.hpp" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Menu.h" />
-    <ClInclude Include="Rendering.h" />
+    <ClInclude Include="loom.h" />
     <ClInclude Include="Shader.hpp" />
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Task.h" />
-    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
-    <None Include="shaders\menu.frag" />
-    <None Include="shaders\menu.geom" />
-    <None Include="shaders\menu.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

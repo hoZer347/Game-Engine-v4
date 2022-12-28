@@ -3,7 +3,7 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "Data.h"
+#include "loom.h"
 
 #include <unordered_map>
 #include <string>
@@ -17,7 +17,10 @@ namespace loom {
 	struct TextureManager {
 		std::unordered_map<std::string, Texture> TEXS;
 
-		Texture create(std::string file_name, Texture type)
+		TextureManager()
+		{ stbi_set_flip_vertically_on_load(true); }
+
+		Texture create(std::string file_name, TYPE type)
 		{
 			// Catching Duplicates
 			std::string s = std::string(file_name);
@@ -31,8 +34,8 @@ namespace loom {
 			//
 
 			// Creating OPENGL Texture
-			unsigned int texture;
-			glGenTextures(1, &texture);
+			Texture texture = 0;
+			glGenTextures(1, (GLuint*)&texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexImage2D(GL_TEXTURE_2D, 0, (GLint)type, width, height, 0, (GLint)type, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);

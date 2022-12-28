@@ -1,43 +1,42 @@
-// Local Includes
-#include "Rendering.h"
-#include "Engine.h"
-#include "Buffer.h"
-#include "Camera.h"
-#include "Task.h"
-#include "Data.h"
-using namespace loom;
-//
-
-// OpenGL Includes
+#include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
-#include "glm/gtx/transform.hpp"
-using namespace glm;
-//
 
-// STD includes
+#include "loom.h"
+using namespace loom;
+
 #include <iostream>
-//
 
 int main()
 {
 	init();
 
-	Buffer<Mesh> b0;
-	Camera cam;
+	Shader		shader;
+	Texture		texture;
+	DrawMode	draw_mode = GL_QUADS;
+	Mesh		mesh =
+	{
+		{
+			{ vec4(0, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
+			{ vec4(1, 0, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
+			{ vec4(1, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
+			{ vec4(0, 1, 0, 1), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
+		}, { 0, 1, 2, 3 },
+	};
 
-	Thread* t0 = create_thread();
-	
-	open_window(t0);
+	Thread window;
 
-	assign_on_init(t0, geo::_create_squares(b0, 100));
+	open_window(window);
 
-	assign(t0, cam._update());
-	assign(t0, b0._update());
-	assign(t0, _render(b0));
+	load(shader, window, "Test0", { "shaders/default" });
+	load(texture, window, shader, "Test1", "Resources/DK.png", GL_RGBA);
+	load(mesh, window, shader, texture, draw_mode);
 
-	run();
+	assign(window, []()
+	{
+		std::cout << "Test" << std::endl;
+	});
 
-	finish();
+	run({ &window });
 
-	return 0;
+	exit();
 };

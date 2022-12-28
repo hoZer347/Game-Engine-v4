@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Data.h"
+
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
@@ -9,16 +11,20 @@
 
 #include <iostream>
 
-namespace loom {
+namespace loom
+{
+    typedef ID SubShader;
+    typedef ID ShaderType;
+
     struct ShaderManager {
-        std::unordered_map<std::string, unsigned int> shaders;
-        std::unordered_map<std::string, unsigned int> programs;
+        std::unordered_map<std::string, SubShader> shaders;
+        std::unordered_map<std::string, Shader> programs;
 
     private:
         void load_shader(
             std::string file_name,
-            unsigned int shader_type,
-            unsigned int program) {
+            ShaderType shader_type,
+            Shader program) {
             if (shaders[file_name]) {
                 glAttachShader(program, shaders[file_name]);
                 return;
@@ -27,7 +33,7 @@ namespace loom {
             std::ifstream f(file_name.c_str());
 
             if (f.good()) {
-                unsigned int shader = glCreateShader(shader_type);
+                SubShader shader = glCreateShader(shader_type);
 
                 std::string _fs((std::istreambuf_iterator<char>(f)),
                     std::istreambuf_iterator<char>());
@@ -42,7 +48,7 @@ namespace loom {
         };
 
     public:
-        unsigned int create(std::vector<std::string> file_names)
+        Shader create(std::vector<std::string> file_names)
         {
             if (file_names.size() == 1)
                 return create(file_names.back());
@@ -55,7 +61,7 @@ namespace loom {
             if (programs[f])
                 return programs[f];
 
-            unsigned int program = glCreateProgram();
+            Shader program = glCreateProgram();
 
             for (auto& file : file_names)
             {
@@ -73,14 +79,14 @@ namespace loom {
             return programs[f] = program;
         };
 
-        unsigned int create(std::string file_name)
+        Shader create(std::string file_name)
         {
             std::string f = file_name;
 
             if (programs[f])
                 return programs[f];
 
-            unsigned int program = glCreateProgram();
+            Shader program = glCreateProgram();
 
             load_shader(f + ".vert", GL_VERTEX_SHADER, program);
             load_shader(f + ".geom", GL_GEOMETRY_SHADER, program);

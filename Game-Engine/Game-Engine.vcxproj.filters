@@ -1,15 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Task.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Barrier.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="loom.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -20,19 +13,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h" />
-    <ClInclude Include="Task.h" />
-    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Texture.hpp">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Shader.hpp">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Barrier.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="loom.h" />
+    <ClInclude Include="Data.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default.frag" />
+    <None Include="shaders\default.vert" />
   </ItemGroup>
 </Project>
