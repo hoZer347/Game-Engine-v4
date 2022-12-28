@@ -18,12 +18,12 @@ namespace loom
 				std::unordered_map<Shader,
 					std::unordered_map<Texture,
 						std::unordered_map<DrawMode,
-							Mesh*>>>> Storage;
+							Mesh*>>>> Buffer;
 
 	std::unordered_map<GLFWwindow*, ShaderManager*> s_mgrs;
 	std::unordered_map<GLFWwindow*, TextureManager*> t_mgrs;
 
-	Storage _mutable, _immutable;
+	Buffer _mutable, _immutable;
 
 	std::vector<std::tuple<GLFWwindow*, Shader, Texture, DrawMode, Mesh*>> _toAdd;
 

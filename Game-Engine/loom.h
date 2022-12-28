@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 #include <functional>
-#include <unordered_set>
 
 #include <glm/glm.hpp>
 using namespace glm;

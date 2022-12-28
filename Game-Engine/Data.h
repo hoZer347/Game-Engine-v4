@@ -30,10 +30,6 @@ namespace loom
 	typedef std::function<void()>	Task;
 	typedef std::vector<Task>		Tasks;
 
-	struct Buffer;
-	struct Thread;
-	typedef std::vector<Thread*> Threads;
-
 	struct alignas(64) Vtx final
 	{
 		vec4 pos;
@@ -65,5 +61,6 @@ namespace loom
 		bool KILL = false;
 		std::thread thread;
 	};
+	typedef std::vector<Thread*> Threads;
 	//
 };
