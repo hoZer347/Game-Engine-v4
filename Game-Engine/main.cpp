@@ -10,8 +10,8 @@ int main()
 {
 	init();
 
-	Shader		shader;
-	Texture		texture;
+	Shader		shader = 0;
+	Texture		texture = 0;
 	DrawMode	draw_mode = GL_QUADS;
 	Mesh		mesh =
 	{

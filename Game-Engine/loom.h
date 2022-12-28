@@ -12,7 +12,8 @@ using namespace glm;
 
 namespace loom
 {
-	// TODO: add debug system
+	// TODO: Add debug system
+	// TODO: Add string -> void* finding system
 
 	// Init / Exit
 	void init();
@@ -37,8 +38,6 @@ namespace loom
 	void run(Threads threads);
 	//
 
-
-	// TODO: Add string -> void* finding system
 
 	// Loads a Shader using a window thread
 	// Guide:
