@@ -1,68 +1,85 @@
 #pragma once
 
-#include <String>
-#include <memory>
-#include <vector>
-#include <thread>
-#include <functional>
-#include <unordered_set>
-
 #include <glm/glm.hpp>
 using namespace glm;
 
-#ifndef MAX_THREADS
-#define MAX_THREADS 256
-#endif
+#include <vector>
+#include <string>
+#include <iostream>
+#include <unordered_set>
 
 namespace loom
 {
-	// Enumeration Types
 	typedef uint32_t ID;
-	typedef uint32_t TYPE;
-	typedef uint32_t Ind;
-	//
 
-	
-	typedef ID Shader;
-	typedef ID Texture;
-	typedef ID DrawMode;
-	//
 
-	// Object Types
-	typedef std::function<void()>	Task;
-	typedef std::vector<Task>		Tasks;
 
-	struct alignas(64) Vtx final
+	struct MeshInfo final
 	{
-		vec4 pos;
-		vec4 clr;
-		vec4 nrm;
-		vec4 cdr;
+		_NODISCARD static size_t count() noexcept { return _count; };
+
+	protected:
+		template <typename T>
+		friend struct Attribute;
+		static inline size_t _count = 0;
+
+	private:
+		MeshInfo() { };
 	};
 
-	typedef std::vector<Vtx> Vtxs;
-	typedef std::vector<Ind> Inds;
 
-	struct alignas(128) Mesh final
+
+	template <typename T>
+	struct Attribute final
 	{
-		Vtxs vtxs;
-		Inds inds;
+		Attribute(void(*kernel)(const T&) = nullptr)
+		{
+			if (claimed)
+			{
+				std::cerr << "This Attribute has already been claimed, consider using a struct containing what you want" << std::endl;
+				exit(0);
+			};
 
-		mat4 trns;
+			claimed = true;
+
+			Attribute<T>::kernel = kernel;
+		};
+
+		static inline bool claimed = false;
+		static inline void(*kernel)(const T&) = nullptr;
+		static inline const size_t count = MeshInfo::_count++;
 	};
 
-	typedef std::vector<Mesh> Meshs;
 
-	struct Thread final
+
+	struct Mesh final
 	{
-		Tasks on_init;
-		Tasks on_exec;
-		Tasks on_once;
-		Tasks on_kill;
+		Mesh()
+		{
+			meshes.push_back(this);
+		};
 
-		bool KILL = false;
-		std::thread thread;
+		~Mesh()
+		{
+			for (auto i = 0; i < MeshInfo::count(); i++)
+				delete data[i];
+
+			delete[] data;
+		};
+
+		const void** data = (const void**)malloc(sizeof(void*) * MeshInfo::count());
+
+		static inline std::vector<Mesh*> meshes;
 	};
-	typedef std::vector<Thread*> Threads;
-	//
+
+
+
+	struct Shader final	{ ID data; };
+	struct Texture final { ID data; };
+
+	struct Vtx final { vec4 data[4]; };
+	struct Vtxs final { std::vector<Vtx> data; };
+	struct Inds final { std::vector<uint32_t> data; };
+
+	struct Draw final { ID data; };
 };

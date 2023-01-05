@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Data.h"
-
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
@@ -13,18 +11,15 @@
 
 namespace loom
 {
-    typedef ID SubShader;
-    typedef ID ShaderType;
-
     struct ShaderManager {
-        std::unordered_map<std::string, SubShader> shaders;
-        std::unordered_map<std::string, Shader> programs;
+        std::unordered_map<std::string, GLuint> shaders;
+        std::unordered_map<std::string, GLuint> programs;
 
     private:
         void load_shader(
             std::string file_name,
-            ShaderType shader_type,
-            Shader program) {
+            GLuint shader_type,
+            GLuint program) {
             if (shaders[file_name]) {
                 glAttachShader(program, shaders[file_name]);
                 return;
@@ -33,7 +28,7 @@ namespace loom
             std::ifstream f(file_name.c_str());
 
             if (f.good()) {
-                SubShader shader = glCreateShader(shader_type);
+                GLuint shader = glCreateShader(shader_type);
 
                 std::string _fs((std::istreambuf_iterator<char>(f)),
                     std::istreambuf_iterator<char>());
@@ -48,7 +43,7 @@ namespace loom
         };
 
     public:
-        Shader create(std::vector<std::string> file_names)
+        GLuint create(std::vector<std::string> file_names)
         {
             if (file_names.size() == 1)
                 return create(file_names.back());
@@ -61,7 +56,7 @@ namespace loom
             if (programs[f])
                 return programs[f];
 
-            Shader program = glCreateProgram();
+            GLuint program = glCreateProgram();
 
             for (auto& file : file_names)
             {
@@ -79,14 +74,14 @@ namespace loom
             return programs[f] = program;
         };
 
-        Shader create(std::string file_name)
+        GLuint create(std::string file_name)
         {
             std::string f = file_name;
 
             if (programs[f])
                 return programs[f];
 
-            Shader program = glCreateProgram();
+            GLuint program = glCreateProgram();
 
             load_shader(f + ".vert", GL_VERTEX_SHADER, program);
             load_shader(f + ".geom", GL_GEOMETRY_SHADER, program);

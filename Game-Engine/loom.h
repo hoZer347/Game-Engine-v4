@@ -2,76 +2,31 @@
 
 #include "Data.h"
 
-#include <String>
-#include <memory>
+#include <thread>
+#include <string>
 #include <vector>
+#include <barrier>
 #include <functional>
+#include <unordered_set>
 
 #include <glm/glm.hpp>
 using namespace glm;
 
 namespace loom
 {
-	// TODO: Add debug system
-	// TODO: Add string -> void* finding system
+	void Init();
+	void Render();
+	void Exit();
 
-	// Init / Exit
-	void init();
-	void exit();
-	//
+	template <typename T>
+	_NODISCARD static T& Make(Mesh& mesh, auto... args)
+	{ return *(T*)(mesh.data[Attribute<T>::count] = new T(args...)); };
 
+	template<typename T>
+	_NODISCARD static T& Get(const Mesh& mesh)
+	{ return *(T*)mesh.data[Attribute<T>::count]; };
 
-	// Designates a given thread as a window
-	void open_window(Thread& thread, int w = 640, int h = 640, const char* name = "");
-	//
-
-
-	//
-	void assign(		Thread& thread,		Task tasks);
-	void assign_once(	Thread& thread,		Task tasks);
-	void assign_on_init(Thread& thread,		Task tasks);
-	void assign_on_kill(Thread& thread,		Task tasks);
-	//
-
-
-	//
-	void run(Threads threads);
-	//
-
-
-	// Loads a Shader using a window thread
-	// Guide:
-	// Example:
-	void load(
-		Shader& shader,
-		Thread& window,
-		std::string name,
-		std::vector<std::string> files);
-	//
-
-
-	// Loads a Texture using a window thread
-	// Guide:
-	// Example:
-	void load(
-		Texture& texture,
-		Thread& window,
-		Shader& shader,
-		std::string name,
-		std::string file,
-		TYPE type);
-	//
-
-
-	// Loads a Mesh using a loader thread
-	// Guide:
-	// Example:
-	void load(
-		Mesh& mesh,
-		Thread& loader,
-		Shader& shader,
-		Texture& texture,
-		DrawMode& draw_mode,
-		bool replace = false); // TODO: Pump instead of replace the mesh
-	//
+	template <typename T>
+	_NODISCARD static const T& View(const Mesh& mesh)
+	{ return *(T*)mesh.data[Attribute<T>::count]; };
 };

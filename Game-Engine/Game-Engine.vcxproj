@@ -155,14 +155,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Data.cpp" />
     <ClCompile Include="loom.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="loom.h" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />

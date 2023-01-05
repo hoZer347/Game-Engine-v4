@@ -4,6 +4,11 @@
 #include "loom.h"
 using namespace loom;
 
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "Shader.hpp"
+#include "Texture.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 using namespace glm;
@@ -12,47 +17,79 @@ using namespace glm;
 
 int main()
 {
-	init();
+	Init();
 
-	Shader		shader = 0;
-	Texture		texture = 0;
-	DrawMode	draw_mode = GL_QUADS;
+	Mesh mesh;
 
-	std::cout << sizeof(Thread) << std::endl;
+	ShaderManager s_mgr;
+	TextureManager t_mgr;
 
-	Thread window;
+	Make<Shader>(mesh).data = s_mgr.create("shaders/default");
+	Make<Texture>(mesh).data = t_mgr.create("Resources/DK.png", GL_RGBA);
+	Make<Draw>(mesh).data = GL_QUADS;
 
-	open_window(window);
+	Vtxs& vtxs = Make<Vtxs>(mesh);
 
-	load(shader, window, "Test0", { "shaders/default" });
-	load(texture, window, shader, "Test1", "Resources/DK.png", GL_RGBA);
+	vtxs.data =
+	{
+		{ vec4(-1, -1, 0, 1), vec4(1), vec4(1), vec4(0, 0, 0, 1), },
+		{ vec4( 1, -1, 0, 1), vec4(1), vec4(1), vec4(1, 0, 0, 1), },
+		{ vec4( 1,  1, 0, 1), vec4(1), vec4(1), vec4(1, 1, 0, 1), },
+		{ vec4(-1,  1, 0, 1), vec4(1), vec4(1), vec4(0, 1, 0, 1), },
+	};
 
-	double max = 100;
-	std::vector<Mesh> meshes;
-	meshes.reserve((size_t)(max * max));
-	for (double x = 0; x < max; x++)
-		for (double y = 0; y < max; y++)
-		{
-			double x0 = x / max;
-			double y0 = y / max;
+	Inds& inds = Make<Inds>(mesh);
 
-			double x1 = (x+1) / max;
-			double y1 = (y+1) / max;
+	inds.data = { 0, 1, 2, 3 };
 
-			meshes.emplace_back(Mesh(
-			{
-				{
-					{ vec4(x0, y0, 0.f, 1.f), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 0, 0, 1), },
-					{ vec4(x1, y0, 0.f, 1.f), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 0, 0, 1), },
-					{ vec4(x1, y1, 0.f, 1.f), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(1, 1, 0, 1), },
-					{ vec4(x0, y1, 0.f, 1.f), vec4(1, 1, 1, 1), vec4(1, 1, 1, 1), vec4(0, 1, 0, 1), },
-				}, { 0, 1, 2, 3 },
-			}));
-			//meshes.back().trns = translate(mat4(1), vec3(x0, y0, 1));
-			load(meshes.back(), window, shader, texture, draw_mode);
-		};
+	glVertexAttribPointer(
+		0,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vtx),
+		(void*)(0 * sizeof(vec4)));
 
-	run({ &window });
+	glVertexAttribPointer(
+		1,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vtx),
+		(void*)(1 * sizeof(vec4)));
 
-	exit();
+	glVertexAttribPointer(
+		2,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vtx),
+		(void*)(2 * sizeof(vec4)));
+
+	glVertexAttribPointer(
+		3,
+		4,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vtx),
+		(void*)(3 * sizeof(vec4)));
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_MULTISAMPLE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
+	glEnable(GL_DEBUG_OUTPUT);
+
+	Render();
+
+	Exit();
+
+	return 0;
 };
