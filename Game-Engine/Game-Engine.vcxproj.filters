@@ -3,6 +3,12 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="loom.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Attribute.cpp" />
+    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -21,6 +27,11 @@
     </ClInclude>
     <ClInclude Include="loom.h" />
     <ClInclude Include="Data.h" />
+    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Thread.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Attribute.h" />
+    <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />

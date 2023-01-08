@@ -3,83 +3,148 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include <vector>
+#include <mutex>
+#include <queue>
 #include <string>
-#include <iostream>
-#include <unordered_set>
+#include <vector>
+#include <memory>
+#include <atomic>
+#include <functional>
+
+#ifdef STOP_STRUCT_PRIVACY
+#define protected public
+#define private public
+#endif
 
 namespace loom
 {
+	// Basic types
 	typedef uint32_t ID;
+	typedef uint32_t TYPE;
+	typedef uint32_t Ind;
+	//
 
 
 
-	struct MeshInfo final
+	// RenderObj
+	struct RenderObj
 	{
-		_NODISCARD static size_t count() noexcept { return _count; };
+		virtual ~RenderObj();
 
 	protected:
-		template <typename T>
-		friend struct Attribute;
-		static inline size_t _count = 0;
+		friend struct Window;
+		RenderObj() { };
+	};
+	//
+
+
+
+	// Shader
+	struct Shader final : public RenderObj
+	{
+		Shader(std::string files...)
+		: files({ files })
+		{ };
+
+	protected:
+		friend struct Mesh;
+		const std::vector<std::string> files;
+		ID id = -1;
+	};
+	//
+
+
+
+	// Textures
+	struct Textures final : public RenderObj
+	{
+		Textures(std::string files...)
+		: files({ files })
+		{ };
+
+		// TODO: Make work with other RGB types
+		// TODO: Add different wrapping options
+
+	protected:
+		friend struct Mesh;
+		std::vector<std::string> files;
+		std::vector<ID> ids;
+	};
+	//
+
+
+
+	// Draw
+	struct Draw final : public RenderObj
+	{
+		Draw(TYPE type)
+		: type(type)
+		{ };
+
+	protected:
+		friend struct Mesh;
+		const TYPE type;
+	};
+	//
+
+
+
+	// Buffer
+	struct _Buffer : public RenderObj
+	{
+		// TODO: Add more attribute types
+		void AddAttribute(size_t size, std::string name);
+
+	protected:
+		_Buffer(const TYPE array_type, const TYPE render_type, const size_t size, const void* ptr)
+		: array_type(array_type), render_type(render_type), size(size), ptr(ptr)
+		{ };
+
+		friend struct Mesh;
+		friend struct Window;
+		const TYPE array_type;
+		const TYPE render_type;
+		ID id = 0;
+		size_t size = 0;
+		const void* ptr = nullptr;
+
+		std::vector<std::pair<size_t, std::string>> attributes;
+	};
+	template <size_t NUM_VALUES, typename T=float>
+	struct Buffer final : public _Buffer
+	{
+		Buffer(const TYPE array_type, const TYPE render_type, std::vector<T> data = { })
+		: _Buffer(array_type, render_type, NUM_VALUES * sizeof(T), data.data())
+		{ };
+
+		void operator=(std::vector<T> new_data) { data = new_data; size = data.size() * sizeof(T); ptr = data.data(); }
 
 	private:
-		MeshInfo() { };
+		std::vector<T> data;
 	};
+	//
 
 
 
-	template <typename T>
-	struct Attribute final
+	// Mesh
+	struct Mesh final : public RenderObj
 	{
-		Attribute(void(*kernel)(const T&) = nullptr)
-		{
-			if (claimed)
-			{
-				std::cerr << "This Attribute has already been claimed, consider using a struct containing what you want" << std::endl;
-				exit(0);
-			};
+		Mesh(Shader& shader, Textures& textures, Draw& draw, _Buffer& buffers...)
+		: shader(shader), textures(textures), draw(draw), buffers({ &buffers })
+		{ };
 
-			claimed = true;
+		~Mesh();
 
-			Attribute<T>::kernel = kernel;
-		};
+		void load();
 
-		static inline bool claimed = false;
-		static inline void(*kernel)(const T&) = nullptr;
-		static inline const size_t count = MeshInfo::_count++;
+	protected:
+		friend struct Window;
+
+		Shader& shader;
+		Textures& textures;
+		Draw& draw;
+
+		std::vector<_Buffer*> buffers;
 	};
-
-
-
-	struct Mesh final
-	{
-		Mesh()
-		{
-			meshes.push_back(this);
-		};
-
-		~Mesh()
-		{
-			for (auto i = 0; i < MeshInfo::count(); i++)
-				delete data[i];
-
-			delete[] data;
-		};
-
-		const void** data = (const void**)malloc(sizeof(void*) * MeshInfo::count());
-
-		static inline std::vector<Mesh*> meshes;
-	};
-
-
-
-	struct Shader final	{ ID data; };
-	struct Texture final { ID data; };
-
-	struct Vtx final { vec4 data[4]; };
-	struct Vtxs final { std::vector<Vtx> data; };
-	struct Inds final { std::vector<uint32_t> data; };
-
-	struct Draw final { ID data; };
+	//
 };

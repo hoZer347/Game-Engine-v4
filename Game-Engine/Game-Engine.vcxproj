@@ -155,17 +155,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Attribute.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="loom.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Thread.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attribute.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="loom.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="Thread.h" />

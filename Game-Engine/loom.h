@@ -1,32 +1,17 @@
 #pragma once
 
-#include "Data.h"
-
-#include <thread>
-#include <string>
-#include <vector>
-#include <barrier>
-#include <functional>
-#include <unordered_set>
-
-#include <glm/glm.hpp>
-using namespace glm;
-
 namespace loom
 {
-	void Init();
-	void Render();
-	void Exit();
+	void Init() noexcept;
+	void Run() noexcept;
+	void Exit() noexcept;
 
-	template <typename T>
-	_NODISCARD static T& Make(Mesh& mesh, auto... args)
-	{ return *(T*)(mesh.data[Attribute<T>::count] = new T(args...)); };
+	struct Mesh;
+	struct Window;
 
-	template<typename T>
-	_NODISCARD static T& Get(const Mesh& mesh)
-	{ return *(T*)mesh.data[Attribute<T>::count]; };
+	typedef int RESULT;
 
-	template <typename T>
-	_NODISCARD static const T& View(const Mesh& mesh)
-	{ return *(T*)mesh.data[Attribute<T>::count]; };
+	RESULT load(Window& window, Mesh& mesh);
+	RESULT remv(Window& window, Mesh& mesh);
+	RESULT open(Window& window, int width, int height, const char* title);
 };
