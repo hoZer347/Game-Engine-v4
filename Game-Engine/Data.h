@@ -93,6 +93,7 @@ namespace loom
 	struct _Buffer : public RenderObj
 	{
 		// TODO: Add more attribute types
+		// TODO: Add functionality for GL_BUFFER types
 		void AddAttribute(size_t size, std::string name);
 
 	protected:

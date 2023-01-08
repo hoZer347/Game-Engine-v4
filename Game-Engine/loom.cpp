@@ -145,6 +145,8 @@ namespace loom
 			};
 		});
 
+		threads.back().join();
+
 		return 1;
 	};
 };

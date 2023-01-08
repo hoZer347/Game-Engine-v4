@@ -66,11 +66,11 @@ namespace loom
 
 
 			// Loading Buffers
-			for (auto& buffer : buffers)
-			{
-				//glGenBuffers(1, &buffer->id);
-				//glBindBuffer(GL_ARRAY_BUFFER, buffer->id);
-			};
+			//for (auto& buffer : buffers)
+			//{
+			//	glGenBuffers(1, &buffer->id);
+			//	glBindBuffer(GL_ARRAY_BUFFER, buffer->id);
+			//};
 			//
 		};
 	};
