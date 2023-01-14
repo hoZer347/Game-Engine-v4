@@ -18,6 +18,8 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -51,6 +53,8 @@
     </ClInclude>
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Input.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />

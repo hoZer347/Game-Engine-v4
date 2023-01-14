@@ -13,7 +13,15 @@ using namespace glm;
 
 namespace loom
 {
-	typedef std::function<void()> Task;
+	struct Task
+	{
+		Task(auto task)
+		: task(task)
+		{ };
+
+		void operator()() { return task(); };
+		std::function<void()> task;
+	};
 
 	typedef uint32_t ID;
 	typedef uint32_t TYPE;
@@ -26,63 +34,37 @@ namespace loom
 
 	struct Object
 	{
-	protected:
+	protected: // TODO: Add Identification System
 		friend struct Loom;
 		Object();
-		virtual void load() = 0;
-		virtual void unload() = 0;
+		virtual ~Object();
+		virtual void load()=0;
+		virtual void unload()=0;
 		static inline std::vector<Object*> objects;
 	};
 
 
 
-	struct Renderable
-	{		
+	struct Renderable : public Object
+	{
 	protected:
-		friend struct Loom;
+		friend struct Camera;
 		Renderable();
+		virtual ~Renderable();
 		virtual void render()=0;
 		static inline std::vector<Renderable*> renderables;
 	};
 
 
 
-	struct Updatable
+	struct Updatable : public Object
 	{
 	protected:
 		friend struct Loom;
 		Updatable();
+		virtual ~Updatable();
 		virtual void update()=0;
 		static inline std::vector<Updatable*> updatables;
-	};
-
-
-
-	struct Helper final : public Object
-	{
-		Helper() { };
-
-		void assign_on_kill(Task task);
-		void assign(Task task);
-		void push(Task task);
-
-		void play() { STOP = false; };
-		void stop() { STOP = true;  };
-		void kill() { KILL = true;  };
-
-	private:
-		void load() override;
-		void unload() override;
-
-		std::mutex mut;
-		std::thread thread;
-		std::queue<Task> for_tasks;
-		std::queue<Task> for_kernels;
-		std::queue<Task> tasks;
-		std::vector<Task> kernels;
-		std::vector<Task> on_kill;
-		std::atomic<bool> STOP = false;
-		std::atomic<bool> KILL = false;
 	};
 
 
@@ -102,7 +84,13 @@ namespace loom
 		std::vector<std::string> files;
 	};
 
+		void play() { STOP = false; };
+		void stop() { STOP = true;  };
+		void kill() { KILL = true;  };
 
+	private:
+		void load() override;
+		void unload() override;
 
 	struct Texture final : public Object
 	{
@@ -118,5 +106,21 @@ namespace loom
 		
 		std::string file;
 		TYPE type;
+	};
+
+
+
+	struct Helper final
+	{
+		Helper();
+		virtual ~Helper();
+		static void assign(Task task);
+
+	private:
+		std::thread thread;
+		std::atomic<bool> KILL;
+		static inline std::mutex mut;
+		static inline std::queue<Task> in;
+		static inline std::atomic<int> PASS = 0;
 	};
 };

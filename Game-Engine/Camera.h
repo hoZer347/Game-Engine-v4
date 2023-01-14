@@ -4,14 +4,25 @@
 
 namespace loom
 {
-	struct Camera final : public Object, public Updatable
+	struct Camera final : public Updatable
 	{
-		Camera();
-		virtual ~Camera();
+		static inline mat4 mvp;
 
-		mat4 mvp;
+	private:
+		mat4	mode,
+				view,
+				proj;
+		
+		vec4	pos;
 
-		float fovy = 90.f, aspect = 1, near = .1f, far = 1000.f;
+		vec3	eye,
+				ctr,
+				up;
+
+		float	fovy=0,
+				aspect=0,
+				near=0,
+				far=0;
 
 	private:
 		void load() override;

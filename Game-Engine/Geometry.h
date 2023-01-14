@@ -4,27 +4,77 @@
 
 namespace loom
 {
-	struct Squares final : public Object, public Renderable
+	struct Squares final : public Renderable
 	{
-		Squares() : Object()
+		Squares()
 		{ };
 
 		Squares(Shader& shader)
-		: shader(shader), Object()
+		: shader(shader)
 		{ };
 
 		Squares(Texture& texture)
-		: texture(texture), Object()
+		: texture(texture)
 		{ };
 
 		Squares(Shader& shader, Texture& texture)
-		: shader(shader), texture(texture), Object()
+		: shader(shader), texture(texture)
 		{ };
+
+		void operator+=(vec4 v)
+		{
+			data.reserve(32 * sizeof(float));
+
+			data.emplace_back(0.f + v.x);
+			data.emplace_back(0.f + v.y);
+			data.emplace_back(v.z);
+			data.emplace_back(v.w);
+
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+
+
+			data.emplace_back(1.f + v.x);
+			data.emplace_back(0.f + v.y);
+			data.emplace_back(v.z);
+			data.emplace_back(v.w);
+
+			data.emplace_back(1.f);
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+
+
+			data.emplace_back(1.f + v.x);
+			data.emplace_back(1.f + v.y);
+			data.emplace_back(v.z);
+			data.emplace_back(v.w);
+
+			data.emplace_back(1.f);
+			data.emplace_back(1.f);
+			data.emplace_back(0.f);
+			data.emplace_back(1.f);
+
+			
+			data.emplace_back(0.f + v.x);
+			data.emplace_back(1.f + v.y);
+			data.emplace_back(v.z);
+			data.emplace_back(v.w);
+
+			data.emplace_back(0.f);
+			data.emplace_back(1.f);
+			data.emplace_back(0.f);
+			data.emplace_back(0.f);
+		};
 
 		mat4 trns = mat4(1);
 		std::vector<float> data;
-
+		
 	private:
+		std::vector<float> data;
+		
 		void load() override;
 		void render() override;
 		void unload() override;

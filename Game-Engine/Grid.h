@@ -21,7 +21,7 @@ namespace loom
 
 
 
-	struct Grid final : public Object, public Renderable
+	struct Grid final : public Renderable
 	{
 		Grid(uint32_t x_size, uint32_t y_size);
 

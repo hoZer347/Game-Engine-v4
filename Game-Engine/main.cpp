@@ -5,6 +5,7 @@
 
 #include "Loom.h"
 #include "Grid.h"
+#include "Camera.h"
 #include "Geometry.h"
 using namespace loom;
 
@@ -15,9 +16,19 @@ int main()
 {
 	Loom::Init();
 
-	Grid grid{ 100, 100 };
-	grid.squares.trns *= scale(vec3(1.5, 1.5, 1.5));
-	grid.squares.trns *= translate(vec3(-.5, -.5, 0));
+	Camera camera;
+
+	Squares squares;
+	squares += vec4(-.5, -.5, 0, 1);
+
+	Helper helper0;
+	Helper helper1;
+	Helper helper2;
+	Helper helper3;
+	Helper helper4;
+	Helper helper5;
+	Helper helper6;
+	Helper helper7;
 
 	Loom::RunOnThisThread();
 

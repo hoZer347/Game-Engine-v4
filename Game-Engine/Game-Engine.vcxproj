@@ -155,9 +155,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -165,10 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />

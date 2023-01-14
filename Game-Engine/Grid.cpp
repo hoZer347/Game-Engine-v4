@@ -29,54 +29,7 @@ namespace loom
 		for (float x = 0; x < x_size; x++)
 		{
 			for (float y = 0; y < y_size; y++)
-			{
-				squares.data.emplace_back((x + 0) / x_size);
-				squares.data.emplace_back((y + 0) / y_size);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(1);
-
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-
-
-
-				squares.data.emplace_back((x + 1) / x_size);
-				squares.data.emplace_back((y + 0) / y_size);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(1);
-
-				squares.data.emplace_back(1);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-
-
-
-				squares.data.emplace_back((x + 1) / x_size);
-				squares.data.emplace_back((y + 1) / y_size);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(1);
-
-				squares.data.emplace_back(1);
-				squares.data.emplace_back(1);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-
-
-
-				squares.data.emplace_back((x + 0) / x_size);
-				squares.data.emplace_back((y + 1) / y_size);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(1);
-
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(1);
-				squares.data.emplace_back(0);
-				squares.data.emplace_back(0);
-			};
-		};
+				squares += vec4(x, y, 0, 1);
 	};
 	void Grid::load()
 	{

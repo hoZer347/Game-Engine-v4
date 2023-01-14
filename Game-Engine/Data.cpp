@@ -8,78 +8,72 @@
 namespace loom
 {
 	Object::Object()
-	{ 
-		objects.push_back(this);
+	{
+		if (!Loom::IsRunning())
+			objects.push_back(this);
+		else Loom::Add(this);
 	}
+	Object::~Object()
+	{ Loom::Rmv(this); };
 	
 
 
 	Renderable::Renderable()
 	{
-		renderables.push_back(this);
+		if (!Loom::IsRunning())
+			renderables.push_back(this);
+		else Loom::Add(this);
 	};
+	Renderable::~Renderable()
+	{ Loom::Rmv(this); };
 
 
 
 	Updatable::Updatable()
 	{
-		updatables.push_back(this);
+		if (!Loom::IsRunning())
+			updatables.push_back(this);
+		else Loom::Add(this);
 	};
+	Updatable::~Updatable()
+	{ Loom::Rmv(this); };
 
 
 
-	void Helper::assign_on_kill(Task task)
+	Helper::Helper()
 	{
-		on_kill.push_back(task);
+		thread = std::thread([this]()
+		{
+			Task task = []() { };
+			
+			while (!KILL)
+			{
+				while (!PASS && !KILL);
+
+				mut.lock();
+				if (!in.empty())
+				{
+					task = in.front();
+					in.pop();
+				};
+				mut.unlock();
+				PASS--;
+
+				task();
+			};
+		});
+	};
+	Helper::~Helper()
+	{
+		KILL = true;
+		if (thread.joinable())
+			thread.join();
 	};
 	void Helper::assign(Task task)
 	{
 		mut.lock();
-		for_kernels.push(task);
+		in.push(task);
+		PASS++;
 		mut.unlock();
-	};
-	void Helper::push(Task task)
-	{
-		mut.lock();
-		for_tasks.push(task);
-		mut.unlock();
-	};
-	void Helper::load()
-	{
-		thread = std::thread([this]()
-		{
-			while (!KILL.load())
-			{
-				mut.lock();
-				while (!for_tasks.empty())
-				{
-					tasks.push(for_tasks.front());
-					for_tasks.pop();
-				};
-				while (!for_kernels.empty())
-				{
-					kernels.push_back(for_kernels.front());
-					for_kernels.pop();
-				};
-				mut.unlock();
-
-				for (auto& task : kernels)
-					task();
-
-				while (tasks.size())
-				{
-					tasks.front()();
-					tasks.pop();
-				};
-
-				while (STOP.load() && !KILL.load());
-			};
-		});
-	};
-	void Helper::unload()
-	{
-		KILL.store(true);
-		if (thread.joinable())
-			thread.join();
 	};
 };
