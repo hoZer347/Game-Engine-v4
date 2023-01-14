@@ -1,37 +1,27 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "loom.h"
-#include "Data.h"
-#include "Window.h"
+#include <glm/gtx/transform.hpp>
+
+#include "Loom.h"
+#include "Grid.h"
+#include "Geometry.h"
 using namespace loom;
 
+#include <thread>
 #include <iostream>
 
 int main()
 {
-	Window window;
+	Loom::Init();
 
-	Shader shader { "shaders/default" };
-	Textures textures { "Resources/stone.png" };
-	Draw draw { 3 };
-	Buffer<64, float> buffer { GL_ARRAY_BUFFER, GL_STATIC_DRAW };
-	buffer =
-	{
-		0, 0, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   0, 0, 0, 0,
-		1, 0, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   1, 0, 0, 0,
-		1, 1, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   1, 1, 0, 0,
-		0, 1, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   0, 1, 0, 0,
-	};
-	Mesh mesh { shader, textures, draw, buffer };
+	Grid grid{ 100, 100 };
+	grid.squares.trns *= scale(vec3(1.5, 1.5, 1.5));
+	grid.squares.trns *= translate(vec3(-.5, -.5, 0));
 
-	std::cout << sizeof(Shader) << std::endl;
-	std::cout << sizeof(Textures) << std::endl;
-	std::cout << sizeof(Draw) << std::endl;
-	std::cout << sizeof(Buffer<64, float>) << std::endl;
-	std::cout << sizeof(Mesh) << std::endl;
+	Loom::RunOnThisThread();
 
-	open(window, 640, 640, "Title");
+	Loom::Exit();
 
 	return 0;
 };

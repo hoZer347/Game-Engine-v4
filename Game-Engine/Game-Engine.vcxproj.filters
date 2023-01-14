@@ -2,13 +2,22 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="loom.cpp" />
-    <ClCompile Include="Buffer.cpp" />
-    <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Thread.cpp" />
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="Attribute.cpp" />
-    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Engine\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Loom.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -17,24 +26,42 @@
     <Filter Include="Game">
       <UniqueIdentifier>{3a4c3b07-ca94-425a-ac95-3b1306039f03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Geometry">
+      <UniqueIdentifier>{1a16db8b-55ee-413e-b152-4f0d3c8e47cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Texture.hpp">
-      <Filter>Game</Filter>
+    <ClInclude Include="Geometry.h">
+      <Filter>Engine\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.hpp">
-      <Filter>Game</Filter>
+    <ClInclude Include="Data.h">
+      <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="loom.h" />
-    <ClInclude Include="Data.h" />
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Thread.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="Attribute.h" />
-    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Loom.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Enums.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
+    <None Include="shaders\Squares.frag">
+      <Filter>Engine\Geometry</Filter>
+    </None>
+    <None Include="shaders\Squares.vert">
+      <Filter>Engine\Geometry</Filter>
+    </None>
+    <None Include="shaders\Grid.frag" />
+    <None Include="shaders\Grid.vert" />
   </ItemGroup>
 </Project>

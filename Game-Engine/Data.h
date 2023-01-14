@@ -5,147 +5,118 @@ using namespace glm;
 
 #include <mutex>
 #include <queue>
-#include <string>
+#include <thread>
 #include <vector>
-#include <memory>
-#include <atomic>
+#include <string>
+#include <iostream>
 #include <functional>
-
-#ifdef STOP_STRUCT_PRIVACY
-#define protected public
-#define private public
-#endif
 
 namespace loom
 {
-	// Basic types
+	typedef std::function<void()> Task;
+
 	typedef uint32_t ID;
 	typedef uint32_t TYPE;
-	typedef uint32_t Ind;
-	//
 
+	struct ShaderManager;
+	struct TextureManager;
 
+	ShaderManager* GetSMgr();
+	TextureManager* GetTMgr();
 
-	// RenderObj
-	struct RenderObj
+	struct Object
 	{
-		virtual ~RenderObj();
-
 	protected:
-		friend struct Window;
-		RenderObj() { };
+		friend struct Loom;
+		Object();
+		virtual void load() = 0;
+		virtual void unload() = 0;
+		static inline std::vector<Object*> objects;
 	};
-	//
 
 
 
-	// Shader
-	struct Shader final : public RenderObj
-	{
-		Shader(std::string files...)
-		: files({ files })
-		{ };
-
+	struct Renderable
+	{		
 	protected:
-		friend struct Mesh;
-		const std::vector<std::string> files;
-		ID id = -1;
+		friend struct Loom;
+		Renderable();
+		virtual void render()=0;
+		static inline std::vector<Renderable*> renderables;
 	};
-	//
 
 
 
-	// Textures
-	struct Textures final : public RenderObj
+	struct Updatable
 	{
-		Textures(std::string files...)
-		: files({ files })
-		{ };
-
-		// TODO: Make work with other RGB types
-		// TODO: Add different wrapping options
-
 	protected:
-		friend struct Mesh;
-		std::vector<std::string> files;
-		std::vector<ID> ids;
+		friend struct Loom;
+		Updatable();
+		virtual void update()=0;
+		static inline std::vector<Updatable*> updatables;
 	};
-	//
 
 
 
-	// Draw
-	struct Draw final : public RenderObj
+	struct Helper final : public Object
 	{
-		Draw(TYPE type)
-		: type(type)
-		{ };
+		Helper() { };
 
-	protected:
-		friend struct Mesh;
-		const TYPE type;
-	};
-	//
+		void assign_on_kill(Task task);
+		void assign(Task task);
+		void push(Task task);
 
-
-
-	// Buffer
-	struct _Buffer : public RenderObj
-	{
-		// TODO: Add more attribute types
-		// TODO: Add functionality for GL_BUFFER types
-		void AddAttribute(size_t size, std::string name);
-
-	protected:
-		_Buffer(const TYPE array_type, const TYPE render_type, const size_t size, const void* ptr)
-		: array_type(array_type), render_type(render_type), size(size), ptr(ptr)
-		{ };
-
-		friend struct Mesh;
-		friend struct Window;
-		const TYPE array_type;
-		const TYPE render_type;
-		ID id = 0;
-		size_t size = 0;
-		const void* ptr = nullptr;
-
-		std::vector<std::pair<size_t, std::string>> attributes;
-	};
-	template <size_t NUM_VALUES, typename T=float>
-	struct Buffer final : public _Buffer
-	{
-		Buffer(const TYPE array_type, const TYPE render_type, std::vector<T> data = { })
-		: _Buffer(array_type, render_type, NUM_VALUES * sizeof(T), data.data())
-		{ };
-
-		void operator=(std::vector<T> new_data) { data = new_data; size = data.size() * sizeof(T); ptr = data.data(); }
+		void play() { STOP = false; };
+		void stop() { STOP = true;  };
+		void kill() { KILL = true;  };
 
 	private:
-		std::vector<T> data;
+		void load() override;
+		void unload() override;
+
+		std::mutex mut;
+		std::thread thread;
+		std::queue<Task> for_tasks;
+		std::queue<Task> for_kernels;
+		std::queue<Task> tasks;
+		std::vector<Task> kernels;
+		std::vector<Task> on_kill;
+		std::atomic<bool> STOP = false;
+		std::atomic<bool> KILL = false;
 	};
-	//
 
 
 
-	// Mesh
-	struct Mesh final : public RenderObj
+	struct Shader final : public Object
 	{
-		Mesh(Shader& shader, Textures& textures, Draw& draw, _Buffer& buffers...)
-		: shader(shader), textures(textures), draw(draw), buffers({ &buffers })
+		Shader(std::string files...)
+			: files({ files })
 		{ };
 
-		~Mesh();
+		ID id = 0;
 
-		void load();
+	private:
+		void load() override;
+		void unload() override;
 
-	protected:
-		friend struct Window;
-
-		Shader& shader;
-		Textures& textures;
-		Draw& draw;
-
-		std::vector<_Buffer*> buffers;
+		std::vector<std::string> files;
 	};
-	//
+
+
+
+	struct Texture final : public Object
+	{
+		Texture(std::string file, TYPE type)
+		: file(file), type(type), Object()
+		{ };
+
+		ID id = 0;
+
+	private:
+		void load() override;
+		void unload() override;
+		
+		std::string file;
+		TYPE type;
+	};
 };

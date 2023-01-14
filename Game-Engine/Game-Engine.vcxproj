@@ -124,13 +124,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;C:\GameDev\FreeType\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GameDev\MingGW\mingw-w64-headers;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;C:\GameDev\FreeType\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;C:\GameDev\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\GameDev\MingGW\mingw-w64-libraries;C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;C:\GameDev\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGL32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib;glew32.lib;glew32s.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;C:\GameDev\FreeType\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GameDev\MingGW\mingw-w64-headers;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;C:\GameDev\FreeType\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -151,33 +151,35 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OpenGL32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib;glew32.lib;glew32s.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;C:\GameDev\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\GameDev\MingGW\mingw-w64-libraries;C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;C:\GameDev\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Attribute.cpp" />
-    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Data.cpp" />
-    <ClCompile Include="loom.cpp" />
+    <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Thread.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attribute.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Data.h" />
-    <ClInclude Include="loom.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Shader.hpp" />
-    <ClInclude Include="Texture.hpp" />
-    <ClInclude Include="Thread.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Loom.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
+    <None Include="shaders\Grid.frag" />
+    <None Include="shaders\Grid.vert" />
+    <None Include="shaders\Squares.frag" />
+    <None Include="shaders\Squares.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

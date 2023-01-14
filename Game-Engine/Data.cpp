@@ -3,75 +3,83 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "Shader.hpp"
-#include "Texture.hpp"
+#include "Loom.h"
 
 namespace loom
 {
-	thread_local static ShaderManager* s_mgr = nullptr;
-	thread_local static TextureManager* t_mgr = nullptr;
+	Object::Object()
+	{ 
+		objects.push_back(this);
+	}
+	
 
-	RenderObj::~RenderObj()
+
+	Renderable::Renderable()
 	{
-		// TODO: Prevent renderobjs from being destroyed during runtime
+		renderables.push_back(this);
 	};
 
 
-	void _Buffer::AddAttribute(size_t size, std::string name)
-	{ attributes.push_back({ size, name }); };
 
-
-	Mesh::~Mesh()
+	Updatable::Updatable()
 	{
-		// Unloading Shaders
-		//
-
-		// Unloading Textures
-		//
-
-		// Unloading Draw Command
-		//
-
-
-		// Unloading Buffers;
-		//for (auto& buffer : buffers)
-		//	glDeleteBuffers(1, &buffer->id);
-		//
+		updatables.push_back(this);
 	};
 
-	void Mesh::load()
+
+
+	void Helper::assign_on_kill(Task task)
 	{
-		if (GLFWwindow* window = glfwGetCurrentContext())
+		on_kill.push_back(task);
+	};
+	void Helper::assign(Task task)
+	{
+		mut.lock();
+		for_kernels.push(task);
+		mut.unlock();
+	};
+	void Helper::push(Task task)
+	{
+		mut.lock();
+		for_tasks.push(task);
+		mut.unlock();
+	};
+	void Helper::load()
+	{
+		thread = std::thread([this]()
 		{
-			// Loading Shader
-			if (!s_mgr)
-				s_mgr = new ShaderManager();
+			while (!KILL.load())
+			{
+				mut.lock();
+				while (!for_tasks.empty())
+				{
+					tasks.push(for_tasks.front());
+					for_tasks.pop();
+				};
+				while (!for_kernels.empty())
+				{
+					kernels.push_back(for_kernels.front());
+					for_kernels.pop();
+				};
+				mut.unlock();
 
-			shader.id = s_mgr->create(shader.files);
-			glUseProgram(shader.id);
-			//
+				for (auto& task : kernels)
+					task();
 
+				while (tasks.size())
+				{
+					tasks.front()();
+					tasks.pop();
+				};
 
-			// Loading Textures
-			if (!t_mgr)
-				t_mgr = new TextureManager();
-
-			for (auto& file : textures.files)
-				textures.ids.push_back(t_mgr->create(file, GL_RGB));
-			//
-
-
-			// Loading Draw Command
-			//
-
-
-			// Loading Buffers
-			//for (auto& buffer : buffers)
-			//{
-			//	glGenBuffers(1, &buffer->id);
-			//	glBindBuffer(GL_ARRAY_BUFFER, buffer->id);
-			//};
-			//
-		};
+				while (STOP.load() && !KILL.load());
+			};
+		});
+	};
+	void Helper::unload()
+	{
+		KILL.store(true);
+		if (thread.joinable())
+			thread.join();
 	};
 };
