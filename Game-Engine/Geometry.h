@@ -4,7 +4,7 @@
 
 namespace loom
 {
-	struct Squares final : public Renderable
+	struct Squares final : public Object, public Renderable
 	{
 		Squares()
 		{ };
@@ -70,7 +70,6 @@ namespace loom
 		};
 
 		mat4 trns = mat4(1);
-		std::vector<float> data;
 		
 	private:
 		std::vector<float> data;

@@ -6,6 +6,7 @@ namespace loom
 {
 	struct Camera final : public Updatable
 	{
+		Camera();
 		static inline mat4 mvp;
 
 	private:
@@ -25,8 +26,6 @@ namespace loom
 				far=0;
 
 	private:
-		void load() override;
 		void update() override;
-		void unload() override;
 	};
 };

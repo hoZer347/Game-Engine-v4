@@ -7,16 +7,6 @@ using namespace glm;
 
 namespace loom
 {
-	struct Loom
-	{
-		static void Init();
-		static void RunOnThisThread();
-		static void Exit();
-	};
-	struct Object;
-	struct Renderable;
-	struct Updatable;
-
 	struct Loom final
 	{
 		static void Init();
@@ -37,5 +27,8 @@ namespace loom
 		static void Rmv(Object* obj);
 		static void Rmv(Renderable* obj);
 		static void Rmv(Updatable* obj);
+
+	private:
+		Loom() { };
 	};
 };

@@ -10,14 +10,6 @@ namespace loom
 {
 	Camera::Camera()
 	{
-		
-	};
-	Camera::~Camera()
-	{
-
-	};
-	void Camera::load()
-	{
 		eye = vec3(0, 0, 1);
 		ctr = vec3(0, 0, 0);
 		up  = vec3(0, 1, 0);
@@ -44,9 +36,5 @@ namespace loom
 			for (auto& renderable : Renderable::renderables)
 				renderable->render();
 		};
-	};
-	void Camera::unload()
-	{
-
 	};
 };

@@ -28,9 +28,7 @@ namespace loom
 		Squares squares;
 
 	private:
-		void load() override;
 		void render() override;
-		void unload() override;
 
 		uint32_t x_size;
 		uint32_t y_size;

@@ -14,7 +14,6 @@
 #include "Enums.h"
 #include "Data.h"
 #include "Geometry.h"
-
 #include "Shader.h"
 #include "Texture.h"
 
@@ -22,8 +21,7 @@ namespace loom
 {
 	static inline GLFWwindow* window = nullptr;
 	static inline std::mutex create_windows_one_at_a_time;
-
-	static inline std::atomic<bool> isRunning = false;
+	std::atomic<bool> isRunning = false;
 
 	void Loom::Init()
 	{
@@ -50,7 +48,6 @@ namespace loom
 		isRunning = true;
 
 		glfwSwapInterval(0);
-		glEnable(GL_DEPTH);
 
 		glEnable(GL_DEPTH);
 
@@ -80,54 +77,115 @@ namespace loom
 				std::cout << message << std::endl;
 			}, nullptr);
 
-			Shader shader{ "shaders/default" };
-			Textures textures{ "Resources/stone.png" };
-			Draw draw{ GL_QUADS };
-			Buffer<64, float> vtxs{ GL_ARRAY_BUFFER, GL_STATIC_DRAW };
-			vtxs =
-			{
-				0, 0, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   0, 0, 0, 0,
-				1, 0, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   1, 0, 0, 0,
-				1, 1, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   1, 1, 0, 0,
-				0, 1, 0, 1,   1, 0, 0, 1,   1, 1, 1, 1,   0, 1, 0, 0,
-			};
-			Buffer<4, uint32_t> inds{ GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW };
-			inds = { 0, 1, 2, 3, };
+		GLuint _vtxs, _inds;
+		glGenBuffers(1, &_vtxs);
+		glGenBuffers(1, &_inds);
+		glBindBuffer(GL_ARRAY_BUFFER, _vtxs);
+		glBindBuffer(GL_ARRAY_BUFFER, _inds);
 
-			Mesh mesh{ shader, textures, draw, vtxs };
-			mesh.load();
+		glVertexAttribPointer(VEC4_0_16, 4, GL_FLOAT, GL_FALSE, 0, (void*)(0 * sizeof(vec4)));
 
-			while (!glfwWindowShouldClose(_window))
-			{
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glVertexAttribPointer(VEC4_0_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(0 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_1_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(1 * sizeof(vec4)));
+
+		glVertexAttribPointer(VEC4_0_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(0 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_1_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(1 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_2_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(2 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
+
+		glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h) { glViewport(0, 0, w, h); });
+
+		while (!glfwWindowShouldClose(window))
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glfwPollEvents();
+
+			for (auto& obj : Updatable::updatables)
+				obj->update();
+
+			glfwSwapBuffers(window);
+		};
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glDeleteBuffers(1, &_vtxs);
+		glDeleteBuffers(1, &_inds);
+
+		for (auto& obj : Object::objects)
+			obj->unload();
+
+		delete s_mgr;
+		delete t_mgr;
+
+		glfwDestroyWindow(window);
+
+		glfwTerminate();
+	};
+	void Loom::Exit()
+	{
+
+	};
 
 
-				for (auto& id : textures.ids)
-					glBindTexture(GL_TEXTURE_2D, id);
 
-				glBufferData(
-					vtxs.array_type,
-					vtxs.size,
-					vtxs.ptr,
-					vtxs.render_type);
+	void Shader::load()
+	{
+		id = s_mgr->create(files);
+		glUseProgram(id);
+	};
+	void Shader::unload()
+	{
 
-				glBufferData(
-					inds.array_type,
-					inds.size,
-					inds.ptr,
-					inds.render_type);
+	};
 
-				glDrawElements(draw.type, 4, GL_UNSIGNED_INT, nullptr);
-				
-				glfwPollEvents();
-				glfwSwapBuffers(_window);
 
-				glBindTexture(GL_TEXTURE_2D, 0);
-			};
-		});
 
-		threads.back().join();
+	void Texture::load()
+	{
+		id = t_mgr->create(file, type);
+	};
+	void Texture::unload()
+	{
 
-		return 1;
+	};
+
+
+	ShaderManager* GetSMgr()
+	{
+		return s_mgr;
+	};
+	TextureManager* GetTMgr()
+	{
+		return t_mgr;
+	};
+
+	bool Loom::IsRunning()
+	{
+		return isRunning;
+	};
+	void Loom::Add(Object* obj)
+	{
+		
+	};
+	void Loom::Add(Renderable* obj)
+	{
+
+	};
+	void Loom::Add(Updatable* obj)
+	{
+
+	};
+	void Loom::Rmv(Object* obj)
+	{
+
+	};
+	void Loom::Rmv(Renderable* obj)
+	{
+
+	};
+	void Loom::Rmv(Updatable* obj)
+	{
+
 	};
 };

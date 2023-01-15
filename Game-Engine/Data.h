@@ -45,7 +45,7 @@ namespace loom
 
 
 
-	struct Renderable : public Object
+	struct Renderable
 	{
 	protected:
 		friend struct Camera;
@@ -57,7 +57,7 @@ namespace loom
 
 
 
-	struct Updatable : public Object
+	struct Updatable
 	{
 	protected:
 		friend struct Loom;
@@ -84,13 +84,7 @@ namespace loom
 		std::vector<std::string> files;
 	};
 
-		void play() { STOP = false; };
-		void stop() { STOP = true;  };
-		void kill() { KILL = true;  };
 
-	private:
-		void load() override;
-		void unload() override;
 
 	struct Texture final : public Object
 	{
