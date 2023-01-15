@@ -7,6 +7,10 @@ using namespace glm;
 
 namespace loom
 {
+	struct Object;
+	struct Renderable;
+	struct Updatable;
+
 	struct Loom final
 	{
 		static void Init();

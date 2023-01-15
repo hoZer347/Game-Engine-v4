@@ -160,6 +160,8 @@ namespace loom
 		return t_mgr;
 	};
 
+
+
 	bool Loom::IsRunning()
 	{
 		return isRunning;
