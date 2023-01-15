@@ -11,6 +11,7 @@ namespace loom
 	struct Renderable;
 	struct Updatable;
 
+	// The main engine singleton
 	struct Loom final
 	{
 		static void Init();
@@ -35,4 +36,5 @@ namespace loom
 	private:
 		Loom() { };
 	};
+	//
 };

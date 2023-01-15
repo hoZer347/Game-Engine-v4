@@ -5,6 +5,7 @@
 
 #include "Loom.h"
 #include "Grid.h"
+#include "Helper.h"
 #include "Camera.h"
 #include "Geometry.h"
 using namespace loom;
@@ -27,8 +28,23 @@ int main()
 	Helper helper3;
 	Helper helper4;
 	Helper helper5;
-	Helper helper6;
-	Helper helper7;
+	
+	Task task = [&task]()
+	{
+		std::cout << "a" << "b" << "c" << "d" << "e" << std::endl;
+		Helper::assign(task);
+	};
+
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
+	Helper::assign(task);
 
 	Loom::RunOnThisThread();
 

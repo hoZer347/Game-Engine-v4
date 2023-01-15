@@ -9,9 +9,11 @@ namespace loom
 {
 	Object::Object()
 	{
+		mut.lock();
 		if (!Loom::IsRunning())
 			objects.push_back(this);
 		else Loom::Add(this);
+		mut.unlock();
 	}
 	Object::~Object()
 	{ Loom::Rmv(this); };
@@ -20,9 +22,11 @@ namespace loom
 
 	Renderable::Renderable()
 	{
+		mut.lock();
 		if (!Loom::IsRunning())
 			renderables.push_back(this);
 		else Loom::Add(this);
+		mut.unlock();
 	};
 	Renderable::~Renderable()
 	{ Loom::Rmv(this); };
@@ -31,49 +35,12 @@ namespace loom
 
 	Updatable::Updatable()
 	{
+		mut.lock();
 		if (!Loom::IsRunning())
 			updatables.push_back(this);
 		else Loom::Add(this);
+		mut.unlock();
 	};
 	Updatable::~Updatable()
 	{ Loom::Rmv(this); };
-
-
-
-	Helper::Helper()
-	{
-		thread = std::thread([this]()
-		{
-			Task task = []() { };
-			
-			while (!KILL)
-			{
-				while (!PASS && !KILL);
-
-				mut.lock();
-				if (!in.empty())
-				{
-					task = in.front();
-					in.pop();
-				};
-				mut.unlock();
-				PASS--;
-
-				task();
-			};
-		});
-	};
-	Helper::~Helper()
-	{
-		KILL = true;
-		if (thread.joinable())
-			thread.join();
-	};
-	void Helper::assign(Task task)
-	{
-		mut.lock();
-		in.push(task);
-		PASS++;
-		mut.unlock();
-	};
 };

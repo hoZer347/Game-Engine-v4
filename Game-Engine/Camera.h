@@ -4,6 +4,7 @@
 
 namespace loom
 {
+	// Camera, without this, you won't actually render anything
 	struct Camera final : public Updatable
 	{
 		Camera();
@@ -28,4 +29,5 @@ namespace loom
 	private:
 		void update() override;
 	};
+	//
 };

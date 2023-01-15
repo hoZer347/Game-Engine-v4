@@ -13,25 +13,42 @@ using namespace glm;
 
 namespace loom
 {
+	// Generic Task Object
+	// Basically works as an std::function, might make this a typedef
 	struct Task
 	{
 		Task(auto task)
 		: task(task)
 		{ };
 
+		Task(const Task& task)
+		: task(task.task)
+		{ };
+
 		void operator()() { return task(); };
 		std::function<void()> task;
 	};
+	//
 
+	
+	
+	// Enumeration types
 	typedef uint32_t ID;
 	typedef uint32_t TYPE;
+	//
 
+
+
+	// Getting around thread_local bullshit
 	struct ShaderManager;
 	struct TextureManager;
-
 	ShaderManager* GetSMgr();
 	TextureManager* GetTMgr();
+	//
 
+
+
+	// Anything that should be loaded on run, and / or unloaded after, is a Object
 	struct Object
 	{
 	protected: // TODO: Add Identification System
@@ -40,11 +57,14 @@ namespace loom
 		virtual ~Object();
 		virtual void load()=0;
 		virtual void unload()=0;
+		static inline std::mutex mut;
 		static inline std::vector<Object*> objects;
 	};
+	//
 
 
 
+	// Anything that gets rendered is a Renderable
 	struct Renderable
 	{
 	protected:
@@ -52,11 +72,14 @@ namespace loom
 		Renderable();
 		virtual ~Renderable();
 		virtual void render()=0;
+		static inline std::mutex mut;
 		static inline std::vector<Renderable*> renderables;
 	};
+	//
 
 
 
+	// Anything that is updated is an updatable
 	struct Updatable
 	{
 	protected:
@@ -64,11 +87,14 @@ namespace loom
 		Updatable();
 		virtual ~Updatable();
 		virtual void update()=0;
+		static inline std::mutex mut;
 		static inline std::vector<Updatable*> updatables;
 	};
+	//
 
 
 
+	// Shader Object
 	struct Shader final : public Object
 	{
 		Shader(std::string files...)
@@ -83,9 +109,11 @@ namespace loom
 
 		std::vector<std::string> files;
 	};
+	//
 
 
 
+	// Texture Object
 	struct Texture final : public Object
 	{
 		Texture(std::string file, TYPE type)
@@ -101,20 +129,5 @@ namespace loom
 		std::string file;
 		TYPE type;
 	};
-
-
-
-	struct Helper final
-	{
-		Helper();
-		virtual ~Helper();
-		static void assign(Task task);
-
-	private:
-		std::thread thread;
-		std::atomic<bool> KILL;
-		static inline std::mutex mut;
-		static inline std::queue<Task> in;
-		static inline std::atomic<int> PASS = 0;
-	};
+	//
 };

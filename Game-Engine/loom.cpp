@@ -13,7 +13,7 @@
 
 #include "Enums.h"
 #include "Data.h"
-#include "Geometry.h"
+#include "Helper.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -100,8 +100,10 @@ namespace loom
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
 
+			//SyncHelper::synchronizer.lock_shared();
 			for (auto& obj : Updatable::updatables)
 				obj->update();
+			//SyncHelper::synchronizer.unlock_shared();
 
 			glfwSwapBuffers(window);
 		};

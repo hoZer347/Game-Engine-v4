@@ -11,5 +11,5 @@ out vec2 _cds;
 void main()
 {
 	_cds = cds;
-	gl_Position = trns * mvp * pos;
+	gl_Position = mvp * trns * pos;
 };

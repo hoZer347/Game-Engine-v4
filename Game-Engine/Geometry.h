@@ -4,6 +4,7 @@
 
 namespace loom
 {
+	// Mesh of squares
 	struct Squares final : public Object, public Renderable
 	{
 		Squares()
@@ -86,4 +87,5 @@ namespace loom
 		static inline Shader _shader{ "shaders/Squares" };
 		static inline Texture _texture{ "Resources/stone.png", 0x1907 };
 	};
+	//
 };

@@ -11,15 +11,15 @@ namespace loom
 
 	enum // Vertex Attributes
 	{
-		VEC4_0_16, // 0
+		VEC4_0_16,
 
-		VEC4_0_32, // 1
-		VEC4_1_32, // 2
+		VEC4_0_32,
+		VEC4_1_32,
 
-		VEC4_0_64, // 3
-		VEC4_1_64, // 4
-		VEC4_2_64, // 5
-		VEC4_3_64, // 6
+		VEC4_0_64,
+		VEC4_1_64,
+		VEC4_2_64,
+		VEC4_3_64,
 	};
 
 	enum // Useful Matrices
