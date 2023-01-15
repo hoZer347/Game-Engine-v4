@@ -10,6 +10,8 @@ namespace loom
 {
 	Camera::Camera()
 	{
+		cameras.push_back(this);
+
 		eye = vec3(0, 0, 1);
 		ctr = vec3(0, 0, 0);
 		up  = vec3(0, 1, 0);
@@ -22,7 +24,7 @@ namespace loom
 		mode = mat4(1);
 		view = lookAt(eye, ctr, up);
 	};
-	void Camera::update()
+	void Camera::render_all()
 	{
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{

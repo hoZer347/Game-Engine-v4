@@ -32,7 +32,5 @@ namespace loom
 
 		uint32_t x_size;
 		uint32_t y_size;
-
-		static inline ID _buffer = 0;
 	};
 };

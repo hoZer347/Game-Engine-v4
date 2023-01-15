@@ -18,6 +18,9 @@ namespace loom
 		static void RunOnThisThread();
 		static void Exit();
 
+		static void lock();
+		static void unlock();
+
 		static bool IsRunning();
 
 	protected:

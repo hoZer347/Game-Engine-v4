@@ -7,6 +7,7 @@
 #include "Grid.h"
 #include "Helper.h"
 #include "Camera.h"
+#include "Buffer.h"
 #include "Geometry.h"
 using namespace loom;
 
@@ -17,34 +18,29 @@ int main()
 {
 	Loom::Init();
 
-	Camera camera;
+	DoubleBuffer buffer;
 
-	Squares squares;
-	squares += vec4(-.5, -.5, 0, 1);
-
-	Helper helper0;
-	Helper helper1;
-	Helper helper2;
-	Helper helper3;
-	Helper helper4;
-	Helper helper5;
-	
-	Task task = [&task]()
+	std::thread thread1 = std::thread([&buffer]()
 	{
-		std::cout << "a" << "b" << "c" << "d" << "e" << std::endl;
-		Helper::assign(task);
-	};
-
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
-	Helper::assign(task);
+		while (true)
+		{
+			buffer.access1([](std::vector<float>& v)
+			{
+				if (v.size())
+					v.pop_back();
+			});
+		};
+	});
+	std::thread thread2 = std::thread([&buffer]()
+	{
+		while (true)
+		{
+			buffer.access2([](std::vector<float>& v)
+			{
+				v.push_back(1);
+			});
+		};
+	});
 
 	Loom::RunOnThisThread();
 

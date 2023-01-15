@@ -10,17 +10,20 @@
 #include <iostream>
 
 #include <mutex>
+#include <shared_mutex>
 
 #include "Enums.h"
 #include "Data.h"
 #include "Helper.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 namespace loom
 {
 	static inline GLFWwindow* window = nullptr;
 	static inline std::mutex create_windows_one_at_a_time;
+	static inline std::shared_mutex window_is_rendering;
 	std::atomic<bool> isRunning = false;
 
 	void Loom::Init()
@@ -47,8 +50,6 @@ namespace loom
 
 		isRunning = true;
 
-		glfwSwapInterval(0);
-
 		glEnable(GL_DEPTH);
 
 		glEnable(GL_BLEND);
@@ -63,6 +64,8 @@ namespace loom
 
 		glEnable(GL_MULTISAMPLE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
+
+		glEnable(GL_DOUBLEBUFFER);
 
 		glDebugMessageCallback([](
 			GLenum source,
@@ -97,15 +100,19 @@ namespace loom
 
 		while (!glfwWindowShouldClose(window))
 		{
+			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
 
-			//SyncHelper::synchronizer.lock_shared();
 			for (auto& obj : Updatable::updatables)
 				obj->update();
-			//SyncHelper::synchronizer.unlock_shared();
 
-			glfwSwapBuffers(window);
+			window_is_rendering.lock();
+
+			for (auto& cam : Camera::cameras)
+				cam->render_all();
+
+			window_is_rendering.unlock();
 		};
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -167,6 +174,14 @@ namespace loom
 	bool Loom::IsRunning()
 	{
 		return isRunning;
+	};
+	void Loom::lock()
+	{
+		window_is_rendering.lock_shared();
+	};
+	void Loom::unlock()
+	{
+		window_is_rendering.unlock_shared();
 	};
 	void Loom::Add(Object* obj)
 	{

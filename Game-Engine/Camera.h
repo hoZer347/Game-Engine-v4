@@ -5,10 +5,14 @@
 namespace loom
 {
 	// Camera, without this, you won't actually render anything
-	struct Camera final : public Updatable
+	struct Camera final
 	{
 		Camera();
 		static inline mat4 mvp;
+
+	protected:
+		friend struct Loom;
+		static inline std::vector<Camera*> cameras;
 
 	private:
 		mat4	mode,
@@ -27,7 +31,7 @@ namespace loom
 				far=0;
 
 	private:
-		void update() override;
+		void render_all();
 	};
 	//
 };

@@ -22,6 +22,7 @@ namespace loom
 		: shader(shader), texture(texture)
 		{ };
 
+		void operator*=(mat4 m) { trns *= m; };
 		void operator+=(vec4 v)
 		{
 			data.reserve(32 * sizeof(float));
@@ -70,9 +71,8 @@ namespace loom
 			data.emplace_back(0.f);
 		};
 
-		mat4 trns = mat4(1);
-		
 	private:
+		mat4 trns = mat4(1);
 		std::vector<float> data;
 		
 		void load() override;
