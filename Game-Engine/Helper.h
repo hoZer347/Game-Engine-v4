@@ -1,10 +1,16 @@
 #pragma once
 
-#include "Data.h"
+#include <mutex>
+#include <thread>
+#include <queue>
+#include <atomic>
+#include <functional>
 
 namespace loom
 {
-	struct Helper final : public Object
+	typedef std::function<void()> Task;
+
+	struct Helper final
 	{
 		Helper();
 		void assign(Task task);
@@ -12,8 +18,8 @@ namespace loom
 		static void shared_assign(std::vector<Task> tasks);
 
 	private:
-		void load() override;
-		void unload() override;
+		void load();
+		void unload();
 
 		std::mutex mut;
 		std::thread thread;

@@ -2,10 +2,21 @@
 
 #include "Data.h"
 
+#include <glm/glm.hpp>
+using namespace glm;
+
+#include <vector>
+
 namespace loom
 {
+	typedef uint32_t ID;
+	typedef uint32_t TYPE;
+
+	struct Shader;
+	struct Texture;
+
 	// Mesh of squares
-	struct Squares final : public Object, public Renderable
+	struct Squares final
 	{
 		Squares()
 		{ };
@@ -75,9 +86,9 @@ namespace loom
 		mat4 trns = mat4(1);
 		std::vector<float> data;
 		
-		void load() override;
-		void render() override;
-		void unload() override;
+		void load();
+		void render();
+		void unload();
 
 		
 		Shader& shader = _shader;

@@ -10,11 +10,11 @@
 #include <iostream>
 
 #include <mutex>
+#include <chrono>
 #include <shared_mutex>
 
 #include "Enums.h"
 #include "Data.h"
-#include "Helper.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
@@ -25,6 +25,7 @@ namespace loom
 	static inline std::mutex create_windows_one_at_a_time;
 	static inline std::shared_mutex window_is_rendering;
 	std::atomic<bool> isRunning = false;
+	typedef std::chrono::high_resolution_clock Clock;
 
 	void Loom::Init()
 	{
@@ -42,9 +43,6 @@ namespace loom
 		glewExperimental = true;
 		glfwMakeContextCurrent(window);
 		glewInit();
-
-		for (auto& obj : Object::objects)
-			obj->load();
 
 		create_windows_one_at_a_time.unlock();
 
@@ -66,6 +64,8 @@ namespace loom
 		glfwWindowHint(GLFW_SAMPLES, 4);
 
 		glEnable(GL_DOUBLEBUFFER);
+
+		glfwSwapInterval(0);
 
 		glDebugMessageCallback([](
 			GLenum source,
@@ -100,19 +100,16 @@ namespace loom
 
 		while (!glfwWindowShouldClose(window))
 		{
+			auto _clock = Clock::now();
+
 			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
 
-			for (auto& obj : Updatable::updatables)
-				obj->update();
+			for (auto& renderable : Renderable::renderables)
+				renderable->render();
 
-			window_is_rendering.lock();
-
-			for (auto& cam : Camera::cameras)
-				cam->render_all();
-
-			window_is_rendering.unlock();
+			std::cout << Clock::now() - _clock << std::endl;
 		};
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -120,9 +117,6 @@ namespace loom
 
 		glDeleteBuffers(1, &_vtxs);
 		glDeleteBuffers(1, &_inds);
-
-		for (auto& obj : Object::objects)
-			obj->unload();
 
 		delete s_mgr;
 		delete t_mgr;

@@ -17,9 +17,8 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Helper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -51,10 +50,9 @@
     <ClInclude Include="Buffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="Helper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
@@ -65,7 +63,5 @@
     <None Include="shaders\Squares.vert">
       <Filter>Engine\Geometry</Filter>
     </None>
-    <None Include="shaders\Grid.frag" />
-    <None Include="shaders\Grid.vert" />
   </ItemGroup>
 </Project>

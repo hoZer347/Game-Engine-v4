@@ -24,19 +24,4 @@ namespace loom
 		mode = mat4(1);
 		view = lookAt(eye, ctr, up);
 	};
-	void Camera::render_all()
-	{
-		if (GLFWwindow* window = glfwGetCurrentContext())
-		{
-			int w, h;
-			glfwGetWindowSize(window, &w, &h);
-			aspect = (float)w / (float)h;
-			proj = perspective(fovy, aspect, near, far);
-
-			mvp = proj * view * mode;
-
-			for (auto& renderable : Renderable::renderables)
-				renderable->render();
-		};
-	};
 };

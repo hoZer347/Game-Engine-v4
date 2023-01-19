@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include "Helper.h"
+
 #include <mutex>
 #include <queue>
 #include <thread>
@@ -10,28 +12,16 @@ using namespace glm;
 #include <string>
 #include <iostream>
 #include <functional>
+#include <shared_mutex>
 
 namespace loom
 {
 	// Generic Task Object
-	// Basically works as an std::function, might make this a typedef
-	struct Task
-	{
-		Task(auto task)
-		: task(task)
-		{ };
-
-		Task(const Task& task)
-		: task(task.task)
-		{ };
-
-		void operator()() { return task(); };
-		std::function<void()> task;
-	};
+	typedef std::function<void()> Task;
 	//
 
-	
-	
+
+
 	// Enumeration types
 	typedef uint32_t ID;
 	typedef uint32_t TYPE;
@@ -48,54 +38,34 @@ namespace loom
 
 
 
-	// Anything that should be loaded on run, and / or unloaded after, is a Object
+	//
 	struct Object
 	{
-	protected: // TODO: Add Identification System
-		friend struct Loom;
-		Object();
-		virtual ~Object();
 		virtual void load()=0;
 		virtual void unload()=0;
-		static inline std::mutex mut;
-		static inline std::vector<Object*> objects;
 	};
 	//
 
 
 
-	// Anything that gets rendered is a Renderable
-	struct Renderable
+	// Renderable
+	struct Renderable : public Object
 	{
 	protected:
-		friend struct Camera;
-		Renderable();
-		virtual ~Renderable();
+		friend struct Loom;
 		virtual void render()=0;
-		static inline std::mutex mut;
+		
+	protected:
+		friend struct Camera;
+		Renderable() { renderables.push_back(this); };
 		static inline std::vector<Renderable*> renderables;
 	};
 	//
 
 
 
-	// Anything that is updated is an updatable
-	struct Updatable
-	{
-	protected:
-		friend struct Loom;
-		Updatable();
-		virtual ~Updatable();
-		virtual void update()=0;
-		static inline std::mutex mut;
-		static inline std::vector<Updatable*> updatables;
-	};
-	//
-
-
-
 	// Shader Object
-	struct Shader final : public Object
+	struct Shader final
 	{
 		Shader(std::string files...)
 			: files({ files })
@@ -104,8 +74,8 @@ namespace loom
 		ID id = 0;
 
 	private:
-		void load() override;
-		void unload() override;
+		void load();
+		void unload();
 
 		std::vector<std::string> files;
 	};
@@ -114,17 +84,17 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final : public Object
+	struct Texture final
 	{
 		Texture(std::string file, TYPE type)
-		: file(file), type(type), Object()
+		: file(file), type(type)
 		{ };
 
 		ID id = 0;
 
 	private:
-		void load() override;
-		void unload() override;
+		void load();
+		void unload();
 		
 		std::string file;
 		TYPE type;

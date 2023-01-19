@@ -4,7 +4,6 @@
 #include <glm/gtx/transform.hpp>
 
 #include "Loom.h"
-#include "Grid.h"
 #include "Helper.h"
 #include "Camera.h"
 #include "Buffer.h"
@@ -12,36 +11,31 @@
 using namespace loom;
 
 #include <thread>
+#include <chrono>
 #include <iostream>
+
+struct Test
+{
+	void render()
+	{
+		for (auto& i : data)
+			std::cout << i << ", ";
+		std::cout << ";" << std::endl;
+	};
+
+	void load()   { std::cout << "Load" << std::endl; };
+	void unload() { std::cout << "Unload" << std::endl; };
+
+	std::vector<float> data;
+};
+
+typedef std::chrono::high_resolution_clock Clock;
+std::mutex mut;
 
 int main()
 {
 	Loom::Init();
-
-	DoubleBuffer buffer;
-
-	std::thread thread1 = std::thread([&buffer]()
-	{
-		while (true)
-		{
-			buffer.access1([](std::vector<float>& v)
-			{
-				if (v.size())
-					v.pop_back();
-			});
-		};
-	});
-	std::thread thread2 = std::thread([&buffer]()
-	{
-		while (true)
-		{
-			buffer.access2([](std::vector<float>& v)
-			{
-				v.push_back(1);
-			});
-		};
-	});
-
+	 
 	Loom::RunOnThisThread();
 
 	Loom::Exit();

@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Data.h"
+#include <glm/glm.hpp>
+using namespace glm;
+
+#include <vector>
 
 namespace loom
 {
@@ -29,9 +32,6 @@ namespace loom
 				aspect=0,
 				near=0,
 				far=0;
-
-	private:
-		void render_all();
 	};
 	//
 };
