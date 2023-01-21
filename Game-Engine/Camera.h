@@ -13,25 +13,24 @@ namespace loom
 		Camera();
 		static inline mat4 mvp;
 
+		float	fovy,
+				aspect,
+				near,
+				far;
+		
+		vec4	eye,
+				ctr,
+				up;
+
 	protected:
 		friend struct Loom;
 		static inline std::vector<Camera*> cameras;
 
+		void render();
+
 	private:
-		mat4	mode,
-				view,
+		mat4	view,
 				proj;
-		
-		vec4	pos;
-
-		vec3	eye,
-				ctr,
-				up;
-
-		float	fovy=0,
-				aspect=0,
-				near=0,
-				far=0;
 	};
 	//
 };

@@ -42,6 +42,8 @@ namespace loom
 		stbi_image_free(data);
 		//
 
+		glGetError();
+
 		return TEXS[s] = texture;
 	};
 };

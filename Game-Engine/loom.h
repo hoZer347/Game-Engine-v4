@@ -18,23 +18,7 @@ namespace loom
 		static void RunOnThisThread();
 		static void Exit();
 
-		static void lock();
-		static void unlock();
-
-		static bool IsRunning();
-
-	protected:
-		friend struct Object;
-		friend struct Renderable;
-		friend struct Updatable;
-
-		static void Add(Object* obj);
-		static void Add(Renderable* obj);
-		static void Add(Updatable* obj);
-
-		static void Rmv(Object* obj);
-		static void Rmv(Renderable* obj);
-		static void Rmv(Updatable* obj);
+		static uint32_t GetTimeDiff();
 
 	private:
 		Loom() { };

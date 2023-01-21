@@ -26,6 +26,12 @@ namespace loom
 			};
 		});
 	};
+	Helper::~Helper()
+	{
+		KILL = true;
+		if (thread.joinable())
+			thread.join();
+	};
 	void Helper::assign(Task task)
 	{
 		mut.lock();
@@ -44,11 +50,10 @@ namespace loom
 		// TODO: support this
 		std::cerr << "Helper::shared_assign Not Supported Yet" << std::endl;
 	};
-	void Helper::load()
-	{
-
-	};
-	void Helper::unload()
+	SyncHelper::SyncHelper(Task task)
+	: task(task)
+	{ helpers.push_back(this); };
+	SyncHelper::~SyncHelper()
 	{
 		KILL = true;
 		if (thread.joinable())

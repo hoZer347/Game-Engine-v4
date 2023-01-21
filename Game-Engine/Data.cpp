@@ -7,12 +7,5 @@
 
 namespace loom
 {
-	//_Renderable::_Renderable()
-	//{
-	//	if (!Loom::IsRunning())
-	//		renderables.push_back(this);
-	//	else Loom::Add(this);
-	//};
-	//_Renderable::~_Renderable()
-	//{ Loom::Rmv(this); };
+	
 };

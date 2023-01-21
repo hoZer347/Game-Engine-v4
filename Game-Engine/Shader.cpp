@@ -69,6 +69,8 @@ namespace loom
 
         glLinkProgram(program);
 
+        glGetError();
+
         return programs[f] = program;
     };
 
@@ -87,6 +89,8 @@ namespace loom
         load_shader(file_name + ".eval", GL_TESS_EVALUATION_SHADER, program);
 
         glLinkProgram(program);
+
+        glGetError();
 
         return shaders[file_name] = program;
     };

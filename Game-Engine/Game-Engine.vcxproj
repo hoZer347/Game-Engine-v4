@@ -158,7 +158,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Geometry.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -170,7 +172,9 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Geometry.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Texture.h" />
@@ -178,8 +182,8 @@
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
-    <None Include="shaders\Squares.frag" />
-    <None Include="shaders\Squares.vert" />
+    <None Include="shaders\Grid.frag" />
+    <None Include="shaders\Grid.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

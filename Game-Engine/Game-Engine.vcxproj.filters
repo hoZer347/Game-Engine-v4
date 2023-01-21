@@ -19,6 +19,10 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Grid.cpp">
+      <Filter>Engine\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -29,6 +33,9 @@
     </Filter>
     <Filter Include="Engine\Geometry">
       <UniqueIdentifier>{1a16db8b-55ee-413e-b152-4f0d3c8e47cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Grid">
+      <UniqueIdentifier>{ddfcf1da-348c-461f-b2bc-1dee2808de01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,15 +60,19 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Grid.h">
+      <Filter>Engine\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
-    <None Include="shaders\Squares.frag">
-      <Filter>Engine\Geometry</Filter>
+    <None Include="shaders\Grid.vert">
+      <Filter>Engine\Grid</Filter>
     </None>
-    <None Include="shaders\Squares.vert">
-      <Filter>Engine\Geometry</Filter>
+    <None Include="shaders\Grid.frag">
+      <Filter>Engine\Grid</Filter>
     </None>
   </ItemGroup>
 </Project>

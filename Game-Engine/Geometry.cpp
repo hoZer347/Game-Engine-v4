@@ -38,7 +38,7 @@ namespace loom
 		
 		glUniformMatrix4fv(_trns, 1, GL_FALSE, &trns[0][0]);
 		glUniformMatrix4fv(_mvp,  1, GL_FALSE, &Camera::mvp[0][0]);
-		glDrawArrays(GL_QUADS, 0, data.size()/8);
+		glDrawArrays(GL_QUADS, 0, (GLsizei)data.size()/8);
 
 		glDisableVertexAttribArray(VEC4_0_32);
 		glDisableVertexAttribArray(VEC4_1_32);

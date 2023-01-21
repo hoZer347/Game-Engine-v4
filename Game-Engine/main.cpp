@@ -4,6 +4,8 @@
 #include <glm/gtx/transform.hpp>
 
 #include "Loom.h"
+#include "Grid.h"
+#include "Input.h"
 #include "Helper.h"
 #include "Camera.h"
 #include "Buffer.h"
@@ -13,29 +15,29 @@ using namespace loom;
 #include <thread>
 #include <chrono>
 #include <iostream>
-
-struct Test
-{
-	void render()
-	{
-		for (auto& i : data)
-			std::cout << i << ", ";
-		std::cout << ";" << std::endl;
-	};
-
-	void load()   { std::cout << "Load" << std::endl; };
-	void unload() { std::cout << "Unload" << std::endl; };
-
-	std::vector<float> data;
-};
-
-typedef std::chrono::high_resolution_clock Clock;
-std::mutex mut;
+#include <barrier>
 
 int main()
 {
 	Loom::Init();
-	 
+	
+	Camera camera;
+	Grid grid{ 5, 3 };
+	
+	Input::MouseButtonPress([]()
+	{	std::cout << "Test0" << std::endl;
+		Input::next();
+		Input::MouseButtonPress([]()
+		{	std::cout << "Test1" << std::endl;
+			Input::next();
+			Input::MouseButtonPress([]()
+			{	std::cout << "Test2" << std::endl;
+				Input::prev();
+				Input::prev();
+			}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
+		}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
+	}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
+
 	Loom::RunOnThisThread();
 
 	Loom::Exit();

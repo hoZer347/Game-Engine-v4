@@ -3,25 +3,17 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include "Helper.h"
-
 #include <mutex>
 #include <queue>
 #include <thread>
 #include <vector>
 #include <string>
 #include <iostream>
-#include <functional>
+#include <type_traits>
 #include <shared_mutex>
 
 namespace loom
 {
-	// Generic Task Object
-	typedef std::function<void()> Task;
-	//
-
-
-
 	// Enumeration types
 	typedef uint32_t ID;
 	typedef uint32_t TYPE;
@@ -38,18 +30,23 @@ namespace loom
 
 
 
-	//
+	// Object
 	struct Object
 	{
 		virtual void load()=0;
 		virtual void unload()=0;
+
+	protected:
+		friend struct Loom;
+		Object() { objects.push_back(this); };
+		static inline std::vector<Object*> objects;
 	};
 	//
 
 
 
 	// Renderable
-	struct Renderable : public Object
+	struct Renderable : virtual public Object
 	{
 	protected:
 		friend struct Loom;
@@ -64,8 +61,24 @@ namespace loom
 
 
 
+	// Updatable
+	struct Updatable : virtual public Object
+	{
+	protected:
+		friend struct Loom;
+		virtual void update()=0;
+		
+	protected:
+		friend struct Loom;
+		Updatable() { updatables.push_back(this); };
+		static inline std::vector<Updatable*> updatables;
+	};
+	//
+
+
+	 
 	// Shader Object
-	struct Shader final
+	struct Shader final : public Object
 	{
 		Shader(std::string files...)
 			: files({ files })
@@ -84,7 +97,7 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final
+	struct Texture final : public Object
 	{
 		Texture(std::string file, TYPE type)
 		: file(file), type(type)
