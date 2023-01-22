@@ -1,10 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-using namespace glm;
-
-#include <string>
-
 namespace loom
 {
 	struct Object;
@@ -18,7 +13,9 @@ namespace loom
 		static void RunOnThisThread();
 		static void Exit();
 
-		static uint32_t GetTimeDiff();
+		static const double GetTimeDiff();
+
+		// Add runtime construction function
 
 	private:
 		Loom() { };

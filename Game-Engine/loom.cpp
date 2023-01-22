@@ -12,10 +12,10 @@
 #include <mutex>
 #include <chrono>
 #include <barrier>
-#include <shared_mutex>
 
 #include "Enums.h"
 #include "Data.h"
+#include "Utils.h"
 #include "Shader.h"
 #include "Helper.h"
 #include "Texture.h"
@@ -30,7 +30,6 @@ namespace loom
 {
 	static inline GLFWwindow* window = nullptr;
 	static inline std::mutex one_at_a_time;
-	typedef std::chrono::high_resolution_clock Clock;
 	auto _clock = Clock::now();
 
 	void Loom::Init()
@@ -66,7 +65,9 @@ namespace loom
 		std::barrier barrier = std::barrier(NUM_BASE_THREADS, []() noexcept
 		{
 			_clock = Clock::now();
-			Input::update();		
+			Input::update();
+			for (auto& parallel : Parallel::contents)
+				parallel->sync();
 		});
 
 		for (auto& helper : SyncHelper::helpers)
@@ -88,8 +89,7 @@ namespace loom
 		
 		
 		// Loading everything else that needs openGL
-		for (auto& obj : Object::objects)
-			obj->load();
+		Object::access([](Object* obj) { obj->load(); });
 		Input::load();
 		//
 
@@ -148,11 +148,9 @@ namespace loom
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
 
-			for (auto& updatable : Updatable::updatables)
-				updatable->update();
+			Updatable::access([](Updatable* updatable) { updatable->update(); });
+			Camera::access([](Camera* camera) { camera->render(); });
 
-			for (auto& camera : Camera::cameras)
-				camera->render();
 			glfwSetWindowTitle(window, std::to_string((Clock::now() - _clock).count()).c_str());
 		};
 
@@ -174,7 +172,7 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
-		for (auto& obj : Object::objects)
+		for (auto& obj : Object::contents)
 			obj->unload();
 		//
 
@@ -188,9 +186,9 @@ namespace loom
 	{
 
 	};
-	uint32_t Loom::GetTimeDiff()
+	const double Loom::GetTimeDiff()
 	{
-		return (uint32_t)(Clock::now() - _clock).count();
+		return (double)(Clock::now() - _clock).count();
 	};
 
 

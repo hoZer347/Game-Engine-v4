@@ -7,7 +7,7 @@ namespace loom
 {
 	struct Cell final { vec4 pos = vec4(0); };
 
-	struct Grid final : public Renderable
+	struct Grid final : public Renderable, public Object
 	{
 		Grid(uint16_t x_size, uint16_t y_size);
 		virtual ~Grid();

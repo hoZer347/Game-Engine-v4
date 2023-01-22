@@ -12,8 +12,6 @@ namespace loom
 {
 	Camera::Camera()
 	{
-		cameras.push_back(this);
-
 		eye = vec4(-.5, -.5, 1, 1);
 		ctr = vec4(.1, 0, 0, 1);
 		up  = vec4(0, 0, 1, 1);
@@ -35,9 +33,7 @@ namespace loom
 			proj = perspective(fovy, aspect, near, far);
 			mvp = proj * view;
 
-			ctr = rotate(.0004f, vec3(0, 1, 0)) * ctr;
-
-			for (auto& renderable : Renderable::renderables)
+			for (auto& renderable : Renderable::contents)
 				renderable->render();
 		};
 	};

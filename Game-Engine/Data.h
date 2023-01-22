@@ -5,6 +5,7 @@ using namespace glm;
 
 #include <vector>
 #include <string>
+#include <mutex>
 
 namespace loom
 {
@@ -24,53 +25,105 @@ namespace loom
 
 
 
-	// Object
-	struct Object
+	// Manage
+	template <typename T>
+	struct Manage
 	{
-		virtual void load()=0;
-		virtual void unload()=0;
-
 	protected:
 		friend struct Loom;
-		Object() { objects.push_back(this); };
-		static inline std::vector<Object*> objects;
+		friend struct Camera;
+		Manage()
+		{
+			mut.lock();
+			contents.push_back((T*)this);
+			mut.unlock();
+		};
+		virtual ~Manage()
+		{
+			mut.lock();
+			auto it = std::remove(contents.begin(), contents.end(), (T*)this);
+			mut.unlock();
+		};
+		static void access(void(f)(T*))
+		{
+			mut.lock();
+			for (auto& i : contents)
+				f(i);
+			mut.unlock();
+		};
+
+		static const size_t& size() { return contents.size(); }
+
+	private:
+		static inline std::vector<T*> contents;
+		static inline std::mutex mut;
 	};
 	//
 
 
 
-	// Renderable
-	struct Renderable : virtual public Object
+	// Object
+	// Loads at the start, unloads after
+	struct Object : public Manage<Object>
 	{
+		Object() : Manage<Object>()
+		{ };
+
 	protected:
 		friend struct Loom;
-		virtual void render()=0;
-		
-	protected:
-		friend struct Camera;
-		Renderable() { renderables.push_back(this); };
-		static inline std::vector<Renderable*> renderables;
+		virtual void load()=0;
+		virtual void unload()=0;
 	};
 	//
 
 
 
 	// Updatable
-	struct Updatable : virtual public Object
+	// Anything that needs to be updated every frame
+	struct Updatable : public Manage<Updatable>
 	{
+		Updatable() : Manage<Updatable>()
+		{ }
+
 	protected:
 		friend struct Loom;
 		virtual void update()=0;
-		
-	protected:
-		friend struct Loom;
-		Updatable() { updatables.push_back(this); };
-		static inline std::vector<Updatable*> updatables;
 	};
 	//
 
 
-	 
+
+	// Renderable
+	// Anything that needs to be rendered
+	struct Renderable : public Manage<Renderable>
+	{
+		Renderable() : Manage<Renderable>()
+		{ };
+
+	protected:
+		friend struct Camera;
+		virtual void render()=0;
+	};
+	//
+
+
+
+	// Parallel
+	// Anything that can run in parallel with the main thread, but needs to be synced
+	// When affecting anything outside of this object, use sync
+	struct Parallel : public Manage<Parallel>
+	{
+		Parallel() : Manage<Parallel>()
+		{ };
+
+	protected:
+		friend struct Loom;
+		virtual void sync()=0;
+	};
+	//
+
+
+	
 	// Shader Object
 	struct Shader final : public Object
 	{

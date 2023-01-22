@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Data.h"
+
 #include <mutex>
 #include <thread>
 #include <queue>
