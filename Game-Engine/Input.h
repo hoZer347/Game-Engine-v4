@@ -17,6 +17,8 @@ namespace loom
 		static void prev();
 		static void MouseButtonPress(Task task, uint16_t button, uint16_t action, uint16_t mods=0);
 		static void KeyPress(Task task, uint16_t key, uint16_t scancode, uint16_t action, uint16_t mods=0);
+		static void MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods = 0);
+		static void KeyHold(Task task, uint16_t key, uint16_t scancode, uint16_t action, uint16_t mods = 0);
 
 	protected:
 		friend struct Loom;
@@ -32,6 +34,8 @@ namespace loom
 		};
 
 	private:
+		std::vector<std::pair<input, Task>> keys;
+		std::vector<std::pair<input, Task>> mbns;
 		std::unordered_map<uint64_t, Task> inputs;
 	};
 };

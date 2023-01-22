@@ -27,6 +27,16 @@ namespace loom
 		input i{ { key, scancode, action, mods } };
 		INPUT->inputs[i.input] = task;
 	};
+	void Input::MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods)
+	{
+		input i{ { 0, button, action, mods } };
+		INPUT->mbns.emplace_back(i, task);
+	};
+	void Input::KeyHold(Task task, uint16_t key, uint16_t scancode, uint16_t action, uint16_t mods)
+	{
+		input i{ { key, scancode, action, mods } };
+		INPUT->keys.emplace_back(i, task);
+	};
 	void Input::load()
 	{
 		if (GLFWwindow* window = glfwGetCurrentContext())
@@ -47,6 +57,17 @@ namespace loom
 	};
 	void Input::update()
 	{
-		// TODO: Add Scans Here
+		if (GLFWwindow* window = glfwGetCurrentContext())
+		{
+			for (auto& i : INPUT->keys)
+				if (glfwGetKey(window, i.first.data[0]) == i.first.data[1])
+					i.second();
+
+			for (auto& i : INPUT->mbns)
+				if (glfwGetMouseButton(window, i.first.data[1]) == i.first.data[2])
+					i.second();
+
+			// TODO: add scancode bullshit
+		};
 	};
 };

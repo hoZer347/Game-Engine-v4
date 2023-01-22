@@ -3,14 +3,8 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include <mutex>
-#include <queue>
-#include <thread>
 #include <vector>
 #include <string>
-#include <iostream>
-#include <type_traits>
-#include <shared_mutex>
 
 namespace loom
 {

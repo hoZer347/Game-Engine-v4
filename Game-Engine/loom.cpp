@@ -65,7 +65,8 @@ namespace loom
 		// Syncing SyncHelpers
 		std::barrier barrier = std::barrier(NUM_BASE_THREADS, []() noexcept
 		{
-			
+			_clock = Clock::now();
+			Input::update();		
 		});
 
 		for (auto& helper : SyncHelper::helpers)
@@ -143,7 +144,6 @@ namespace loom
 		{
 			barrier.arrive_and_wait();
 
-			_clock = Clock::now();
 			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();

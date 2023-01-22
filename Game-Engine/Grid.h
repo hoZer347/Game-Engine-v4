@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Data.h"
+#include <memory>
 
 namespace loom
 {

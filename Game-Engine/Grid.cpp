@@ -9,6 +9,8 @@
 #include "Enums.h"
 #include "Camera.h"
 
+#include <thread>
+
 namespace loom
 {
 	Grid::Grid(uint16_t x_size, uint16_t y_size)

@@ -23,21 +23,8 @@ int main()
 	
 	Camera camera;
 	Grid grid{ 5, 3 };
-	
-	Input::MouseButtonPress([]()
-	{	std::cout << "Test0" << std::endl;
-		Input::next();
-		Input::MouseButtonPress([]()
-		{	std::cout << "Test1" << std::endl;
-			Input::next();
-			Input::MouseButtonPress([]()
-			{	std::cout << "Test2" << std::endl;
-				Input::prev();
-				Input::prev();
-			}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
-		}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
-	}, GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, 0);
 
+	Input::KeyHold([]() { std::cout << "Test" << std::endl; }, GLFW_KEY_W, GLFW_PRESS, 0);
 	Loom::RunOnThisThread();
 
 	Loom::Exit();
