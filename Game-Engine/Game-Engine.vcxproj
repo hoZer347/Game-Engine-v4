@@ -173,6 +173,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="Manage.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />

@@ -37,7 +37,8 @@ namespace loom
 	static inline std::queue<Task> to_load;
 	static inline std::queue<Task> loading;
 	static inline std::thread loader;
-	void Loom::load(Task task)
+	static inline std::atomic<bool> loader_KILL = false;
+	void Loom::assign(Task task)
 	{
 		load_mut.lock();
 		to_load.push(task);
@@ -51,18 +52,21 @@ namespace loom
 
 		loader = std::thread([]()
 		{
-			load_mut.lock();
-			while (!to_load.empty())
+			while (!loader_KILL)
 			{
-				loading.push(to_load.front());
-				to_load.pop();
-			};
-			load_mut.unlock();
+				load_mut.lock();
+				while (!to_load.empty())
+				{
+					loading.push(to_load.front());
+					to_load.pop();
+				};
+				load_mut.unlock();
 
-			while (!loading.empty())
-			{
-				loading.front()();
-				loading.pop();
+				while (!loading.empty())
+				{
+					loading.front()();
+					loading.pop();
+				};
 			};
 		});
 	};
@@ -91,14 +95,11 @@ namespace loom
 
 
 
-		// Syncing SyncHelpers
+		// Syncing Helpers
 		std::barrier barrier = std::barrier(NUM_BASE_THREADS, []() noexcept
 		{
 			Input::update();
-			Loadable::access([](Loadable* loadable) { loadable->load(); });
-			Loadable::clear();
-			for (auto& parallel : Parallel::contents)
-				parallel->sync();
+			Parallel::access([](Parallel* parallel) { parallel->sync(); });
 		});
 
 		Helper::access([&barrier](Helper* helper) {
@@ -186,16 +187,14 @@ namespace loom
 
 			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
 		};
-
 		barrier.arrive_and_drop();
-
 		Helper::access([](Helper* helper) { helper->kill(); });
-		Unloadable::access([](Unloadable* object) { object->unload(); });
 		//
 
 		
 
 		// Deallocating everything allocated that uses openGL
+		Unloadable::access([](Unloadable* object) { object->unload(); });
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glDeleteBuffers(1, &_vtxs);
@@ -215,6 +214,7 @@ namespace loom
 	};
 	void Loom::Exit()
 	{
+		loader_KILL = true;
 		if (loader.joinable())
 			loader.join();
 	};

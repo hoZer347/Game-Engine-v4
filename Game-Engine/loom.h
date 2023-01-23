@@ -15,13 +15,13 @@ namespace loom
 
 		// Hands off the construction of a given item to the loader thread
 		template <typename S, typename... T>
-		static void Construct(std::shared_ptr<S>& s, T&&... args)
+		static void Construct(std::unique_ptr<S>& s, T&&... args)
 		{
-			load([&s, args...]() { s = std::make_shared<S>(args...); });
+			assign([&s, args...]() { s = std::make_unique<S>(args...); });
 		};
 
 	private:
-		static void load(Task task);
+		static void assign(Task task);
 
 		Loom() { };
 	};

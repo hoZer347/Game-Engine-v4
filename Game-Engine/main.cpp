@@ -15,8 +15,10 @@ using namespace loom;
 
 #include <thread>
 #include <chrono>
-#include <iostream>
 #include <barrier>
+#include <iostream>
+
+// TODO: Might be possible to take #include "Manage.h" out of "Data.h"
 
 int main()
 {
@@ -24,7 +26,8 @@ int main()
 	
 	Camera camera;
 
-	std::shared_ptr<Grid> grid;
+	std::atomic<bool> KILL = false;
+	std::unique_ptr<Grid> grid;
 	Loom::Construct(grid, 100, 100);
 
 	vec4 _finish = vec4(.5, 0, 0, 1);

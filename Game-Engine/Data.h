@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Manage.h"
+
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include <functional>
 #include <vector>
 #include <string>
-#include <mutex>
 
 namespace loom
 {
@@ -26,52 +26,9 @@ namespace loom
 
 
 
-	// Manage
-	template <typename T>
-	struct Manage
-	{
-	protected:
-		friend struct Loom;
-		friend struct Camera;
-		Manage()
-		{
-			mut.lock();
-			contents.push_back((T*)this);
-			mut.unlock();
-		};
-		virtual ~Manage()
-		{
-			mut.lock();
-			auto it = std::remove(contents.begin(), contents.end(), (T*)this);
-			mut.unlock();
-		};
-		static void access(std::function<void(T*)> f)
-		{
-			mut.lock();
-			for (auto& i : contents)
-				f(i);
-			mut.unlock();
-		};
-		static void clear()
-		{
-			mut.lock();
-			contents.clear();
-			mut.unlock();
-		};
-
-		static const size_t size() { return contents.size(); }
-
-	private:
-		static inline std::vector<T*> contents;
-		static inline std::mutex mut;
-	};
-	//
-
-
-
 	// Loadable
 	// Loads at the start of a frame
-	struct Loadable : public Manage<Loadable>
+	struct Loadable : Manage<Loadable>
 	{
 	protected:
 		friend struct Loom;
@@ -83,7 +40,7 @@ namespace loom
 
 	// Unloadable
 	// Unloads after the runtime is over, or on deletion
-	struct Unloadable : public Manage<Unloadable>
+	struct Unloadable : Manage<Unloadable>
 	{
 		// TODO: make sure the main window unloads this
 
@@ -97,7 +54,7 @@ namespace loom
 
 	// Updatable
 	// Anything that needs to be updated every frame
-	struct Updatable : public Manage<Updatable>
+	struct Updatable : Manage<Updatable>
 	{
 	protected:
 		friend struct Loom;
@@ -109,7 +66,7 @@ namespace loom
 
 	// Renderable
 	// Anything that needs to be rendered
-	struct Renderable : public Manage<Renderable>
+	struct Renderable : Manage<Renderable>
 	{
 	protected:
 		friend struct Camera;
@@ -122,7 +79,7 @@ namespace loom
 	// Parallel
 	// Anything that can run in parallel with the main thread, but needs to be synced
 	// When affecting anything outside of this object, use sync
-	struct Parallel : public Manage<Parallel>
+	struct Parallel : Manage<Parallel>
 	{
 	protected:
 		friend struct Loom;

@@ -15,7 +15,6 @@ namespace loom
 		Helper(Task task, std::string name = "Unnamed");
 		
 		const std::string name;
-
 		void kill();
 
 	protected:

@@ -17,7 +17,7 @@ namespace loom
 	typedef std::chrono::high_resolution_clock Clock;
 	typedef std::chrono::steady_clock::time_point Time;
 
-	struct Timer : public Parallel
+	struct Timer : Parallel
 	{
 		const double GetDiff_s()   const { return diff / 1000000000; };
 		const double GetDiff_mls() const { return diff / 1000000; };
@@ -41,7 +41,7 @@ namespace loom
 	{
 	protected:
 		friend struct Loom;
-		struct Transform : public Manage<Transform>
+		struct Transform : Manage<Transform>
 		{
 		private:
 			virtual void exec()=0;
@@ -57,18 +57,15 @@ namespace loom
 		{
 			return std::shared_ptr<Transform>(new Approach(_start, _finish, velocity, dynamic));
 		};
-
+		
 	private:
-		static inline Helper kernel { []()
-		{
-			Transform::update();
-		} , "Transform" };
+		static inline Helper kernel { []() { Transform::update(); } , "Transform" };
 
 		// Approach
 		// On operator(), moves the _start vector towards the _finish vector at a certain velocity
 		// Syncronizes with framerate
 		template <typename T>
-		struct Approach final : public Transform, public Parallel
+		struct Approach final : Transform, Parallel
 		{
 			Approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
 			: dynamic(dynamic),
@@ -83,7 +80,11 @@ namespace loom
 			void exec() override
 			{
 				if (_start == _finish)
+				{
+					if (!dynamic)
+						delete this;
 					return;
+				};
 
 				if (double diff = TIMER.GetDiff_s())
 				{

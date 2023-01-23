@@ -33,8 +33,7 @@ namespace loom
 			proj = perspective(fovy, aspect, near, far);
 			mvp = proj * view;
 
-			for (auto& renderable : Renderable::contents)
-				renderable->render();
+			Renderable::access([](Renderable* renderable) { renderable->render(); });
 		};
 	};
 };
