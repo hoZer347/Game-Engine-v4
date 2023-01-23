@@ -52,10 +52,6 @@ namespace loom
 		};
 
 	public:
-
-		// Causes _start vector to approach _finish vector at a certain velocity
-		// dynamic = 0: _start will approach _finish until it reaches it, then delete the transform object
-		// dynamic = 1: _start will approach _finish while updating _finish's value dynamically
 		template <typename T>
 		[[nodiscard]] static std::shared_ptr<Transform> approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
 		{
@@ -65,6 +61,9 @@ namespace loom
 	private:
 		static inline Helper kernel { []() { Transform::update(); } , "Transform" };
 
+		// Approach
+		// On operator(), moves the _start vector towards the _finish vector at a certain velocity
+		// Syncronizes with framerate
 		template <typename T>
 		struct Approach final : Transform, Parallel
 		{
