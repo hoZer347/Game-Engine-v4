@@ -37,7 +37,7 @@ int main()
 
 	Helper helper1{ [&_finish]()
 	{
-		_finish = rotate(0.0004f, vec3(0, 1, 0)) * _finish;
+		_finish = rotate(0.0004f, vec3(0, 0, 1)) * _finish;
 	} };
 
 	Input::KeyHold([]() { std::cout << "Test" << std::endl; }, GLFW_KEY_W, GLFW_PRESS, 0);

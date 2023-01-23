@@ -12,7 +12,7 @@ namespace loom
 {
 	Camera::Camera()
 	{
-		eye = vec4(0, 0, 1, 1);
+		eye = vec4(-.6, -.6, 1, 1);
 		ctr = vec4(0, 0, 0, 1);
 		up  = vec4(0, 0, 1, 1);
 

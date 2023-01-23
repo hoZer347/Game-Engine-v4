@@ -196,7 +196,7 @@ namespace loom
 		// Deallocating everything allocated that uses openGL
 		Unloadable::access([](Unloadable* object) { object->unload(); });
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glDeleteBuffers(1, &_vtxs);
 		glDeleteBuffers(1, &_inds);
 		delete s_mgr;

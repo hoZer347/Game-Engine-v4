@@ -24,13 +24,13 @@ namespace loom
 		[[nodiscard]] const double GetDiff_mcs() const { return diff / 1000; };
 		[[nodiscard]] const double GetDiff_ns()  const { return diff; };
 
+	private:
 		void sync() override
 		{
 			diff = (double)(Clock::now() - _clock).count();
 			_clock = Time(Clock::now());
 		};
 
-	private:
 		Time _clock = Clock::now();
 		double diff = 0;
 	};
@@ -41,21 +41,22 @@ namespace loom
 	{
 	protected:
 		friend struct Loom;
-		struct Transform : Manage<Transform>
+		struct Transform : Manage<Transform> // TODO: Make "Transform" the sync object, and manage the transforms itself
 		{
 		private:
 			virtual void exec()=0;
 
 		public:
 			virtual ~Transform() { };
-			static void update() { access([](Transform* transform) { transform->exec(); }); };
+			static void update() { access([](Transform* transform) { transform->exec(); }); }; // Perhaps there is a better way to do this
 		};
 
 	public:
 
+		// transform::approach
 		// Causes _start vector to approach _finish vector at a certain velocity
-		// dynamic = 0: _start will approach _finish until it reaches it, then delete the transform object
-		// dynamic = 1: _start will approach _finish while updating _finish's value dynamically
+		// dynamic = 0: _start will approach _finish every frame until it reaches it, then delete the Transform object
+		// dynamic = 1: _start will approach _finish every frame while updating _finish's value dynamically
 		template <typename T>
 		[[nodiscard]] static std::shared_ptr<Transform> approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
 		{
@@ -63,7 +64,8 @@ namespace loom
 		};
 		
 	private:
-		static inline Helper kernel { []() { Transform::update(); } , "Transform" };
+		transform() { };
+		static inline Helper kernel { Transform::update, "Transform" };
 
 		template <typename T>
 		struct Approach final : Transform, Parallel
