@@ -17,15 +17,6 @@ namespace loom
 
 
 
-	// Getting around thread_local bullshit
-	struct ShaderManager;
-	struct TextureManager;
-	ShaderManager* GetSMgr();
-	TextureManager* GetTMgr();
-	//
-
-
-
 	// Loadable
 	// Loads at the start of a frame
 	struct Loadable : Manage<Loadable>
@@ -87,8 +78,17 @@ namespace loom
 	};
 	//
 
-
+	// TODO: Move below to new file
 	
+	// Getting around thread_local bullshit
+	struct ShaderManager;
+	struct TextureManager;
+	ShaderManager* GetSMgr();
+	TextureManager* GetTMgr();
+	//
+
+
+
 	// Shader Object
 	struct Shader final : Loadable, Unloadable
 	{
