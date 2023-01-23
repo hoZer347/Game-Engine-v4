@@ -18,11 +18,6 @@ using namespace loom;
 #include <iostream>
 #include <barrier>
 
-struct Buh : public Manage<Object>
-{
-
-};
-
 int main()
 {
 	Loom::Init();
@@ -35,12 +30,12 @@ int main()
 
 	Approach app (camera.ctr, _finish, 0.1, 1);
 
-	SyncHelper helper0{ [&app]()
+	Helper helper0{ [&app]()
 	{
 		app();
 	} };
 
-	SyncHelper helper1{ [&_finish]()
+	Helper helper1{ [&_finish]()
 	{
 		//_finish = rotate(0.0004f, vec3(0, 1, 0)) * _finish;
 	} };

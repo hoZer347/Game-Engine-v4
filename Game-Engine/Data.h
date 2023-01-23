@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include <functional>
 #include <vector>
 #include <string>
 #include <mutex>
@@ -44,7 +45,7 @@ namespace loom
 			auto it = std::remove(contents.begin(), contents.end(), (T*)this);
 			mut.unlock();
 		};
-		static void access(void(f)(T*))
+		static void access(std::function<void(T*)> f)
 		{
 			mut.lock();
 			for (auto& i : contents)

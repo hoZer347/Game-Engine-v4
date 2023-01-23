@@ -70,7 +70,7 @@ namespace loom
 				parallel->sync();
 		});
 
-		for (auto& helper : SyncHelper::helpers)
+		Helper::access([&barrier](Helper* helper) {
 			helper->thread = std::thread([helper, &barrier]()
 			{
 				while (!helper->KILL)
@@ -81,8 +81,9 @@ namespace loom
 
 				barrier.arrive_and_drop();
 			});
+		});
 
-		for (auto i = NUM_BASE_THREADS; i > SyncHelper::helpers.size() + 1; i--)
+		for (auto i = NUM_BASE_THREADS; i > Helper::size() + 1; i--)
 			barrier.arrive_and_drop();
 		//
 
@@ -154,8 +155,7 @@ namespace loom
 			glfwSetWindowTitle(window, std::to_string((Clock::now() - _clock).count()).c_str());
 		};
 
-		for (auto& helper : SyncHelper::helpers)
-			helper->kill();
+		Helper::access([](Helper* helper) { helper->kill(); });
 
 		barrier.arrive_and_drop();
 		//
