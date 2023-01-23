@@ -30,7 +30,7 @@ int main()
 	std::unique_ptr<Grid> grid;
 	Loom::Construct(grid, 100, 100);
 
-	vec4 _finish = vec4(.5, 0, 0, 1);
+	vec4 _finish = vec4(.5, .5, 0, 1);
 	vec4 buh = vec4(1) *= 5;
 
 	auto t = transform::approach(camera.ctr, _finish, 2, 1);

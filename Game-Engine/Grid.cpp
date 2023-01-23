@@ -42,7 +42,7 @@ namespace loom
 				};
 		});
 
-		trns = translate(vec3(-.5f, -.5f, 0));
+		trns = translate(vec3(-.5f, 0, 0));
 
 		if (_vtxs.joinable())
 			_vtxs.join();
