@@ -19,6 +19,7 @@ namespace loom
 		{
 			assign([&s, args...]() { s = std::make_unique<S>(args...); });
 		};
+		//
 
 	private:
 		static void assign(Task task);

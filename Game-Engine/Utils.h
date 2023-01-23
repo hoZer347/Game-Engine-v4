@@ -19,10 +19,10 @@ namespace loom
 
 	struct Timer : Parallel
 	{
-		const double GetDiff_s()   const { return diff / 1000000000; };
-		const double GetDiff_mls() const { return diff / 1000000; };
-		const double GetDiff_mcs() const { return diff / 1000; };
-		const double GetDiff_ns()  const { return diff; };
+		[[nodiscard]] const double GetDiff_s()   const { return diff / 1000000000; };
+		[[nodiscard]] const double GetDiff_mls() const { return diff / 1000000; };
+		[[nodiscard]] const double GetDiff_mcs() const { return diff / 1000; };
+		[[nodiscard]] const double GetDiff_ns()  const { return diff; };
 
 		void sync() override
 		{
