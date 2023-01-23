@@ -34,6 +34,7 @@ namespace loom
 		};
 
 	private:
+		Input() { };
 		std::vector<std::pair<input, Task>> keys;
 		std::vector<std::pair<input, Task>> mbns;
 		std::unordered_map<uint64_t, Task> inputs;
