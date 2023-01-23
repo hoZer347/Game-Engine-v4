@@ -1,10 +1,10 @@
 #pragma once
 
+#include <functional>
+
 namespace loom
 {
-	struct Object;
-	struct Renderable;
-	struct Updatable;
+	typedef std::function<void()> Task;
 
 	// The main engine singleton
 	struct Loom final
@@ -13,11 +13,16 @@ namespace loom
 		static void RunOnThisThread();
 		static void Exit();
 
-		static const double GetTimeDiff();
-
-		// Add runtime construction function
+		// Hands off the construction of a given item to the loader thread
+		template <typename S, typename... T>
+		static void Construct(std::shared_ptr<S>& s, T&&... args)
+		{
+			load([&s, args...]() { s = std::make_shared<S>(args...); });
+		};
 
 	private:
+		static void load(Task task);
+
 		Loom() { };
 	};
 	//

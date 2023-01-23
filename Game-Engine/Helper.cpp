@@ -4,10 +4,10 @@
 
 namespace loom
 {
-	Helper::Helper(Task task)
-	: task(task)
+	Helper::Helper(Task task, std::string name)
+	: task(task), name(name)
 	{ };
-	Helper::~Helper()
+	void Helper::kill()
 	{
 		KILL = true;
 		if (thread.joinable())

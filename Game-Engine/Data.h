@@ -52,8 +52,14 @@ namespace loom
 				f(i);
 			mut.unlock();
 		};
+		static void clear()
+		{
+			mut.lock();
+			contents.clear();
+			mut.unlock();
+		};
 
-		static const size_t& size() { return contents.size(); }
+		static const size_t size() { return contents.size(); }
 
 	private:
 		static inline std::vector<T*> contents;
@@ -63,16 +69,26 @@ namespace loom
 
 
 
-	// Object
-	// Loads at the start, unloads after
-	struct Object : public Manage<Object>
+	// Loadable
+	// Loads at the start of a frame
+	struct Loadable : public Manage<Loadable>
 	{
-		Object() : Manage<Object>()
-		{ };
-
 	protected:
 		friend struct Loom;
 		virtual void load()=0;
+	};
+	//
+
+
+
+	// Unloadable
+	// Unloads after the runtime is over, or on deletion
+	struct Unloadable : public Manage<Unloadable>
+	{
+		// TODO: make sure the main window unloads this
+
+	protected:
+		friend struct Loom;
 		virtual void unload()=0;
 	};
 	//
@@ -83,9 +99,6 @@ namespace loom
 	// Anything that needs to be updated every frame
 	struct Updatable : public Manage<Updatable>
 	{
-		Updatable() : Manage<Updatable>()
-		{ }
-
 	protected:
 		friend struct Loom;
 		virtual void update()=0;
@@ -98,9 +111,6 @@ namespace loom
 	// Anything that needs to be rendered
 	struct Renderable : public Manage<Renderable>
 	{
-		Renderable() : Manage<Renderable>()
-		{ };
-
 	protected:
 		friend struct Camera;
 		virtual void render()=0;
@@ -114,9 +124,6 @@ namespace loom
 	// When affecting anything outside of this object, use sync
 	struct Parallel : public Manage<Parallel>
 	{
-		Parallel() : Manage<Parallel>()
-		{ };
-
 	protected:
 		friend struct Loom;
 		virtual void sync()=0;
@@ -126,7 +133,7 @@ namespace loom
 
 	
 	// Shader Object
-	struct Shader final : public Object
+	struct Shader final : Loadable, Unloadable
 	{
 		Shader(std::string files...)
 			: files({ files })
@@ -135,8 +142,8 @@ namespace loom
 		ID id = 0;
 
 	private:
-		void load();
-		void unload();
+		void load() override;
+		void unload() override;
 
 		std::vector<std::string> files;
 	};
@@ -145,7 +152,7 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final : public Object
+	struct Texture final : Loadable, Unloadable
 	{
 		Texture(std::string file, TYPE type)
 		: file(file), type(type)
@@ -154,8 +161,8 @@ namespace loom
 		ID id = 0;
 
 	private:
-		void load();
-		void unload();
+		void load() override;
+		void unload() override;
 		
 		std::string file;
 		TYPE type;

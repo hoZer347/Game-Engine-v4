@@ -2,12 +2,14 @@
 
 #include "Data.h"
 #include "Loom.h"
+#include "Helper.h"
 
 #include <glm/gtx/transform.hpp>
 #include <glm/glm.hpp>
 using namespace glm;
 
 #include <chrono>
+#include <memory>
 #include <iostream>
 
 namespace loom
@@ -35,65 +37,88 @@ namespace loom
 
 	static inline Timer TIMER;
 
-	// Approach
-	// On operator(), moves the _start vector towards the _finish vector at a certain velocity
-	// Syncronizes with framerate
-	template <typename T>
-	struct Approach final : public Parallel
+	struct transform final
 	{
-		Approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
-		: dynamic(dynamic),
-		  velocity(velocity),
-		  _move(normalize(_finish - _start) *= velocity),
-		  _start(_start),
-		  __start(_start),
-		  _finish(_finish),
-		  __finish(_finish)
-		{ };
-
-		void operator()()
+	protected:
+		friend struct Loom;
+		struct Transform : public Manage<Transform>
 		{
-			if (_start == _finish)
-				return;
+		private:
+			virtual void exec()=0;
 
-			if (double diff = TIMER.GetDiff_s())
-			{
-				if (dynamic)
-					_move = normalize(_finish - _start) *= velocity;
-
-				_move *= diff;
-
-				for (int i = 0; i < sizeof(T) / sizeof(float); i++)
-					if (_finish[i] - _start[i] <= _move[i])
-						_start[i] = _finish[i];
-					else
-						_start[i] += _move[i];
-
-				_move *= 1 / diff;
-
-				std::cout << _start.x << " " << _start.y << std::endl;
-			};
+		public:
+			virtual ~Transform() { };
+			static void update() { access([](Transform* transform) { transform->exec(); }); };
 		};
 
-		void sync() override
+	public:
+		template <typename T>
+		[[nodiscard]] static std::shared_ptr<Transform> approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
 		{
-			if (dynamic)
-				_finish = __finish;
-			__start = _start;
+			return std::shared_ptr<Transform>(new Approach(_start, _finish, velocity, dynamic));
 		};
 
 	private:
-		const bool dynamic;
-		const double velocity;
+		static inline Helper kernel { []()
+		{
+			Transform::update();
+		} , "Transform" };
 
-		      T _move;
-		      T  _start;
-		      T& __start;
-		      T  _finish;
-		const T& __finish;
+		// Approach
+		// On operator(), moves the _start vector towards the _finish vector at a certain velocity
+		// Syncronizes with framerate
+		template <typename T>
+		struct Approach final : public Transform, public Parallel
+		{
+			Approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
+			: dynamic(dynamic),
+			  velocity(velocity),
+			  _start(_start),
+			  __start(_start),
+			  _finish(_finish),
+			  __finish(_finish),
+			  _move(normalize(_finish - _start) *= velocity)
+			{ };
+
+			void exec() override
+			{
+				if (_start == _finish)
+					return;
+
+				if (double diff = TIMER.GetDiff_s())
+				{
+					if (dynamic)
+						_move = normalize(_finish - _start) *= velocity;
+
+					_move *= diff;
+
+					for (int i = 0; i < sizeof(T) / sizeof(float); i++)
+						if (_finish[i] - _start[i] <= _move[i])
+							_start[i] = _finish[i];
+						else
+							_start[i] += _move[i];
+
+					_move *= 1 / diff;
+				};
+			};
+
+			void sync() override
+			{
+				if (dynamic)
+					_finish = __finish;
+				__start = _start;
+			};
+
+		private:
+			const bool dynamic;
+			const double velocity;
+
+			      T   _move;
+			      T   _start;
+			      T& __start;
+			      T   _finish;
+			const T& __finish;
+		};
+		//
 	};
-	//
-
-
-
 };

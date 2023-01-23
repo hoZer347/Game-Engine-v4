@@ -12,6 +12,7 @@
 #include <mutex>
 #include <chrono>
 #include <barrier>
+#include <queue>
 
 #include "Enums.h"
 #include "Data.h"
@@ -30,11 +31,40 @@ namespace loom
 {
 	static inline GLFWwindow* window = nullptr;
 	static inline std::mutex one_at_a_time;
-	auto _clock = Clock::now();
+
+	// Handling Loading Objects in Runtime
+	static inline std::mutex load_mut;
+	static inline std::queue<Task> to_load;
+	static inline std::queue<Task> loading;
+	static inline std::thread loader;
+	void Loom::load(Task task)
+	{
+		load_mut.lock();
+		to_load.push(task);
+		load_mut.unlock();
+	};
+	//
 
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+		loader = std::thread([]()
+		{
+			load_mut.lock();
+			while (!to_load.empty())
+			{
+				loading.push(to_load.front());
+				to_load.pop();
+			};
+			load_mut.unlock();
+
+			while (!loading.empty())
+			{
+				loading.front()();
+				loading.pop();
+			};
+		});
 	};
 	void Loom::RunOnThisThread()
 	{
@@ -64,8 +94,9 @@ namespace loom
 		// Syncing SyncHelpers
 		std::barrier barrier = std::barrier(NUM_BASE_THREADS, []() noexcept
 		{
-			_clock = Clock::now();
 			Input::update();
+			Loadable::access([](Loadable* loadable) { loadable->load(); });
+			Loadable::clear();
 			for (auto& parallel : Parallel::contents)
 				parallel->sync();
 		});
@@ -90,7 +121,6 @@ namespace loom
 		
 		
 		// Loading everything else that needs openGL
-		Object::access([](Object* obj) { obj->load(); });
 		Input::load();
 		//
 
@@ -143,6 +173,8 @@ namespace loom
 		// Main loop
 		while (!glfwWindowShouldClose(window))
 		{
+			Loadable::access([](Loadable* loadable) { loadable->load(); });
+			Loadable::clear();
 			barrier.arrive_and_wait();
 
 			glfwSwapBuffers(window);
@@ -152,12 +184,13 @@ namespace loom
 			Updatable::access([](Updatable* updatable) { updatable->update(); });
 			Camera::access([](Camera* camera) { camera->render(); });
 
-			glfwSetWindowTitle(window, std::to_string((Clock::now() - _clock).count()).c_str());
+			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
 		};
 
-		Helper::access([](Helper* helper) { helper->kill(); });
-
 		barrier.arrive_and_drop();
+
+		Helper::access([](Helper* helper) { helper->kill(); });
+		Unloadable::access([](Unloadable* object) { object->unload(); });
 		//
 
 		
@@ -172,8 +205,6 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
-		for (auto& obj : Object::contents)
-			obj->unload();
 		//
 
 
@@ -184,11 +215,8 @@ namespace loom
 	};
 	void Loom::Exit()
 	{
-
-	};
-	const double Loom::GetTimeDiff()
-	{
-		return (double)(Clock::now() - _clock).count();
+		if (loader.joinable())
+			loader.join();
 	};
 
 

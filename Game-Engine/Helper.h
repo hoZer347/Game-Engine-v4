@@ -2,8 +2,6 @@
 
 #include "Data.h"
 
-#include <mutex>
-#include <queue>
 #include <thread>
 #include <atomic>
 #include <functional>
@@ -14,10 +12,11 @@ namespace loom
 
 	struct Helper final : public Manage<Helper>
 	{
-		Helper(Task task);
-		virtual ~Helper();
+		Helper(Task task, std::string name = "Unnamed");
+		
+		const std::string name;
 
-		static inline void kill() { KILL = true; };
+		void kill();
 
 	protected:
 		friend struct Loom;
