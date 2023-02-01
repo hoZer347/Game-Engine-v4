@@ -23,6 +23,7 @@
       <Filter>Engine\Grid</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -64,6 +65,7 @@
       <Filter>Engine\Grid</Filter>
     </ClInclude>
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />

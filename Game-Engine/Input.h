@@ -3,12 +3,13 @@
 #include "Data.h"
 
 #include <atomic>
+#include <memory>
 #include <functional>
 #include <unordered_map>
 
 namespace loom
 {
-	typedef std::function<void()> Task;
+	typedef void(*Task)();
 
 	struct Input final
 	{	

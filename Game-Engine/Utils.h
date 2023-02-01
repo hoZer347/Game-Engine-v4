@@ -1,127 +1,169 @@
 #pragma once
 
-#include "Data.h"
-#include "Loom.h"
-#include "Helper.h"
-
-#include <glm/gtx/transform.hpp>
-#include <glm/glm.hpp>
-using namespace glm;
-
 #include <chrono>
-#include <memory>
-#include <iostream>
+#include <atomic>
+#include <functional>
+#include <type_traits>
+
+#define TESTFOR(NAME)\
+	template<typename T, typename = void>\
+	struct has##NAME : std::false_type\
+	{};\
+	template<typename T>\
+	struct has##NAME<T, decltype(std::declval<T>().##NAME(), void())> : std::true_type\
+	{};\
+	static inline const bool Has##NAME = has##NAME<T>::value;
+
+
 
 namespace loom
 {
-	typedef std::chrono::high_resolution_clock Clock;
-	typedef std::chrono::steady_clock::time_point Time;
+	typedef void(*Task)();
 
-	struct Timer : Parallel
+	struct Utils
 	{
-		[[nodiscard]] const double GetDiff_s()   const { return diff / 1000000000; };
-		[[nodiscard]] const double GetDiff_mls() const { return diff / 1000000; };
-		[[nodiscard]] const double GetDiff_mcs() const { return diff / 1000; };
-		[[nodiscard]] const double GetDiff_ns()  const { return diff; };
-
 	private:
-		void sync() override
+		// Test whether or not a class has certain functions
+		template <typename T>
+		struct HasFuncTest
 		{
-			diff = (double)(Clock::now() - _clock).count();
-			_clock = Time(Clock::now());
+			TESTFOR(load);
+			TESTFOR(sync);
+			TESTFOR(update);
+			TESTFOR(render);
+			TESTFOR(unload);
+		};
+		//
+
+		typedef std::chrono::high_resolution_clock Clock;
+		typedef std::chrono::steady_clock::time_point Time;	
+		
+		template <typename T>
+		struct Data final
+		{
+		protected:
+			friend struct Utils;
+			static inline std::vector<T*> data;
 		};
 
-		Time _clock = Clock::now();
-		double diff = 0;
-	};
 
-	static inline Timer TIMER;
 
-	struct transform final
-	{
 	protected:
 		friend struct Loom;
-		struct Transform : Manage<Transform> // TODO: Make "Transform" the sync object, and manage the transforms itself
-		{
-		private:
-			virtual void exec()=0;
+		friend struct Camera;
+		friend struct Perspective;
+		static inline std::vector<void(*)()> loads;
+		static inline std::vector<void(*)()> syncs;
+		static inline std::vector<void(*)()> updates;
+		static inline std::vector<void(*)()> renders;
+		static inline std::vector<void(*)()> unloads;
+		static inline std::vector<std::function<void()>> invks;
 
-		public:
-			virtual ~Transform() { };
-			static void update() { access([](Transform* transform) { transform->exec(); }); }; // Perhaps there is a better way to do this
-		};
+
 
 	public:
-
-		// transform::approach
-		// Causes _start vector to approach _finish vector at a certain velocity
-		// dynamic = 0: _start will approach _finish every frame until it reaches it, then delete the Transform object
-		// dynamic = 1: _start will approach _finish every frame while updating _finish's value dynamically
-		template <typename T>
-		[[nodiscard]] static std::shared_ptr<Transform> approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
+		// High Resolution Timer so you don't have to interact with std::chrono lmao
+		struct Timer
 		{
-			return std::shared_ptr<Transform>(new Approach(_start, _finish, velocity, dynamic));
-		};
-		
-	private:
-		transform() { };
-		static inline Helper kernel { Transform::update, "Transform" };
+			[[nodiscard]] const double GetDiff_s()   const { return diff / 1000000000; };
+			[[nodiscard]] const double GetDiff_mcs() const { return diff / 1000000; };
+			[[nodiscard]] const double GetDiff_mls() const { return diff / 1000; };
+			[[nodiscard]] const double GetDiff_ns()  const { return diff; };
 
-		template <typename T>
-		struct Approach final : Transform, Parallel
-		{
-			Approach(T& _start, T& _finish, const double velocity = 1, const bool dynamic = false)
-			: dynamic(dynamic),
-			  velocity(velocity),
-			  _start(_start),
-			  __start(_start),
-			  _finish(_finish),
-			  __finish(_finish),
-			  _move(normalize(_finish - _start) *= velocity)
-			{ };
-
-			void exec() override
+			void update()
 			{
-				if (_start == _finish)
-				{
-					if (!dynamic)
-						delete this;
-					return;
-				};
-
-				if (double diff = TIMER.GetDiff_s())
-				{
-					if (dynamic)
-						_move = normalize(_finish - _start) *= velocity;
-
-					_move *= diff;
-
-					for (int i = 0; i < sizeof(T) / sizeof(float); i++)
-						if (_finish[i] - _start[i] <= _move[i])
-							_start[i] = _finish[i];
-						else
-							_start[i] += _move[i];
-
-					_move *= 1 / diff;
-				};
-			};
-
-			void sync() override
-			{
-				if (dynamic)
-					_finish = __finish;
-				__start = _start;
+				diff = (double)(Clock::now() - _clock).count();
+				_clock = Time(Clock::now());
 			};
 
 		private:
-			const bool dynamic;
-			const double velocity;
+			Time _clock = Clock::now();
+			double diff = 0;
+		};
+		//
+		
 
-			      T   _move;
-			      T   _start;
-			      T& __start;
-			      T   _finish;
-			const T& __finish;
+
+		// TODO: Get Construct / Deconstruct to run on a unique Helper thread (i.e. the loader thread)
+
+		// Construction of object T
+		template <typename T, typename... ARGS>
+		static std::unique_ptr<T> Construct(ARGS&&... args)
+		{
+			T* _t = new T(args...);
+
+			invks.emplace_back([=]
+			{
+				static auto b = []()
+				{
+					if constexpr (HasFuncTest<T>::Hasload)
+						loads.emplace_back([]()
+						{
+							for (auto& t : Data<T>::data)
+								if (t)
+									t->load();
+						});
+					
+					if constexpr (HasFuncTest<T>::Hassync)
+						syncs.emplace_back([]()
+						{
+							for (auto& t : Data<T>::data)
+								if (t)
+									t->sync();
+						});
+					
+					if constexpr (HasFuncTest<T>::Hasupdate)
+						updates.emplace_back([]()
+						{
+							for (auto& t : Data<T>::data)
+								if (t)
+									t->update();
+						});
+					
+					if constexpr (HasFuncTest<T>::Hasrender)
+						renders.emplace_back([]()
+						{
+							for (auto& t : Data<T>::data)
+								if (t)
+									t->render();
+						});
+
+					if constexpr (HasFuncTest<T>::Hasunload)
+						unloads.emplace_back([]()
+						{
+							for (auto& t : Data<T>::data)
+								if (t)
+									t->unload();
+						});
+
+					return nullptr;
+				};
+				static void* _b = b();
+				Data<T>::data.emplace_back(_t);
+			});
+
+			return std::unique_ptr<T>(_t);
+		};
+		//
+
+
+
+		// Deconstruction of object T
+		template <typename T>
+		static void Deconstruct(std::unique_ptr<T>& t)
+		{
+			T* _t = t.get();
+
+			invks.emplace_back([=]()
+			{
+				Data<T>::data.erase(
+					std::remove(
+						Data<T>::data.begin(),
+						Data<T>::data.end(),
+						_t));
+			});
+
+			t = nullptr;
 		};
 		//
 	};

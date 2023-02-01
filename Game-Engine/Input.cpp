@@ -68,6 +68,7 @@ namespace loom
 					i.second();
 
 			// TODO: add scancode bullshit
+			// TODO: add controller support
 		};
 	};
 };

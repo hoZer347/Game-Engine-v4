@@ -1,9 +1,9 @@
 #include "Camera.h"
 
 #include "Enums.h"
+#include "Utils.h"
 
-#include "Data.h"
-
+#include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
 #include <glm/gtx/transform.hpp>
@@ -11,18 +11,18 @@
 namespace loom
 {
 	Camera::Camera()
-	{
-		eye = vec4(-.6, -.6, 1, 1);
-		ctr = vec4(0, 0, 0, 1);
-		up  = vec4(0, 0, 1, 1);
+	:	eye(-.6, -.6, 1, 1),
+		ctr(0, 0, 0, 1),
+		up(0, 0, 1, 1),
+		fovy(45.f),
+		aspect(1.f),
+		near(.1f),
+		far(1000.f),
+		proj(1),
+		view(1)
+	{ };
 
-		fovy = 45.f;
-		aspect = 1.f;
-		near = .1f;
-		far = 1000.f;
-	};
-
-	void Camera::render()
+	void Camera::update()
 	{
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
@@ -33,7 +33,7 @@ namespace loom
 			proj = perspective(fovy, aspect, near, far);
 			mvp = proj * view;
 
-			Renderable::access([](Renderable* renderable) { renderable->render(); });
+			for (auto& task : Utils::renders) task();
 		};
 	};
 };

@@ -4,9 +4,11 @@
 
 namespace loom
 {
-	Helper::Helper(Task task, std::string name)
+	Helper::Helper(Task task, const char* name)
 	: task(task), name(name)
-	{ };
+	{
+		helpers.push_back(this);
+	};
 	void Helper::kill()
 	{
 		KILL = true;

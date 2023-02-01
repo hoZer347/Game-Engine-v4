@@ -1,4 +1,4 @@
-#include "Utils.h"
+#pragma once
 
 namespace loom
 {

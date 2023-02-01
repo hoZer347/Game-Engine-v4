@@ -18,21 +18,6 @@ namespace loom
 	// Mesh of squares
 	struct Squares final
 	{
-		Squares()
-		{ };
-
-		Squares(Shader& shader)
-		: shader(shader)
-		{ };
-
-		Squares(Texture& texture)
-		: texture(texture)
-		{ };
-
-		Squares(Shader& shader, Texture& texture)
-		: shader(shader), texture(texture)
-		{ };
-
 		void operator*=(mat4 m) { trns *= m; };
 		void operator+=(vec4 v)
 		{
@@ -90,13 +75,7 @@ namespace loom
 		void render();
 		void unload();
 
-		
-		Shader& shader = _shader;
-		Texture& texture = _texture;
-
 		static inline ID _buffer = 0;
-		static inline Shader _shader{ "shaders/Squares" };
-		static inline Texture _texture{ "Resources/stone.png", 0x1907 };
 	};
 	//
 };

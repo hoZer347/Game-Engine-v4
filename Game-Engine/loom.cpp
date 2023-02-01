@@ -17,8 +17,8 @@
 #include "Enums.h"
 #include "Data.h"
 #include "Utils.h"
-#include "Shader.h"
 #include "Helper.h"
+#include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
 #include "Input.h"
@@ -29,53 +29,23 @@
 
 namespace loom
 {
-	static inline GLFWwindow* window = nullptr;
-	static inline std::mutex one_at_a_time;
-
-	// Handling Loading Objects in Runtime
-	static inline std::mutex load_mut;
-	static inline std::queue<Task> to_load;
-	static inline std::queue<Task> loading;
-	static inline std::thread loader;
-	static inline std::atomic<bool> loader_KILL = false;
-	void Loom::assign(Task task)
-	{
-		load_mut.lock();
-		to_load.push(task);
-		load_mut.unlock();
-	};
-	//
-
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-		loader = std::thread([]()
-		{
-			while (!loader_KILL)
-			{
-				load_mut.lock();
-				while (!to_load.empty())
-				{
-					loading.push(to_load.front());
-					to_load.pop();
-				};
-				load_mut.unlock();
-
-				while (!loading.empty())
-				{
-					loading.front()();
-					loading.pop();
-				};
-			};
-		});
 	};
 	void Loom::RunOnThisThread()
 	{
 		// Making sure only 1 of these functions runs at a time
+		static std::mutex one_at_a_time;
 		one_at_a_time.lock();
 		//
 
+
+
+		// TIMER for FPS counting
+		thread_local static Utils::Timer TIMER;
+		//
+		
 
 
 		// Allowing access to shaders / textures
@@ -85,9 +55,9 @@ namespace loom
 
 
 
-		// Opening GLFWwindow
+		// Setting up the main window
 		glfwInit();
-		window = glfwCreateWindow(640, 640, "Title", nullptr, nullptr);
+		thread_local static GLFWwindow* window = glfwCreateWindow(640, 640, "Title", nullptr, nullptr);
 		glewExperimental = true;
 		glfwMakeContextCurrent(window);
 		glewInit();
@@ -98,11 +68,13 @@ namespace loom
 		// Syncing Helpers
 		std::barrier barrier = std::barrier(NUM_BASE_THREADS, []() noexcept
 		{
-			Input::update();
-			Parallel::access([](Parallel* parallel) { parallel->sync(); });
-		});
+			for (auto& task : Utils::invks) task();
+			Utils::invks.clear();
 
-		Helper::access([&barrier](Helper* helper) {
+			for (auto& task : Utils::syncs)
+				task();
+		});
+		for (auto& helper : Helper::helpers)
 			helper->thread = std::thread([helper, &barrier]()
 			{
 				while (!helper->KILL)
@@ -110,21 +82,18 @@ namespace loom
 					helper->task();
 					barrier.arrive_and_wait();
 				};
-
 				barrier.arrive_and_drop();
 			});
-		});
-
-		for (auto i = NUM_BASE_THREADS; i > Helper::size() + 1; i--)
+		for (auto i = NUM_BASE_THREADS; i > Helper::helpers.size() + 1; i--)
 			barrier.arrive_and_drop();
 		//
 
-		
-		
-		// Loading everything else that needs openGL
+
+
+		// Loading inputs
 		Input::load();
 		//
-
+		
 
 
 		// Preparing openGL
@@ -174,27 +143,59 @@ namespace loom
 		// Main loop
 		while (!glfwWindowShouldClose(window))
 		{
-			Loadable::access([](Loadable* loadable) { loadable->load(); });
-			Loadable::clear();
-			barrier.arrive_and_wait();
+			// Updating Inputs
+			Input::update();
+			//
+			
 
+
+			// Written this way because a load can add another load
+			int i = 0;
+			while (i < Utils::loads.size())
+			{
+				Utils::loads[i]();
+				i++;
+			};
+			Utils::loads.clear();
+			//
+
+
+
+			// Synchronizing with helpers
+			barrier.arrive_and_wait();
+			//
+
+
+
+			// Doing openGL-dependent updates
+			for (auto& task : Utils::updates)
+				task();
+			//
+
+
+
+			// OpenGL Stuff
 			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwPollEvents();
+			//
 
-			Updatable::access([](Updatable* updatable) { updatable->update(); });
-			Camera::access([](Camera* camera) { camera->render(); });
 
+
+			// Recording FPS
+			// TODO: Once text rendering is done, show on screen
+			TIMER.update();
 			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
+			//
 		};
 		barrier.arrive_and_drop();
-		Helper::access([](Helper* helper) { helper->kill(); });
 		//
 
-		
+
 
 		// Deallocating everything allocated that uses openGL
-		Unloadable::access([](Unloadable* object) { object->unload(); });
+		for (auto& task : Utils::unloads)
+			task();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glDeleteBuffers(1, &_vtxs);
@@ -214,32 +215,9 @@ namespace loom
 	};
 	void Loom::Exit()
 	{
-		loader_KILL = true;
-		if (loader.joinable())
-			loader.join();
+		for (auto& helper : Helper::helpers)
+			helper->kill();
 	};
-
-
-	void Shader::load()
-	{
-		id = s_mgr->create(files);
-	};
-	void Shader::unload()
-	{
-
-	};
-
-
-
-	void Texture::load()
-	{
-		id = t_mgr->create(file, type);
-	};
-	void Texture::unload()
-	{
-
-	};
-
 
 	ShaderManager* GetSMgr()
 	{
