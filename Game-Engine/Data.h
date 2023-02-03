@@ -28,7 +28,7 @@ namespace loom
 	{
 		ID id = 0;
 
-	//protected:
+	protected:
 		friend struct Utils;
 		Shader(std::string files...)
 		: files({ files })
@@ -48,7 +48,7 @@ namespace loom
 	{
 		ID id = 0;
 
-	//protected:
+	protected:
 		friend struct Utils;
 		Texture(std::string file, TYPE type)
 		: file(file), type(type)

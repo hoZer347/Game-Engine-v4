@@ -25,8 +25,8 @@ int main()
 	Loom::Init();
 
 	auto camera = Utils::Construct<Camera>();
-	std::vector<std::unique_ptr<Grid>> grids;
-	grids.push_back(Utils::Construct<Grid>(32, 32));
+
+	auto grid = Utils::Construct<Grid>(100, 100);
 
 
 	Loom::RunOnThisThread();

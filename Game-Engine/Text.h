@@ -2,8 +2,8 @@
 
 namespace loom
 {
-	struct Sprites final
+	struct Text final
 	{
-		
+
 	};
 };

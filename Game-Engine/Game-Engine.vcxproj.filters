@@ -23,7 +23,10 @@
       <Filter>Engine\Grid</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Engine\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -37,6 +40,9 @@
     </Filter>
     <Filter Include="Engine\Grid">
       <UniqueIdentifier>{ddfcf1da-348c-461f-b2bc-1dee2808de01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Sprite">
+      <UniqueIdentifier>{d2bbe52b-7bae-49a5-82a2-a60e8ec0927f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +71,10 @@
       <Filter>Engine\Grid</Filter>
     </ClInclude>
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Sprite.h">
+      <Filter>Engine\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />

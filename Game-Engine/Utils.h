@@ -12,7 +12,7 @@
 	template<typename T>\
 	struct has##NAME<T, decltype(std::declval<T>().##NAME(), void())> : std::true_type\
 	{};\
-	static inline const bool Has##NAME = has##NAME<T>::value;
+	static inline const bool Has##NAME = has##NAME<T>::value;\
 
 
 
@@ -65,10 +65,10 @@ namespace loom
 		// High Resolution Timer so you don't have to interact with std::chrono lmao
 		struct Timer
 		{
-			[[nodiscard]] const double GetDiff_s()   const { return diff / 1000000000; };
-			[[nodiscard]] const double GetDiff_mcs() const { return diff / 1000000; };
-			[[nodiscard]] const double GetDiff_mls() const { return diff / 1000; };
-			[[nodiscard]] const double GetDiff_ns()  const { return diff; };
+			_NODISCARD const double GetDiff_s()   const { return diff / 1000000000; };
+			_NODISCARD const double GetDiff_mcs() const { return diff / 1000000; };
+			_NODISCARD const double GetDiff_mls() const { return diff / 1000; };
+			_NODISCARD const double GetDiff_ns()  const { return diff; };
 
 			void update()
 			{
@@ -88,7 +88,7 @@ namespace loom
 
 		// Construction of object T
 		template <typename T, typename... ARGS>
-		static std::unique_ptr<T> Construct(ARGS&&... args)
+		_NODISCARD static std::unique_ptr<T> Construct(ARGS&&... args)
 		{
 			T* _t = new T(args...);
 
@@ -162,8 +162,6 @@ namespace loom
 						Data<T>::data.end(),
 						_t));
 			});
-
-			t = nullptr;
 		};
 		//
 	};

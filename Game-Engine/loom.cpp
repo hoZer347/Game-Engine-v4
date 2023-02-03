@@ -149,6 +149,12 @@ namespace loom
 			
 
 
+			// Synchronizing with helpers
+			barrier.arrive_and_wait();
+			//
+
+
+
 			// Written this way because a load can add another load
 			int i = 0;
 			while (i < Utils::loads.size())
@@ -157,12 +163,6 @@ namespace loom
 				i++;
 			};
 			Utils::loads.clear();
-			//
-
-
-
-			// Synchronizing with helpers
-			barrier.arrive_and_wait();
 			//
 
 
