@@ -18,150 +18,40 @@
 
 namespace loom
 {
-	typedef void(*Task)();
+	typedef std::function<void()> Task;
 
 	struct Utils
 	{
 	private:
-		// Test whether or not a class has certain functions
-		template <typename T>
-		struct HasFuncTest
-		{
-			TESTFOR(load);
-			TESTFOR(sync);
-			TESTFOR(update);
-			TESTFOR(render);
-			TESTFOR(unload);
-		};
-		//
-
 		typedef std::chrono::high_resolution_clock Clock;
-		typedef std::chrono::steady_clock::time_point Time;	
-		
-		template <typename T>
-		struct Data final
-		{
-		protected:
-			friend struct Utils;
-			static inline std::vector<T*> data;
-		};
-
-
-
-	protected:
-		friend struct Loom;
-		friend struct Camera;
-		friend struct Perspective;
-		static inline std::vector<void(*)()> loads;
-		static inline std::vector<void(*)()> syncs;
-		static inline std::vector<void(*)()> updates;
-		static inline std::vector<void(*)()> renders;
-		static inline std::vector<void(*)()> unloads;
-		static inline std::vector<std::function<void()>> invks;
-
-
+		typedef std::chrono::steady_clock::time_point Time;
 
 	public:
 		// High Resolution Timer so you don't have to interact with std::chrono lmao
 		struct Timer
 		{
-			_NODISCARD const double GetDiff_s()   const { return diff / 1000000000; };
-			_NODISCARD const double GetDiff_mcs() const { return diff / 1000000; };
-			_NODISCARD const double GetDiff_mls() const { return diff / 1000; };
-			_NODISCARD const double GetDiff_ns()  const { return diff; };
+			// Gets the difference between the last pinged time and the current one in seconds
+			_NODISCARD const double GetDiff_s()   const { return (double)(Clock::now() - _clock).count() / 1000000000; };
+			
+			// Gets the difference between the last pinged time and the current one in milliseconds
+			_NODISCARD const double GetDiff_mls() const { return (double)(Clock::now() - _clock).count() / 1000; };
 
-			void update()
-			{
-				diff = (double)(Clock::now() - _clock).count();
-				_clock = Time(Clock::now());
-			};
+			// Gets the difference between the last pinged time and the current one in microseconds
+			_NODISCARD const double GetDiff_mcs() const { return (double)(Clock::now() - _clock).count() / 1000000; };
+			
+			// Gets the difference between the last pinged time and the current one in nanoseconds
+			_NODISCARD const double GetDiff_ns()  const { return (double)(Clock::now() - _clock).count(); };
+
+			// Adds time to the clock's last pinged time
+			template <typename T>
+			void push(T t) { _clock += t; }
+
+			// Resets the last pinged time to the current time
+			void restart() { _clock = Time(Clock::now()); };
 
 		private:
 			Time _clock = Clock::now();
 			double diff = 0;
-		};
-		//
-		
-
-
-		// TODO: Get Construct / Deconstruct to run on a unique Helper thread (i.e. the loader thread)
-
-		// Construction of object T
-		template <typename T, typename... ARGS>
-		_NODISCARD static std::unique_ptr<T> Construct(ARGS&&... args)
-		{
-			T* _t = new T(args...);
-
-			invks.emplace_back([=]
-			{
-				static auto b = []()
-				{
-					if constexpr (HasFuncTest<T>::Hasload)
-						loads.emplace_back([]()
-						{
-							for (auto& t : Data<T>::data)
-								if (t)
-									t->load();
-						});
-					
-					if constexpr (HasFuncTest<T>::Hassync)
-						syncs.emplace_back([]()
-						{
-							for (auto& t : Data<T>::data)
-								if (t)
-									t->sync();
-						});
-					
-					if constexpr (HasFuncTest<T>::Hasupdate)
-						updates.emplace_back([]()
-						{
-							for (auto& t : Data<T>::data)
-								if (t)
-									t->update();
-						});
-					
-					if constexpr (HasFuncTest<T>::Hasrender)
-						renders.emplace_back([]()
-						{
-							for (auto& t : Data<T>::data)
-								if (t)
-									t->render();
-						});
-
-					if constexpr (HasFuncTest<T>::Hasunload)
-						unloads.emplace_back([]()
-						{
-							for (auto& t : Data<T>::data)
-								if (t)
-									t->unload();
-						});
-
-					return nullptr;
-				};
-				static void* _b = b();
-				Data<T>::data.emplace_back(_t);
-			});
-
-			return std::unique_ptr<T>(_t);
-		};
-		//
-
-
-
-		// Deconstruction of object T
-		template <typename T>
-		static void Deconstruct(std::unique_ptr<T>& t)
-		{
-			T* _t = t.get();
-
-			invks.emplace_back([=]()
-			{
-				Data<T>::data.erase(
-					std::remove(
-						Data<T>::data.begin(),
-						Data<T>::data.end(),
-						_t));
-			});
 		};
 		//
 	};

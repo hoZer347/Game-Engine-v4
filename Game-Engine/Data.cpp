@@ -1,5 +1,7 @@
 #include "Data.h"
 
+#include "Loom.h"
+
 #include "Shader.h"
 #include "Texture.h"
 

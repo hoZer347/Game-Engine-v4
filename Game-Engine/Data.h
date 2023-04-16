@@ -1,17 +1,16 @@
 #pragma once
 
+#include "Loom.h"
+
+#include <thread>
+#include <atomic>
+#include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 
 namespace loom
 {
-	// Enumeration types
-	typedef uint32_t ID;
-	typedef uint32_t TYPE;
-	//
-
-
-
 	// TODO: Move below to new file
 	
 	// Getting around thread_local bullshit
@@ -23,19 +22,104 @@ namespace loom
 
 
 
-	// Shader Object
-	struct Shader final
+	// GameObjects
+	template <typename T>
+	struct GameObject
 	{
-		ID id = 0;
-
 	protected:
-		friend struct Utils;
+		friend struct Loom;
+		GameObject()
+		{
+			objects.push_back(static_cast<T*>(this));
+		};
+		virtual ~GameObject()
+		{
+			for (auto i = 0; i < objects.size(); i++)
+			{
+				if (objects[i] == this)
+					objects[i] = objects.back();
+
+				objects.pop_back();
+			};
+		};
+		static inline std::vector<T*> objects;
+	};
+	struct Renderable : public GameObject<Renderable>
+	{
+	protected:
+		friend struct Camera;
+		virtual void render()=0;
+		static void render_all()
+		{
+			for (auto& obj : objects)
+				obj->render();
+		};
+	};
+	struct Updateable : public GameObject<Updateable>
+	{
+	protected:
+		friend struct Loom;
+		virtual void update()=0;
+		static void update_all()
+		{
+			for (auto& obj : objects)
+				obj->update();
+		};
+	};
+	struct Loadable : public GameObject<Loadable>
+	{
+	protected:
+		friend struct Loom;
+		virtual void load()=0;
+		static void load_all()
+		{
+			// Accounting for a loadable adding another loadable
+			size_t i = 0;
+			while (i < objects.size())
+			{
+				objects[i]->load();
+				i++;
+			};
+			objects.clear();
+			//
+		};
+	};
+	struct Unloadable : public GameObject<Unloadable>
+	{
+	protected:
+		friend struct Loom;
+		virtual void unload()=0;
+		static void unload_all()
+		{
+			// Accounting for an unloadable adding another unloadable
+			size_t i = 0;
+			while (i < objects.size())
+			{
+				objects[i]->unload();
+				i++;
+			};
+			objects.clear();
+			//
+		};
+	};
+	//
+
+
+
+	// Shader Object
+	struct Shader final : public Loadable, public Unloadable
+	{
+		uint32_t id = 0;
+
+	
 		Shader(std::string files...)
 		: files({ files })
 		{ };
 
+	protected:
 		void load();
-		
+		void unload() { };
+
 	private:
 		std::vector<std::string> files;
 	};
@@ -44,21 +128,21 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final
+	struct Texture final : public Loadable, public Unloadable
 	{
-		ID id = 0;
+		uint32_t id = 0;
 
-	protected:
-		friend struct Utils;
-		Texture(std::string file, TYPE type)
+		Texture(std::string file, uint32_t type)
 		: file(file), type(type)
 		{ };
 
+	protected:
 		void load();
-		
+		void unload() { };
+
 	private:
 		std::string file;
-		TYPE type;
+		uint32_t type;
 	};
 	//
 };

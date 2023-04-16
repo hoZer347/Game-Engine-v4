@@ -1,12 +1,14 @@
 #pragma once
 
+#include <functional>
+
 namespace loom
 {
 	// The main engine singleton
 	struct Loom final
 	{
 		static void Init();
-		static void RunOnThisThread();
+		static void Run();
 		static void Exit();
 
 	private:

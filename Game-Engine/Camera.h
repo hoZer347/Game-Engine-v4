@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Data.h"
+
 #include <glm/glm.hpp>
 using namespace glm;
 
@@ -8,10 +10,10 @@ using namespace glm;
 namespace loom
 {
 	// Camera, without this, you won't actually render anything
-	struct Camera final
+	struct Camera final : public Updateable
 	{
 		Camera();
-		static inline mat4 mvp;
+		static inline mat4 mvp = mat4(1);
 
 		float	fovy,
 				aspect,
@@ -24,7 +26,7 @@ namespace loom
 
 	protected:
 		friend struct Utils;
-		void update();
+		void update() override;
 
 	private:
 		mat4	view,

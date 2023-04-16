@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Data.h"
-
 #include <glm/glm.hpp>
 using namespace glm;
 
@@ -9,73 +8,58 @@ using namespace glm;
 
 namespace loom
 {
-	typedef uint32_t ID;
-	typedef uint32_t TYPE;
-
-	struct Shader;
-	struct Texture;
-
-	// Mesh of squares
-	struct Squares final
+	struct Cube final : virtual private Loadable, virtual private Renderable
 	{
-		void operator*=(mat4 m) { trns *= m; };
-		void operator+=(vec4 v)
-		{
-			data.reserve(32 * sizeof(float));
+		Cube()
+		{ };
 
-			data.emplace_back(0.f + v.x);
-			data.emplace_back(0.f + v.y);
-			data.emplace_back(v.z);
-			data.emplace_back(v.w);
-
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-
-
-			data.emplace_back(1.f + v.x);
-			data.emplace_back(0.f + v.y);
-			data.emplace_back(v.z);
-			data.emplace_back(v.w);
-
-			data.emplace_back(1.f);
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-
-
-			data.emplace_back(1.f + v.x);
-			data.emplace_back(1.f + v.y);
-			data.emplace_back(v.z);
-			data.emplace_back(v.w);
-
-			data.emplace_back(1.f);
-			data.emplace_back(1.f);
-			data.emplace_back(0.f);
-			data.emplace_back(1.f);
-
-			
-			data.emplace_back(0.f + v.x);
-			data.emplace_back(1.f + v.y);
-			data.emplace_back(v.z);
-			data.emplace_back(v.w);
-
-			data.emplace_back(0.f);
-			data.emplace_back(1.f);
-			data.emplace_back(0.f);
-			data.emplace_back(0.f);
-		};
+		vec4 color = vec4(0, 0, 1, 1);
+		mat4 trns = mat4(1);
 
 	private:
-		mat4 trns = mat4(1);
-		std::vector<float> data;
-		
-		void load();
-		void render();
-		void unload();
+		void load() override;
+		void render() override;
 
-		static inline ID _buffer = 0;
+		static inline std::vector<vec4> vtxs =
+		{
+			vec4(0, 0, 0, 1),
+			vec4(1, 0, 0, 1),
+			vec4(1, 1, 0, 1),
+			vec4(0, 1, 0, 1),
+
+			vec4(0, 0, 1, 1),
+			vec4(1, 0, 1, 1),
+			vec4(1, 1, 1, 1),
+			vec4(0, 1, 1, 1),
+		};
+		static inline std::vector<uint32_t> inds =
+		{
+			0, 1, 2, 3,
+			7, 6, 5, 4,
+			1, 5, 6, 2,
+			4, 0, 3, 7,
+			0, 1, 5, 4,
+			3, 2, 6, 7,
+		};
 	};
-	//
+
+
+
+	struct Plane final : virtual private Loadable, virtual private Renderable
+	{
+		vec4 color = vec4(1);
+		mat4 trns = mat4(1);
+
+	private:
+		void load() override;
+		void render() override;
+
+		static inline std::vector<vec4> vtxs =
+		{
+			vec4(0, 0, 0, 1),
+			vec4(1, 0, 0, 1),
+			vec4(1, 1, 0, 1),
+			vec4(0, 1, 0, 1),
+		};
+	};
 };

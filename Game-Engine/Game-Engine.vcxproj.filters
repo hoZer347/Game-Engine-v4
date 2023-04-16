@@ -2,31 +2,42 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Engine\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Loom.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Grid.cpp">
-      <Filter>Engine\Grid</Filter>
+      <Filter>Game\Grid</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>Engine\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Engine\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Engine\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Game\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Perspective.cpp">
+      <Filter>Engine\Perspective</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands.cpp">
+      <Filter>Game\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -35,55 +46,96 @@
     <Filter Include="Game">
       <UniqueIdentifier>{3a4c3b07-ca94-425a-ac95-3b1306039f03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Geometry">
-      <UniqueIdentifier>{1a16db8b-55ee-413e-b152-4f0d3c8e47cd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Grid">
-      <UniqueIdentifier>{ddfcf1da-348c-461f-b2bc-1dee2808de01}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Sprite">
       <UniqueIdentifier>{d2bbe52b-7bae-49a5-82a2-a60e8ec0927f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Grid">
+      <UniqueIdentifier>{ddfcf1da-348c-461f-b2bc-1dee2808de01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Camera">
+      <UniqueIdentifier>{7ba8ea3b-649b-4176-b36b-6443e574014b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Primitives">
+      <UniqueIdentifier>{96447134-fbc2-4b5f-91cf-8a65419b7631}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{204fa360-f970-4e61-90a4-846572f0a777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Text">
+      <UniqueIdentifier>{1302366d-7860-4d07-98e6-86ffc8a35f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Geometry">
+      <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Perspective">
+      <UniqueIdentifier>{8efec89d-56a3-4ea3-8967-5563abc8ef67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Commands">
+      <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Geometry.h">
-      <Filter>Engine\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Loom.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Enums.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Helper.h" />
     <ClInclude Include="Grid.h">
-      <Filter>Engine\Grid</Filter>
+      <Filter>Game\Grid</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h" />
     <ClInclude Include="Sprite.h">
       <Filter>Engine\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="Enums.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Engine\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Engine\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Engine\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Game\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Perspective.h">
+      <Filter>Engine\Perspective</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands.h">
+      <Filter>Game\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\default.frag" />
-    <None Include="shaders\default.vert" />
     <None Include="shaders\Grid.vert">
-      <Filter>Engine\Grid</Filter>
+      <Filter>Game\Grid</Filter>
     </None>
     <None Include="shaders\Grid.frag">
-      <Filter>Engine\Grid</Filter>
+      <Filter>Game\Grid</Filter>
+    </None>
+    <None Include="shaders\default.frag">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="shaders\default.vert">
+      <Filter>Engine</Filter>
+    </None>
+    <None Include="shaders\Geometry.frag">
+      <Filter>Game\Geometry</Filter>
+    </None>
+    <None Include="shaders\Geometry.vert">
+      <Filter>Game\Geometry</Filter>
     </None>
   </ItemGroup>
 </Project>

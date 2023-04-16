@@ -2,34 +2,36 @@
 #include "GLFW/glfw3.h"
 
 #include <glm/gtx/transform.hpp>
+using namespace glm;
 
 #include "Loom.h"
 #include "Grid.h"
+#include "Text.h"
 #include "Utils.h"
 #include "Input.h"
-#include "Helper.h"
 #include "Camera.h"
-#include "Buffer.h"
+#include "Commands.h"
 #include "Geometry.h"
 using namespace loom;
 
 #include <thread>
 #include <chrono>
-#include <memory>
-#include <barrier>
 #include <iostream>
-#include <type_traits>
+
+// TODO: Text
 
 int main()
 {
 	Loom::Init();
 
-	auto camera = Utils::Construct<Camera>();
+	Camera camera;
 
-	auto grid = Utils::Construct<Grid>(100, 100);
+	Grid grid { 10, 10 };
+	grid.ConstructCells(0, 0, 10, 10);
 
+	bindCameraToGrid(camera, grid);
 
-	Loom::RunOnThisThread();
+	Loom::Run();
 
 	Loom::Exit();
 

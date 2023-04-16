@@ -11,8 +11,8 @@
 namespace loom
 {
 	Camera::Camera()
-	:	eye(-.6, -.6, 1, 1),
-		ctr(0, 0, 0, 1),
+	:	eye(0, 0, 10, 1),
+		ctr(5, 5, 0, 1),
 		up(0, 0, 1, 1),
 		fovy(45.f),
 		aspect(1.f),
@@ -33,7 +33,7 @@ namespace loom
 			proj = perspective(fovy, aspect, near, far);
 			mvp = proj * view;
 
-			for (auto& task : Utils::renders) task();
+			Renderable::render_all();
 		};
 	};
 };

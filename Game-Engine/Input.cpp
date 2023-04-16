@@ -3,8 +3,12 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
+#include "Utils.h"
+
 namespace loom
 {
+	// TODO: scancode / action ordering
+
 	static inline std::shared_ptr<Input> INPUT = std::make_shared<Input>();
 	Input::Input(std::shared_ptr<Input> _prev)
 	: _prev(_prev)
@@ -22,7 +26,7 @@ namespace loom
 		input i{ { 0, button, action, mods } };
 		INPUT->inputs[i.input] = task;
 	};
-	void Input::KeyPress(Task task, uint16_t key, uint16_t scancode, uint16_t action, uint16_t mods)
+	void Input::KeyPress(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods)
 	{
 		input i{ { key, scancode, action, mods } };
 		INPUT->inputs[i.input] = task;
@@ -32,10 +36,24 @@ namespace loom
 		input i{ { 0, button, action, mods } };
 		INPUT->mbns.emplace_back(i, task);
 	};
-	void Input::KeyHold(Task task, uint16_t key, uint16_t scancode, uint16_t action, uint16_t mods)
+	void Input::KeyHold(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods)
 	{
 		input i{ { key, scancode, action, mods } };
 		INPUT->keys.emplace_back(i, task);
+	};
+	void Input::ScrollWheel(ScrollTask task)
+	{
+		INPUT->scroll_tasks.push_back(task);
+	};
+	void Input::GetMousePos(double& mx, double& my)
+	{
+		mx = _mx;
+		my = _my;
+	};
+	void Input::GetRelativeMousePos(double& mx, double& my)
+	{
+		mx = _mx - _px;
+		my = _my - _py;
 	};
 	void Input::load()
 	{
@@ -53,10 +71,22 @@ namespace loom
 				if (INPUT->inputs[i.input])
 					INPUT->inputs[i.input]();
 			});
+			glfwSetScrollCallback(window, [](GLFWwindow* window, double sx, double sy)
+			{
+				for (auto& i : INPUT->scroll_tasks)
+					i(sx, sy);
+			});
 		};
 	};
 	void Input::update()
 	{
+		static Utils::Timer timer;
+
+		if (timer.GetDiff_mls() < 1000 / INPUT_TICKRATE)
+			return;
+
+		timer.push(std::chrono::milliseconds(1000 / INPUT_TICKRATE));
+
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
 			for (auto& i : INPUT->keys)
@@ -66,6 +96,10 @@ namespace loom
 			for (auto& i : INPUT->mbns)
 				if (glfwGetMouseButton(window, i.first.data[1]) == i.first.data[2])
 					i.second();
+
+			_px = _mx;
+			_py = _my;
+			glfwGetCursorPos(window, &_mx, &_my);
 
 			// TODO: add scancode bullshit
 			// TODO: add controller support

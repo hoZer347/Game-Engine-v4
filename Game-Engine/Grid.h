@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Data.h"
-#include "Utils.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -10,34 +9,44 @@ using namespace glm;
 
 namespace loom
 {
-	struct Cell final { vec4 pos = vec4(0); };
-
-	struct Grid final
+	struct Cell
 	{
-		Grid(uint16_t x_size, uint16_t y_size);
-		virtual ~Grid();
+		const ivec2 pos;
+		uint32_t v0 = -1, v1 = v0, v2 = v0, v3 = v0;
+	};
 
-		mat4 trns = mat4(1);
-
-	protected:
-		friend struct Utils;
-		void load();
-		void render();
-
+	struct Grid final : virtual private Loadable, virtual private Updateable, virtual private Renderable
+	{
 	private:
 		struct Column
 		{
-			Cell* ptr;
-			Cell& operator[](int i) { return ptr[i]; }
+			vec4* ptr;
+			vec4& operator[](uint16_t i) { return ptr[i]; }
 		};
-		
-		std::unique_ptr<Cell[]> vtxs;
-		uint16_t x_size, y_size;
-		uint32_t _trns = 0, _mvp = 0;
+
+		std::vector<vec4> vtxs;
 		std::vector<uint32_t> inds;
-		static inline std::shared_ptr<Shader> shader = Utils::Construct<Shader>("shaders/Grid");
+
+		uint32_t x_size, y_size;
+		uint32_t _trns = 0, _mvp = 0;
+		
+		std::vector<std::vector<Cell>> cells;
+
+		vec4 mpos = vec4(0);
 
 	public:
-		Column operator[](uint16_t i) { return Column({ &vtxs[i * x_size] }); }
+		Grid(uint32_t x_size, uint32_t y_size);
+		virtual ~Grid();
+
+		// Initializes cells from (x0, y0) to (x1, y1)
+		// Connected means whether or not they share vertices
+		void ConstructCells(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool connected = true);
+		std::vector<Cell>& operator[](uint32_t i) { return cells[i]; };
+
+	protected:
+		friend struct Utils;
+		void load() override;
+		void update() override;
+		void render() override;
 	};
 };
