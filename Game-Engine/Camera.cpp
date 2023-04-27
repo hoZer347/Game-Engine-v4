@@ -2,6 +2,7 @@
 
 #include "Enums.h"
 #include "Utils.h"
+#include "Input.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -10,17 +11,38 @@
 
 namespace loom
 {
-	Camera::Camera()
-	:	eye(0, 0, 10, 1),
-		ctr(5, 5, 0, 1),
-		up(0, 0, 1, 1),
-		fovy(45.f),
-		aspect(1.f),
-		near(.1f),
-		far(1000.f),
-		proj(1),
-		view(1)
-	{ };
+    void  calculateRotationMatrix(float& roll, float& pitch, float& yaw, mat4& rotationMatrix) {
+        // Convert degrees to radians
+        float rollRad = radians(roll);
+        float pitchRad = radians(pitch);
+        float yawRad = radians(yaw);
+
+        // Calculate the sine and cosine of the angles
+        float sinRoll = sin(rollRad);
+        float cosRoll = cos(rollRad);
+        float sinPtch = sin(pitchRad);
+        float cosPtch = cos(pitchRad);
+        float sinYaww = sin(yawRad);
+        float cosYaww = cos(yawRad);
+
+        // Calculate the elements of the rotation matrix
+        rotationMatrix[0][0] = cosYaww * cosPtch;
+        rotationMatrix[0][1] = cosYaww * sinPtch * sinRoll - sinYaww * cosRoll;
+        rotationMatrix[0][2] = cosYaww * sinPtch * cosRoll + sinYaww * sinRoll;
+        rotationMatrix[0][3] = 0.0f;
+        rotationMatrix[1][0] = sinYaww * cosPtch;
+        rotationMatrix[1][1] = sinYaww * sinPtch * sinRoll + cosYaww * cosRoll;
+        rotationMatrix[1][2] = sinYaww * sinPtch * cosRoll - cosYaww * sinRoll;
+        rotationMatrix[1][3] = 0.0f;
+        rotationMatrix[2][0] = -sinPtch;
+        rotationMatrix[2][1] = cosPtch * sinRoll;
+        rotationMatrix[2][2] = cosPtch * cosRoll;
+        rotationMatrix[2][3] = 0.0f;
+        rotationMatrix[3][0] = 0.0f;
+        rotationMatrix[3][1] = 0.0f;
+        rotationMatrix[3][2] = 0.0f;
+        rotationMatrix[3][3] = 1.0f;
+    };
 
 	void Camera::update()
 	{
@@ -28,10 +50,31 @@ namespace loom
 		{
 			int w, h;
 			glfwGetWindowSize(window, &w, &h);
+			if (w == 0 || h == 0)
+				return;
 			aspect = (float)w / (float)h;
-			view = lookAt(vec3(eye), vec3(ctr), vec3(up));
 			proj = perspective(fovy, aspect, near, far);
-			mvp = proj * view;
+            view = lookAt(eye, ctr, up);
+            calculateRotationMatrix(roll, ptch, yaww, rotn);
+			mode = rotn * trns;
+			mvp = proj * view * mode;
+
+            roll_mat = rotate(radians(roll), vec3(1, 0, 0));
+            ptch_mat = rotate(radians(ptch), vec3(0, 1, 0));
+            yaww_mat = rotate(radians(yaww), vec3(0, 0, 1));
+
+			double mx, my;
+			Input::GetMousePos(mx, my);
+
+			mpos = inverse(Camera::mvp) * vec4(2 * mx / w - 1, 1 - 2 * my / h,  0, 1);
+			mdir =
+                inverse(Camera::rotn) *
+                inverse(Camera::proj) *
+                inverse(Camera::view) *
+                vec4(2 * mx / w - 1, 1 - 2 * my / h, -1, 1);
+
+			mpos /= mpos.w;
+			mdir /= mdir.w;
 
 			Renderable::render_all();
 		};

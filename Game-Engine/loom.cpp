@@ -110,6 +110,7 @@ namespace loom
 			// Doing openGL-dependent loads / updates
 			Loadable::load_all();
 			Updateable::update_all();
+			Camera::update();
 			//
 
 
@@ -117,9 +118,7 @@ namespace loom
 			// OpenGL Stuff
 			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glfwPollEvents();
 			//
-
 
 
 			// Recording FPS

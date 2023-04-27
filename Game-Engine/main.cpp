@@ -24,12 +24,10 @@ int main()
 {
 	Loom::Init();
 
-	Camera camera;
-
 	Grid grid { 10, 10 };
 	grid.ConstructCells(0, 0, 10, 10);
 
-	bindCameraToGrid(camera, grid);
+	Commands::bindCameraToGrid(grid);
 
 	Loom::Run();
 

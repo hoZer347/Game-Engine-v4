@@ -28,7 +28,7 @@ namespace loom
 	};
 	void Input::KeyPress(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods)
 	{
-		input i{ { key, scancode, action, mods } };
+		input i{ { key, action, scancode, mods } };
 		INPUT->inputs[i.input] = task;
 	};
 	void Input::MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods)
@@ -38,22 +38,32 @@ namespace loom
 	};
 	void Input::KeyHold(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods)
 	{
-		input i{ { key, scancode, action, mods } };
+		input i{ { key, action, scancode, mods } };
 		INPUT->keys.emplace_back(i, task);
-	};
-	void Input::ScrollWheel(ScrollTask task)
-	{
-		INPUT->scroll_tasks.push_back(task);
 	};
 	void Input::GetMousePos(double& mx, double& my)
 	{
-		mx = _mx;
-		my = _my;
+		mx = Input::mx;
+		my = Input::my;
 	};
 	void Input::GetRelativeMousePos(double& mx, double& my)
 	{
-		mx = _mx - _px;
-		my = _my - _py;
+		mx = Input::mx - Input::pmx;
+		my = Input::my - Input::pmy;
+	};
+	void Input::GetScrollPos(double& sx, double& sy)
+	{
+		sx = Input::sx;
+		sy = Input::sy;
+	};
+	void Input::GetRelativeScrollPos(double& sx, double& sy)
+	{
+		sx = Input::sx - Input::psx;
+		sy = Input::sy - Input::psy;
+	};
+	void Input::AddTask(Task task)
+	{
+		INPUT->tasks.push_back(task);
 	};
 	void Input::load()
 	{
@@ -67,14 +77,19 @@ namespace loom
 			});
 			glfwSetKeyCallback(window, [](GLFWwindow*, GLint key, GLint scancode, GLint action, GLint mods)
 			{
-				input i{ { (uint16_t)key, (uint16_t)scancode, (uint16_t)action, (uint16_t)mods } };
+				input i{ { (uint16_t)key, (uint16_t)action, (uint16_t)scancode, (uint16_t)mods } };
 				if (INPUT->inputs[i.input])
 					INPUT->inputs[i.input]();
 			});
 			glfwSetScrollCallback(window, [](GLFWwindow* window, double sx, double sy)
 			{
-				for (auto& i : INPUT->scroll_tasks)
-					i(sx, sy);
+				Input::sx += sx;
+				Input::sy += sy;
+			});
+			glfwSetCursorPosCallback(window, [](GLFWwindow*, double mx, double my)
+			{
+				Input::mx = mx;
+				Input::my = my;
 			});
 		};
 	};
@@ -84,22 +99,45 @@ namespace loom
 
 		if (timer.GetDiff_mls() < 1000 / INPUT_TICKRATE)
 			return;
-
 		timer.push(std::chrono::milliseconds(1000 / INPUT_TICKRATE));
-
+		
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
+			glfwPollEvents();
+			
+
+
+			// Process all miscellanious tasks
+			for (auto& task : INPUT->tasks)
+				task();
+			//
+			
+
+
+			// Process all keys currently being pressed
 			for (auto& i : INPUT->keys)
 				if (glfwGetKey(window, i.first.data[0]) == i.first.data[1])
 					i.second();
+			//
 
+
+
+			// Process all mouse buttons being pressed
 			for (auto& i : INPUT->mbns)
 				if (glfwGetMouseButton(window, i.first.data[1]) == i.first.data[2])
 					i.second();
+			//
 
-			_px = _mx;
-			_py = _my;
-			glfwGetCursorPos(window, &_mx, &_my);
+
+
+			// Recording the previous mouse / scroll position
+			pmx = mx;
+			pmy = my;
+			psx = sx;
+			psy = sy;
+			//
+
+
 
 			// TODO: add scancode bullshit
 			// TODO: add controller support

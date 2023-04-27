@@ -34,13 +34,13 @@ namespace loom
 		};
 		virtual ~GameObject()
 		{
-			for (auto i = 0; i < objects.size(); i++)
-			{
+			for (int64_t i = objects.size()-1; i >= 0; i--)
 				if (objects[i] == this)
+				{
 					objects[i] = objects.back();
-
-				objects.pop_back();
-			};
+					objects.pop_back();
+					return;
+				};
 		};
 		static inline std::vector<T*> objects;
 	};
@@ -107,7 +107,7 @@ namespace loom
 
 
 	// Shader Object
-	struct Shader final : public Loadable, public Unloadable
+	struct Shader final : virtual protected Loadable, virtual protected Unloadable
 	{
 		uint32_t id = 0;
 
@@ -128,7 +128,7 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final : public Loadable, public Unloadable
+	struct Texture final : virtual protected Loadable, virtual protected Unloadable
 	{
 		uint32_t id = 0;
 

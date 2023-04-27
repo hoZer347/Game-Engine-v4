@@ -1,9 +1,17 @@
 #pragma once
 
+#include <glm/glm.hpp>
+using namespace glm;
+
 namespace loom
 {
-	struct Camera;
 	struct Grid;
 
-	void bindCameraToGrid(Camera& camera, Grid& grid);
+	struct Commands
+	{
+		static void bindCameraToGrid(Grid& grid);
+
+	private:
+		Commands() { };
+	};
 };

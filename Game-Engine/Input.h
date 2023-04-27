@@ -14,8 +14,7 @@
 namespace loom
 {
 	typedef std::function<void()> Task;
-	typedef std::function<void(double, double)> ScrollTask;
-
+	
 	struct Input final
 	{	
 		Input(std::shared_ptr<Input> _prev = nullptr);
@@ -23,13 +22,16 @@ namespace loom
 		static void prev();
 
 		static void MouseButtonPress(Task task, uint16_t button, uint16_t action, uint16_t mods=0);
-		static void KeyPress(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods=0);
-		static void MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods = 0);
-		static void KeyHold(Task task, uint16_t key, uint16_t action, uint16_t scancode, uint16_t mods = 0);
-		static void ScrollWheel(ScrollTask task);
-
+		static void KeyPress(Task task, uint16_t key, uint16_t action, uint16_t scancode=0, uint16_t mods=0);
+		static void MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods=0);
+		static void KeyHold(Task task, uint16_t key, uint16_t action, uint16_t scancode=0, uint16_t mods=0);
+		
 		static void GetMousePos(double& mx, double& my);
 		static void GetRelativeMousePos(double& mx, double& my);
+		static void GetScrollPos(double& sx, double& sy);
+		static void GetRelativeScrollPos(double& sx, double& sy);
+
+		static void AddTask(Task task);
 
 	protected:
 		friend struct Loom;
@@ -45,9 +47,12 @@ namespace loom
 		};
 
 	private:
-		static inline double _mx=0, _my=0;
-		static inline double _px=0, _py=0;
-		std::vector<ScrollTask> scroll_tasks;
+		static inline double mx=0, my=0;		// Current mouse Position
+		static inline double pmx=0, pmy=0;	// Mouse position at last tick
+		static inline double sx=0, sy=0;		// Current scroll position
+		static inline double psx=0, psy=0;	// Scroll Position at last tick
+
+		std::vector<Task> tasks;
 		std::vector<std::pair<input, Task>> keys;
 		std::vector<std::pair<input, Task>> mbns;
 		std::unordered_map<uint64_t, Task> inputs;

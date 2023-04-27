@@ -5,6 +5,9 @@
 #include <functional>
 #include <type_traits>
 
+
+// Way to test if a class contains a certain function (NAME)
+// You end up with a const bool has<NAME> that says whther or not you do
 #define TESTFOR(NAME)\
 	template<typename T, typename = void>\
 	struct has##NAME : std::false_type\
@@ -13,14 +16,14 @@
 	struct has##NAME<T, decltype(std::declval<T>().##NAME(), void())> : std::true_type\
 	{};\
 	static inline const bool Has##NAME = has##NAME<T>::value;\
-
+//
 
 
 namespace loom
 {
 	typedef std::function<void()> Task;
 
-	struct Utils
+	struct Utils final
 	{
 	private:
 		typedef std::chrono::high_resolution_clock Clock;
@@ -28,7 +31,7 @@ namespace loom
 
 	public:
 		// High Resolution Timer so you don't have to interact with std::chrono lmao
-		struct Timer
+		struct Timer final
 		{
 			// Gets the difference between the last pinged time and the current one in seconds
 			_NODISCARD const double GetDiff_s()   const { return (double)(Clock::now() - _clock).count() / 1000000000; };
@@ -51,7 +54,6 @@ namespace loom
 
 		private:
 			Time _clock = Clock::now();
-			double diff = 0;
 		};
 		//
 	};
