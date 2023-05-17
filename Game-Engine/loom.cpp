@@ -14,7 +14,6 @@
 #include "Data.h"
 #include "Utils.h"
 #include "Shader.h"
-#include "Texture.h"
 #include "Camera.h"
 #include "Input.h"
 #include "Text.h"
@@ -24,7 +23,6 @@ namespace loom
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-		Text<>::Init();
 	};
 	void Loom::Run()
 	{
@@ -36,7 +34,6 @@ namespace loom
 
 		// Allowing access to shaders / textures
 		s_mgr = new ShaderManager();
-		t_mgr = new TextureManager();
 		//
 
 
@@ -48,19 +45,19 @@ namespace loom
 		glfwMakeContextCurrent(window);
 		glewInit();
 		glClearColor(.5, .5, .5, 0);
-		glEnable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0);
 		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_MULTISAMPLE);
-		glfwWindowHint(GLFW_SAMPLES, 4);
-		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_MULTISAMPLE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glEnable(GL_DOUBLEBUFFER);
 		glfwSwapInterval(0);
 
+		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback([](
 			GLenum source,
 			GLenum type,
@@ -138,7 +135,6 @@ namespace loom
 		glDeleteBuffers(1, &_vtxs);
 		glDeleteBuffers(1, &_inds);
 		delete s_mgr;
-		delete t_mgr;
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
@@ -152,9 +148,5 @@ namespace loom
 	ShaderManager* GetSMgr()
 	{
 		return s_mgr;
-	};
-	TextureManager* GetTMgr()
-	{
-		return t_mgr;
 	};
 };

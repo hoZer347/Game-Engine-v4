@@ -9,6 +9,7 @@ using namespace glm;
 #include "Text.h"
 #include "Utils.h"
 #include "Input.h"
+#include "Sprite.h"
 #include "Camera.h"
 #include "Commands.h"
 #include "Geometry.h"
@@ -28,6 +29,9 @@ int main()
 	grid.ConstructCells(0, 0, 10, 10);
 
 	Commands::bindCameraToGrid(grid);
+
+	Texture texture{ "Resources/Anna.png", GL_RGBA };
+	Sprite sprite{ texture, { 12 * 32, 12 * 32 }, { 32, 32 }, { 32, 0 }, 1 };
 
 	Loom::Run();
 

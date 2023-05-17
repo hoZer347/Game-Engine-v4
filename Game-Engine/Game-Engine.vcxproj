@@ -118,7 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Dev\freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GameDev\Freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -159,9 +159,10 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Perspective.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Spooler.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -175,9 +176,10 @@
     <ClInclude Include="Loom.h" />
     <ClInclude Include="Perspective.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Spooler.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.frag" />
@@ -186,6 +188,8 @@
     <None Include="shaders\Geometry.vert" />
     <None Include="shaders\Grid.frag" />
     <None Include="shaders\Grid.vert" />
+    <None Include="shaders\Sprite.frag" />
+    <None Include="shaders\Sprite.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,9 +17,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Engine\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Engine\Primitives</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
@@ -37,6 +34,12 @@
     </ClCompile>
     <ClCompile Include="Commands.cpp">
       <Filter>Game\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Spooler.cpp">
+      <Filter>Engine\Spooler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +76,12 @@
     <Filter Include="Game\Commands">
       <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Utils">
+      <UniqueIdentifier>{37e0137c-e624-438e-825a-4e9823ab1b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Spooler">
+      <UniqueIdentifier>{cfed6e9a-60f2-490b-bc19-18a440a27465}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -91,9 +100,6 @@
       <Filter>Engine\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Engine\Primitives</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
       <Filter>Engine\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
@@ -117,6 +123,12 @@
     <ClInclude Include="Constants.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Spooler.h">
+      <Filter>Engine\Spooler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Grid.vert">
@@ -136,6 +148,12 @@
     </None>
     <None Include="shaders\Geometry.vert">
       <Filter>Game\Geometry</Filter>
+    </None>
+    <None Include="shaders\Sprite.frag">
+      <Filter>Engine\Sprite</Filter>
+    </None>
+    <None Include="shaders\Sprite.vert">
+      <Filter>Engine\Sprite</Filter>
     </None>
   </ItemGroup>
 </Project>

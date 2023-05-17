@@ -2,6 +2,9 @@
 
 #include "Loom.h"
 
+#include <glm/glm.hpp>
+using namespace glm;
+
 #include <thread>
 #include <atomic>
 #include <memory>
@@ -15,18 +18,15 @@ namespace loom
 	
 	// Getting around thread_local bullshit
 	struct ShaderManager;
-	struct TextureManager;
 	ShaderManager* GetSMgr();
-	TextureManager* GetTMgr();
 	//
-
 
 
 	// GameObjects
 	template <typename T>
 	struct GameObject
 	{
-	protected:
+	public:
 		friend struct Loom;
 		GameObject()
 		{
@@ -35,7 +35,7 @@ namespace loom
 		virtual ~GameObject()
 		{
 			for (int64_t i = objects.size()-1; i >= 0; i--)
-				if (objects[i] == this)
+				if (objects[i] == static_cast<T*>(this))
 				{
 					objects[i] = objects.back();
 					objects.pop_back();
@@ -47,6 +47,7 @@ namespace loom
 	struct Renderable : public GameObject<Renderable>
 	{
 	protected:
+		friend struct Loom;
 		friend struct Camera;
 		virtual void render()=0;
 		static void render_all()
@@ -110,17 +111,15 @@ namespace loom
 	struct Shader final : virtual protected Loadable, virtual protected Unloadable
 	{
 		uint32_t id = 0;
-
-	
+		
 		Shader(std::string files...)
 		: files({ files })
 		{ };
 
-	protected:
+	private:
 		void load();
 		void unload() { };
 
-	private:
 		std::vector<std::string> files;
 	};
 	//
@@ -131,18 +130,19 @@ namespace loom
 	struct Texture final : virtual protected Loadable, virtual protected Unloadable
 	{
 		uint32_t id = 0;
+		int32_t w = -1, h = -1;
 
 		Texture(std::string file, uint32_t type)
 		: file(file), type(type)
 		{ };
 
-	protected:
+	private:
 		void load();
 		void unload() { };
 
-	private:
 		std::string file;
-		uint32_t type;
+		uint32_t type = 0;
+		int32_t nrChannels = -1;
 	};
 	//
 };

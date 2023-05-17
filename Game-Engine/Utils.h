@@ -21,8 +21,6 @@
 
 namespace loom
 {
-	typedef std::function<void()> Task;
-
 	struct Utils final
 	{
 	private:
