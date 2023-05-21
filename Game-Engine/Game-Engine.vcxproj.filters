@@ -29,17 +29,23 @@
     <ClCompile Include="Geometry.cpp">
       <Filter>Game\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Perspective.cpp">
-      <Filter>Engine\Perspective</Filter>
-    </ClCompile>
     <ClCompile Include="Commands.cpp">
       <Filter>Game\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Spooler.cpp">
-      <Filter>Engine\Spooler</Filter>
+    <ClCompile Include="AI.cpp">
+      <Filter>Engine\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Error.cpp">
+      <Filter>Engine\Error</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Engine\Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing.cpp">
+      <Filter>Engine\Testing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -70,17 +76,26 @@
     <Filter Include="Game\Geometry">
       <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Perspective">
-      <UniqueIdentifier>{8efec89d-56a3-4ea3-8967-5563abc8ef67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Commands">
       <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Utils">
       <UniqueIdentifier>{37e0137c-e624-438e-825a-4e9823ab1b1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Spooler">
-      <UniqueIdentifier>{cfed6e9a-60f2-490b-bc19-18a440a27465}</UniqueIdentifier>
+    <Filter Include="Engine\AI">
+      <UniqueIdentifier>{272c4286-1b85-4971-afa0-2ebd5a2ea951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Error">
+      <UniqueIdentifier>{9262b84c-55db-4a2f-a097-106fd8c01886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Matrix">
+      <UniqueIdentifier>{acfe3003-b39d-47ca-beec-870371f94f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Cuda">
+      <UniqueIdentifier>{8b380a6a-06f5-45e2-9001-4b9e59c01be4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Testing">
+      <UniqueIdentifier>{28f2031e-7cff-4d59-9282-ff6ece98c9b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +129,6 @@
     <ClInclude Include="Geometry.h">
       <Filter>Game\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Perspective.h">
-      <Filter>Engine\Perspective</Filter>
-    </ClInclude>
     <ClInclude Include="Commands.h">
       <Filter>Game\Commands</Filter>
     </ClInclude>
@@ -126,8 +138,20 @@
     <ClInclude Include="Utils.h">
       <Filter>Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Spooler.h">
-      <Filter>Engine\Spooler</Filter>
+    <ClInclude Include="AI.h">
+      <Filter>Engine\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.h">
+      <Filter>Engine\Error</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>Engine\Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Cuda.cuh">
+      <Filter>Engine\Cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="Testing.h">
+      <Filter>Engine\Testing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,5 +179,10 @@
     <None Include="shaders\Sprite.vert">
       <Filter>Engine\Sprite</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Cuda.cu">
+      <Filter>Engine\Cuda</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

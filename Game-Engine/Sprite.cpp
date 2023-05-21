@@ -77,7 +77,7 @@ namespace loom
 			glUniformMatrix4fv(_trns, 1, GL_FALSE, &sprite->trns[0][0]);
 			glUniform4fv(_location, 1, &sprite->location[0]);
 			glBindTexture(GL_TEXTURE_2D, sprite->texture.id);
-			glDrawArrays(GL_QUADS, 0, vtxs.size());
+			glDrawArrays(GL_QUADS, 0, (GLsizei)vtxs.size());
 		};
 
 		glBindTexture(GL_TEXTURE_2D, 0);

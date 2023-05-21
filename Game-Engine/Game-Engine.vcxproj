@@ -54,6 +54,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.1.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -118,8 +119,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\GameDev\Freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\GameDev\OpenCL\include;C:\GameDev\Freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,15 +154,17 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Error.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Perspective.cpp" />
+    <ClCompile Include="AI.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Spooler.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -169,15 +173,18 @@
     <ClInclude Include="Commands.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Error.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Cuda.cuh" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />
-    <ClInclude Include="Perspective.h" />
+    <ClInclude Include="AI.h" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Spooler.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Testing.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
@@ -191,7 +198,11 @@
     <None Include="shaders\Sprite.frag" />
     <None Include="shaders\Sprite.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="Cuda.cu" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.1.targets" />
   </ImportGroup>
 </Project>

@@ -1070,7 +1070,7 @@ static float* stbi__ldr_to_hdr(stbi_uc* data, int x, int y, int comp);
 static stbi_uc* stbi__hdr_to_ldr(float* data, int x, int y, int comp);
 #endif
 
-static int stbi__vertically_flip_on_load_global = 0;
+static int stbi__vertically_flip_on_load_global = 1;
 
 STBIDEF void stbi_set_flip_vertically_on_load(int flag_true_if_should_flip)
 {
