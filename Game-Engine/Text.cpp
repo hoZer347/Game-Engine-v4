@@ -139,7 +139,7 @@ namespace loom
 			inds.data(),
 			GL_STATIC_DRAW);
 		
-		glDrawElements(GL_QUADS, inds.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_QUADS, (GLsizei)inds.size(), GL_UNSIGNED_INT, nullptr);
 		
 		glDisableVertexAttribArray(VEC4_0_32);
 		glDisableVertexAttribArray(VEC4_1_32);

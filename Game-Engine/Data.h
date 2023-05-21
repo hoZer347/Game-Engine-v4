@@ -106,6 +106,9 @@ namespace loom
 	// Shader Object
 	struct Shader final : virtual protected Loadable, virtual protected Unloadable
 	{
+		// TODO: Make custom class for this, move to new file
+		// TODO: Push ShaderManager into this
+
 		uint32_t id = 0;
 		
 		Shader(std::string files...)
@@ -125,6 +128,8 @@ namespace loom
 	// Texture Object
 	struct Texture final : virtual protected Loadable, virtual protected Unloadable
 	{
+		// TODO: Make custom class for this, move to new file
+
 		uint32_t id = 0;
 		int32_t w = -1, h = -1;
 
