@@ -49,10 +49,10 @@ namespace loom
 					inds.push_back((uint32_t)vtxs.size() + 3);
 					inds.push_back((uint32_t)vtxs.size() + 0);
 
-					vtxs.emplace_back(i,     j,     i*j/10.f, 1);
-					vtxs.emplace_back(i + 1, j,     i*j/10.f, 1);
-					vtxs.emplace_back(i + 1, j + 1, i*j/10.f, 1);
-					vtxs.emplace_back(i,     j + 1, i*j/10.f, 1);
+					vtxs.emplace_back(i,     j,     0, 1);
+					vtxs.emplace_back(i + 1, j,     0, 1);
+					vtxs.emplace_back(i + 1, j + 1, 0, 1);
+					vtxs.emplace_back(i,     j + 1, 0, 1);
 				};
 		}
 		else

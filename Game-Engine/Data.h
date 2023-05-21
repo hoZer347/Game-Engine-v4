@@ -74,7 +74,6 @@ namespace loom
 		virtual void load()=0;
 		static void load_all()
 		{
-			// Accounting for a loadable adding another loadable
 			size_t i = 0;
 			while (i < objects.size())
 			{
@@ -82,7 +81,6 @@ namespace loom
 				i++;
 			};
 			objects.clear();
-			//
 		};
 	};
 	struct Unloadable : public GameObject<Unloadable>
@@ -92,7 +90,6 @@ namespace loom
 		virtual void unload()=0;
 		static void unload_all()
 		{
-			// Accounting for an unloadable adding another unloadable
 			size_t i = 0;
 			while (i < objects.size())
 			{
@@ -100,7 +97,6 @@ namespace loom
 				i++;
 			};
 			objects.clear();
-			//
 		};
 	};
 	//
@@ -132,14 +128,13 @@ namespace loom
 		uint32_t id = 0;
 		int32_t w = -1, h = -1;
 
-		Texture(std::string file, uint32_t type)
-		: file(file), type(type)
-		{ };
+		Texture(std::string file, uint32_t type);
 
 	private:
 		void load();
 		void unload() { };
 
+		std::function<void()> f;
 		std::string file;
 		uint32_t type = 0;
 		int32_t nrChannels = -1;
