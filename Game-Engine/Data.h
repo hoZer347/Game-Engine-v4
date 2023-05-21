@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include <mutex>
 #include <thread>
 #include <atomic>
 #include <memory>
@@ -34,15 +35,31 @@ namespace loom
 		};
 		virtual ~GameObject()
 		{
-			for (int64_t i = objects.size()-1; i >= 0; i--)
+			for (int64_t i = objects.size() - 1; i >= 0; i--)
 				if (objects[i] == static_cast<T*>(this))
 				{
 					objects[i] = objects.back();
 					objects.pop_back();
-					return;
+					break;
 				};
 		};
 		static inline std::vector<T*> objects;
+	};
+	struct Loadable : public GameObject<Loadable>
+	{
+	protected:
+		friend struct Loom;
+		virtual void load() = 0;
+		static void load_all()
+		{
+			size_t i = 0;
+			while (i < objects.size())
+			{
+				objects[i]->load();
+				i++;
+			};
+			objects.clear();
+		};
 	};
 	struct Renderable : public GameObject<Renderable>
 	{
@@ -67,22 +84,6 @@ namespace loom
 				obj->update();
 		};
 	};
-	struct Loadable : public GameObject<Loadable>
-	{
-	protected:
-		friend struct Loom;
-		virtual void load()=0;
-		static void load_all()
-		{
-			size_t i = 0;
-			while (i < objects.size())
-			{
-				objects[i]->load();
-				i++;
-			};
-			objects.clear();
-		};
-	};
 	struct Unloadable : public GameObject<Unloadable>
 	{
 	protected:
@@ -100,7 +101,6 @@ namespace loom
 		};
 	};
 	//
-
 
 
 	// Shader Object

@@ -2,6 +2,10 @@
 #include "GLFW/glfw3.h"
 
 #include "AI.h"
+#include "Camera.h"
+#include "Data.h"
+#include "Input.h"
+#include "Utils.h"
 #include "Sprite.h"
 #include "Commands.h"
 #include "Grid.h"
@@ -15,23 +19,21 @@ using namespace glm;
 
 #include <iostream>
 
+
 int main()
 {
 	Loom::Init();
 
+
 	// Sprite
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
-	//
-
 
 
 	// Grid
 	Grid grid { 10, 10 };
 	grid.ConstructCells(0, 0, 10, 10);
 	Commands::bindCameraToGrid(grid);
-	//
-
 
 
 	// Matrix Multiplication
@@ -42,8 +44,6 @@ int main()
 	m0.print();
 	m1.print();
 	m2.print();
-	//
-
 
 
 	Loom::Run();
