@@ -19,8 +19,6 @@ int main()
 {
 	Loom::Init();
 
-
-
 	// Sprite
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
