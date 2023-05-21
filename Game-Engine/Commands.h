@@ -9,7 +9,7 @@ namespace loom
 
 	struct Commands
 	{
-		static void bindCameraToGrid(Grid& grid);
+		static void InitiateFreeCam();
 
 	private:
 		Commands() { };

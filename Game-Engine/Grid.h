@@ -12,7 +12,10 @@ namespace loom
 {
 	typedef std::function<void()> Task;
 
-	struct Grid final : virtual private Loadable, virtual private Renderable
+	struct Grid final :
+		virtual private Loadable,
+		virtual private Updateable,
+		virtual private Renderable
 	{
 	protected:
 		friend struct Commands;
@@ -45,8 +48,6 @@ namespace loom
 		
 		std::vector<std::vector<Cell>> cells;
 
-		vec4 mpos = vec4(0);
-
 	public:
 		Grid(uint32_t x_size, uint32_t y_size);
 		virtual ~Grid();
@@ -59,6 +60,7 @@ namespace loom
 	protected:
 		friend struct Utils;
 		void load() override;
+		void update() override;
 		void render() override;
 	};
 };

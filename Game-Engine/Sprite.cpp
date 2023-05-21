@@ -62,7 +62,8 @@ namespace loom
 		// Update the sprite clock here
 
 
-
+		static int i = 0;
+		i++;
 	};
 	void SpriteManager::render()
 	{

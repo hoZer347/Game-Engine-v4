@@ -7,8 +7,6 @@
 
 namespace loom
 {
-	// TODO: scancode / action ordering
-
 	static inline std::shared_ptr<Input> INPUT = std::make_shared<Input>();
 	Input::Input(std::shared_ptr<Input> _prev)
 	: _prev(_prev)

@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#include <barrier>
 #include <iostream>
 
 #include "Enums.h"
@@ -20,6 +19,9 @@
 
 namespace loom
 {
+	static inline std::thread updater;
+	static inline std::atomic<bool> KILL = false;
+
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -28,14 +30,10 @@ namespace loom
 	{
 		// TIMER for FPS counting
 		Utils::Timer TIMER;
-		//
-		
 
 
 		// Allowing access to shaders / textures
 		s_mgr = new ShaderManager();
-		//
-
 
 
 		// Preparing openGL
@@ -68,7 +66,7 @@ namespace loom
 			const void* userParam)
 			{
 				if (!((int)severity == (int)33387))
-				std::cout << message << std::endl;
+					std::cout << message << std::endl;
 			}, nullptr);
 
 		GLuint _vtxs, _inds;
@@ -76,7 +74,7 @@ namespace loom
 		glGenBuffers(1, &_inds);
 		glBindBuffer(GL_ARRAY_BUFFER, _vtxs);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _inds);
-		glVertexAttribPointer(VEC4_0_16, 4, GL_FLOAT, GL_FALSE, 0,  (void*)(0 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_0_16, 4, GL_FLOAT, GL_FALSE, 0, (void*)(0 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_0_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(0 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_1_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(1 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_0_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(0 * sizeof(vec4)));
@@ -85,14 +83,18 @@ namespace loom
 		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
 
 		glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h) { glViewport(0, 0, w, h); });
-		//
-
 
 
 		// Loading Items
 		Input::load();
-		//
 
+		
+		// Setting up Updater
+		updater = std::thread([]()
+		{
+			while (!KILL)
+				Updateable::update_all();
+		});
 
 
 		// Main loop
@@ -100,32 +102,28 @@ namespace loom
 		{
 			// Updating Inputs
 			Input::update();
-			//
-			
 
 
 			// Doing openGL-dependent loads / updates
 			Loadable::load_all();
-			Updateable::update_all();
 			Camera::update();
-			//
-
-
+			
 
 			// OpenGL Stuff
 			glfwSwapBuffers(window);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//
-
+			
 
 			// Recording FPS
 			// TODO: Once text rendering is done, show on screen
 			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
 			TIMER.restart();
-			//
 		};
-		//
 
+
+		// Syncing and ending all other threads
+		KILL = true;
+		updater.join();
 
 
 		// Deallocating everything allocated that uses openGL
@@ -138,7 +136,6 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
-		//
 	};
 	void Loom::Exit()
 	{

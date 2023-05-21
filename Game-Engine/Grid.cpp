@@ -5,6 +5,7 @@
 
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/intersect.hpp>
+#include "Utils.h"
 #include "Enums.h"
 #include "Camera.h"
 
@@ -64,6 +65,46 @@ namespace loom
 	{
 		_mvp = glGetUniformLocation(shader.id, "mvp");
 		_trns = glGetUniformLocation(shader.id, "trns");
+	}
+	void Grid::update()
+	{
+		static Utils::Timer timer;
+
+		if (timer.GetDiff_mls() < 1000.f / 60)
+			return;
+		timer.push(std::chrono::milliseconds(1000 / 60));
+
+		vec2 b;
+		float d;
+
+		for (auto& _cells : cells)
+			for (auto& cell : _cells)
+				if (cell.v0 == -1) { std::cout << "Test: " << cell.pos.x << ", " << cell.pos.y << std::endl; continue; }
+				else if (intersectRayTriangle(vec3(Camera::mpos), vec3(Camera::mdir),
+					vec3(vtxs[inds[cell.v0]]),
+					vec3(vtxs[inds[cell.v1]]),
+					vec3(vtxs[inds[cell.v2]]),
+					b, d) ||
+					intersectRayTriangle(vec3(Camera::mpos), vec3(Camera::mdir),
+						vec3(vtxs[inds[cell.v0]]),
+						vec3(vtxs[inds[cell.v3]]),
+						vec3(vtxs[inds[cell.v2]]),
+						b, d))
+				{
+					if (&cell == Grid::Hovered::cell)
+						return;
+					if (Grid::Hovered::cell)
+						Grid::Hovered::cell->onUnhover();
+					Grid::Hovered::cell = &cell;
+					Grid::Hovered::cell->onHover();
+					Grid::Hovered::inds =
+					{
+						inds[cell.v0],
+						inds[cell.v1],
+						inds[cell.v2],
+						inds[cell.v3],
+					};
+				};
 	};
 	void Grid::render()
 	{

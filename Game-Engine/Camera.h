@@ -22,7 +22,7 @@ namespace loom
 							ptch		= 0.f,
 							yaww		= 0.f;
 
-		static inline vec3	eye			= vec3(0, 0, 20),
+		static inline vec3	eye			= vec3(0, 0, 1),
 							ctr			= vec3(0, 0, 0),
 							up			= vec3(0, 1, 0);
 

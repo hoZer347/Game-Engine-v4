@@ -2,6 +2,10 @@
 #include "GLFW/glfw3.h"
 
 #include "AI.h"
+#include "Camera.h"
+#include "Data.h"
+#include "Input.h"
+#include "Utils.h"
 #include "Sprite.h"
 #include "Commands.h"
 #include "Grid.h"
@@ -15,23 +19,51 @@ using namespace glm;
 
 #include <iostream>
 
+// TODOS: //
+// 
+// Shader / Texture
+// - Make shaders auto-generate files
+// 
+// GameObject
+// - Make game objects auto-generate based on their settings
+// 
+// Inputs
+// - Turn inputs into a singleton that has many input layers
+// - Rework to make more intuitive
+// ex: load(std::string state)
+// 
+// Text
+// - Finish the text engine
+// 
+// Sound
+// - Start the sound engine
+// 
+// Add Menu
+// - Add menus
+// 
+// Editors to add:
+// - Grid
+// - Sprite
+// - Unit
+// 
+// Add Generic Error Handling
+// 
+// TODOS: //
+
 int main()
 {
 	Loom::Init();
 
+
 	// Sprite
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
-	//
-
 
 
 	// Grid
 	Grid grid { 10, 10 };
 	grid.ConstructCells(0, 0, 10, 10);
-	Commands::bindCameraToGrid(grid);
-	//
-
+	Commands::InitiateFreeCam();
 
 
 	// Matrix Multiplication
@@ -42,8 +74,6 @@ int main()
 	m0.print();
 	m1.print();
 	m2.print();
-	//
-
 
 
 	Loom::Run();
