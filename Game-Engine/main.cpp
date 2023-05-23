@@ -61,8 +61,6 @@ int main()
 	// Sprite
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
-	Unit unit { sprite };
-
 
 	// Text
 	Font font{ "Resources/alagard.ttf" };
