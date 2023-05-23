@@ -53,6 +53,12 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Engine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Unit.cpp">
+      <Filter>Game\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Engine\Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -108,6 +114,12 @@
     </Filter>
     <Filter Include="Engine\Collision">
       <UniqueIdentifier>{388c826f-0e11-4d0a-9cee-157f4e348a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Unit">
+      <UniqueIdentifier>{6dc960fe-e185-4f3f-919e-645302bb4924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Animation">
+      <UniqueIdentifier>{93a78557-42c9-4a70-8f3b-82de288d0d89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +182,12 @@
     </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>Game\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Engine\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

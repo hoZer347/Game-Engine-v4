@@ -15,51 +15,56 @@ namespace loom
 {
 	static inline Shader shader{ "shaders/Grid" };
 
-	Grid::Grid(uint32_t x_size, uint32_t y_size)
+	Grid::Grid(size_t x_size, size_t y_size)
 	: x_size(x_size), y_size(y_size)
 	{
+		// Creating Cells
 		for (size_t i = 0; i < (size_t)x_size; i++)
 		{
 			cells.emplace_back();
 			for (size_t j = 0; j < (size_t)y_size; j++)
 				cells.back().emplace_back(vec2(i, j));
 		};
+
+
+		// Assigning Cell Associations
+		for (uint32_t i = 1; i < x_size - 1; i++)
+			for (uint32_t j = 1; j < y_size - 1; j++)
+			{
+				(*this)[i][j].U = &(*this)[i+1][j];
+				(*this)[i][j].D = &(*this)[i-1][j];
+				(*this)[i][j].L = &(*this)[i][j-1];
+				(*this)[i][j].R = &(*this)[i][j+1];
+			};
+
+
+		// Adding Vertex Data
+		for (size_t i = 0; i < x_size; i++)
+			for (size_t j = 0; j < y_size; j++)
+			{
+				cells[i][j].v0 = inds.size() + 0;
+				cells[i][j].v1 = inds.size() + 2;
+				cells[i][j].v2 = inds.size() + 4;
+				cells[i][j].v3 = inds.size() + 6;
+
+				inds.push_back(vtxs.size() + 0);
+				inds.push_back(vtxs.size() + 1);
+				inds.push_back(vtxs.size() + 1);
+				inds.push_back(vtxs.size() + 2);
+				inds.push_back(vtxs.size() + 2);
+				inds.push_back(vtxs.size() + 3);
+				inds.push_back(vtxs.size() + 3);
+				inds.push_back(vtxs.size() + 0);
+
+				vtxs.emplace_back(i, j, 0, 1);
+				vtxs.emplace_back(i + 1, j, 0, 1);
+				vtxs.emplace_back(i + 1, j + 1, 0, 1);
+				vtxs.emplace_back(i, j + 1, 0, 1);
+			};
 	};
 	Grid::~Grid()
 	{
 
-	};
-	void Grid::ConstructCells(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool connected)
-	{
-		if (connected)
-		{
-			for (uint32_t i = x0; i < x1; i++)
-				for (uint32_t j = y0; j < y1; j++)
-				{
-					cells[i][j].v0 = (uint32_t)inds.size() + 0;
-					cells[i][j].v1 = (uint32_t)inds.size() + 2;
-					cells[i][j].v2 = (uint32_t)inds.size() + 4;
-					cells[i][j].v3 = (uint32_t)inds.size() + 6;
-
-					inds.push_back((uint32_t)vtxs.size() + 0);
-					inds.push_back((uint32_t)vtxs.size() + 1);
-					inds.push_back((uint32_t)vtxs.size() + 1);
-					inds.push_back((uint32_t)vtxs.size() + 2);
-					inds.push_back((uint32_t)vtxs.size() + 2);
-					inds.push_back((uint32_t)vtxs.size() + 3);
-					inds.push_back((uint32_t)vtxs.size() + 3);
-					inds.push_back((uint32_t)vtxs.size() + 0);
-
-					vtxs.emplace_back(i,     j,     0, 1);
-					vtxs.emplace_back(i + 1, j,     0, 1);
-					vtxs.emplace_back(i + 1, j + 1, 0, 1);
-					vtxs.emplace_back(i,     j + 1, 0, 1);
-				};
-		}
-		else
-		{
-			// TODO:
-		};
 	};
 	void Grid::load()
 	{
@@ -86,10 +91,10 @@ namespace loom
 					vec3(vtxs[inds[cell.v2]]),
 					b, d) ||
 					intersectRayTriangle(vec3(Camera::mpos), vec3(Camera::mdir),
-						vec3(vtxs[inds[cell.v0]]),
-						vec3(vtxs[inds[cell.v3]]),
-						vec3(vtxs[inds[cell.v2]]),
-						b, d))
+					vec3(vtxs[inds[cell.v0]]),
+					vec3(vtxs[inds[cell.v3]]),
+					vec3(vtxs[inds[cell.v2]]),
+					b, d))
 				{
 					if (&cell == Grid::Hovered::cell)
 						return;
@@ -113,12 +118,11 @@ namespace loom
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 
 
-		// Drawing the grid lines
+		// Drawing the constructed grid lines
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vec4) * vtxs.size(), vtxs.data(), GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * inds.size(), inds.data(), GL_STATIC_DRAW);
 		glDrawElements(GL_LINES, (GLsizei)inds.size(), GL_UNSIGNED_INT, 0);
 		//
-
 
 
 		// Drawing the hovered Cell

@@ -33,6 +33,8 @@ namespace loom
 		};
 		virtual ~GameObject()
 		{
+			// TODO: Improve this somehow
+
 			for (int64_t i = objects.size() - 1; i >= 0; i--)
 				if (objects[i] == static_cast<T*>(this))
 				{

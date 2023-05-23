@@ -133,13 +133,7 @@ namespace loom
 			font.vtxs.data(),
 			GL_STATIC_DRAW);
 		
-		glBufferData(
-			GL_ELEMENT_ARRAY_BUFFER,
-			sizeof(uint32_t) * inds.size(),
-			inds.data(),
-			GL_STATIC_DRAW);
-		
-		glDrawElements(GL_QUADS, (GLsizei)inds.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawArrays(GL_QUADS, 0, (GLsizei)font.vtxs.size());
 		
 		glDisableVertexAttribArray(VEC4_0_32);
 		glDisableVertexAttribArray(VEC4_1_32);
