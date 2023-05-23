@@ -104,7 +104,7 @@ namespace loom
 			Input::update();
 
 
-			// Doing openGL-dependent loads / updates
+			// Doing openGL-dependent loads
 			Loadable::load_all();
 			Camera::update();
 			

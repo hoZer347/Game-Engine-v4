@@ -4,6 +4,8 @@
 #include "AI.h"
 #include "Camera.h"
 #include "Data.h"
+#include "Unit.h"
+#include "Text.h"
 #include "Input.h"
 #include "Utils.h"
 #include "Sprite.h"
@@ -46,6 +48,7 @@ using namespace glm;
 // - Sprite
 // - Unit
 // 
+// 
 // Add Generic Error Handling
 // 
 // TODOS: //
@@ -58,11 +61,16 @@ int main()
 	// Sprite
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
+	Unit unit { sprite };
+
+
+	// Text
+	Font font{ "Resources/alagard.ttf" };
+	DynamicText text{ font, "Test" };
 
 
 	// Grid
 	Grid grid { 10, 10 };
-	grid.ConstructCells(0, 0, 10, 10);
 	Commands::InitiateFreeCam();
 
 

@@ -81,7 +81,6 @@ namespace loom
 
 		Font& font;
 		std::string body;
-		std::vector<uint32_t> inds{ 0, 2, 4, 6 };
 	};
 	//
 };

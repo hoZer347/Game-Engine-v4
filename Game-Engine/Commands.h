@@ -5,8 +5,6 @@ using namespace glm;
 
 namespace loom
 {
-	struct Grid;
-
 	struct Commands
 	{
 		static void InitiateFreeCam();

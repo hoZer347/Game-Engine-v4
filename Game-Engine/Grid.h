@@ -26,6 +26,7 @@ namespace loom
 			uint32_t v0 = -1, v1 = v0, v2 = v0, v3 = v0;
 			Task onHover = []() {};
 			Task onUnhover = []() {};
+			Cell *U = nullptr, *D = nullptr, *L = nullptr, *R = nullptr;
 		};
 
 		struct Column
@@ -43,18 +44,15 @@ namespace loom
 		std::vector<vec4> vtxs;
 		std::vector<uint32_t> inds;
 
-		uint32_t x_size, y_size;
-		uint32_t _trns = 0, _mvp = 0;
+		size_t x_size, y_size;
+		size_t _trns = 0, _mvp = 0;
 		
 		std::vector<std::vector<Cell>> cells;
 
 	public:
-		Grid(uint32_t x_size, uint32_t y_size);
+		Grid(size_t x_size, size_t y_size);
 		virtual ~Grid();
 
-		// Initializes cells from (x0, y0) to (x1, y1)
-		// Connected means whether or not they share vertices
-		void ConstructCells(uint32_t x0, uint32_t y0, uint32_t x1, uint32_t y1, bool connected = true);
 		std::vector<Cell>& operator[](uint32_t i) { return cells[i]; };
 
 	protected:

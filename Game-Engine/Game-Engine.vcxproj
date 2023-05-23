@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Commands.cpp" />
@@ -168,9 +169,11 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Commands.h" />
@@ -190,6 +193,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Testing.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
