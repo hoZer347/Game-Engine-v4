@@ -12,7 +12,5 @@ namespace loom
 	Unit::~Unit()
 	{ };
 	void Unit::update()
-	{
-
-	};
+	{ };
 };

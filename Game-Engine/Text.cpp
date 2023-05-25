@@ -21,6 +21,7 @@ namespace loom
 	static inline uint32_t _mvp;
 	static inline uint32_t _trns;
 
+
 	Font::Font(const char*&& font_file, uint32_t&& size) :
 		font_file(font_file),
 		size(size)
@@ -34,11 +35,11 @@ namespace loom
 		FT_New_Face(library, font_file, 0, &face);
 		FT_Set_Pixel_Sizes(face, 0, size);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		_mvp = glGetUniformLocation(shader.id, "mvp");
 		_trns = glGetUniformLocation(shader.id, "trns");
+
 
 		// Extracting info from FT_Face
 		uint32_t _w=2, _h=2;
@@ -112,12 +113,11 @@ namespace loom
 			letter.stride		/= size;
 			letter.texCoords	/= vec4(_w, _h, _w, _h);
 		};
-
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
 
 		// Deallocating Memory
 		FT_Done_Face(face);
@@ -127,7 +127,6 @@ namespace loom
 	{
 
 	};
-
 
 
 	StaticText::StaticText(Font& font, std::string&& body) :
@@ -140,7 +139,6 @@ namespace loom
 	{ };
 	void StaticText::render()
 	{ };
-
 
 
 	DynamicText::DynamicText(Font& font, std::string&& body) :

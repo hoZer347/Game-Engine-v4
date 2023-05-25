@@ -11,9 +11,11 @@
 
 #include <thread>
 
+
 namespace loom
 {
 	static inline Shader shader{ "shaders/Grid" };
+
 
 	Grid::Grid(size_t x_size, size_t y_size)
 	: x_size(x_size), y_size(y_size)

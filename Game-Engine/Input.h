@@ -14,47 +14,72 @@
 namespace loom
 {
 	typedef std::function<void()> Task;
-	
-	struct Input final
+
+
+	// Layout:
+	// [0]: The key on a keyboard from GLFW_KEY_<insert key here>
+	// [1]: The button 
+	union Input
+	{
+		struct
+		{
+			uint16_t
+				key = 0,
+				button = 0,
+				action = 0,
+				mods = 0;
+		} data;
+		uint64_t input;
+
+		operator uint64_t() { return input; }
+	};
+
+
+	// Singly linked list of input layers and associations
+	struct Inputs final
 	{	
-		Input(std::shared_ptr<Input> _prev = nullptr);
+		Inputs(std::shared_ptr<Inputs> _prev = nullptr);
 		static void next();
 		static void prev();
 
-		static void MouseButtonPress(Task task, uint16_t button, uint16_t action, uint16_t mods=0);
-		static void KeyPress(Task task, uint16_t key, uint16_t action, uint16_t scancode=0, uint16_t mods=0);
-		static void MouseButtonHold(Task task, uint16_t button, uint16_t action, uint16_t mods=0);
-		static void KeyHold(Task task, uint16_t key, uint16_t action, uint16_t scancode=0, uint16_t mods=0);
+		static void MouseButtonPress(Task&& task, Input&& _input);
+		static void KeyPress(Task&& task, Input&& _input);
+		static void MouseButtonHold(Task&& task, Input&& _input);
+		static void KeyHold(Task&& task, Input&& _input);
 		
 		static void GetMousePos(double& mx, double& my);
 		static void GetRelativeMousePos(double& mx, double& my);
 		static void GetScrollPos(double& sx, double& sy);
 		static void GetRelativeScrollPos(double& sx, double& sy);
 
-		static void AddTask(Task task);
+		static void clear();
 
 	protected:
 		friend struct Loom;
-		friend class std::shared_ptr<Input>;
-		std::shared_ptr<Input> _prev = nullptr;
+		friend struct InputMap;
+		friend class std::shared_ptr<Inputs>;
+		std::shared_ptr<Inputs> _prev = nullptr;
 		static void load();
 		static void update();
 
-		union input
-		{
-			uint16_t data[4];
-			uint64_t input;
-		};
-
 	private:
-		static inline double mx=0, my=0;		// Current mouse Position
+		static inline double mx=0, my=0;	// Current mouse Position
 		static inline double pmx=0, pmy=0;	// Mouse position at last tick
-		static inline double sx=0, sy=0;		// Current scroll position
+		static inline double sx=0, sy=0;	// Current scroll position
 		static inline double psx=0, psy=0;	// Scroll Position at last tick
 
-		std::vector<Task> tasks;
-		std::vector<std::pair<input, Task>> keys;
-		std::vector<std::pair<input, Task>> mbns;
+		std::vector<std::pair<Input, Task>> keys;
+		std::vector<std::pair<Input, Task>> mbns;
 		std::unordered_map<uint64_t, Task> inputs;
+	};
+
+	
+	// Maps strings to inputs
+	struct InputMap final
+	{
+		static inline void associate(std::string&& name, Input&& input, Task&& task);
+
+	private:
+		static inline std::unordered_map<std::string, Input> associations;
 	};
 };

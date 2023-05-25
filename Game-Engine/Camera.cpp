@@ -64,7 +64,7 @@ namespace loom
             yaww_mat = rotate(radians(yaww), vec3(0, 0, 1));
 
 			double mx, my;
-			Input::GetMousePos(mx, my);
+			Inputs::GetMousePos(mx, my);
 
 			mpos = inverse(Camera::mvp) * vec4(2 * mx / w - 1, 1 - 2 * my / h,  0, 1);
 			mdir =

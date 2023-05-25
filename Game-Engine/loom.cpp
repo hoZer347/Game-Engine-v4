@@ -22,6 +22,7 @@ namespace loom
 	static inline std::thread updater;
 	static inline std::atomic<bool> KILL = false;
 
+
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -54,7 +55,6 @@ namespace loom
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glEnable(GL_DOUBLEBUFFER);
 		glfwSwapInterval(0);
-
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback([](
 			GLenum source,
@@ -68,7 +68,6 @@ namespace loom
 				if (!((int)severity == (int)33387))
 					std::cout << message << std::endl;
 			}, nullptr);
-
 		GLuint _vtxs, _inds;
 		glGenBuffers(1, &_vtxs);
 		glGenBuffers(1, &_inds);
@@ -82,11 +81,9 @@ namespace loom
 		glVertexAttribPointer(VEC4_2_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(2 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
 
-		glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h) { glViewport(0, 0, w, h); });
-
 
 		// Loading Items
-		Input::load();
+		Inputs::load();
 
 		
 		// Setting up Updater
@@ -101,7 +98,7 @@ namespace loom
 		while (!glfwWindowShouldClose(window))
 		{
 			// Updating Inputs
-			Input::update();
+			Inputs::update();
 
 
 			// Doing openGL-dependent loads
@@ -141,6 +138,7 @@ namespace loom
 	{
 
 	};
+
 
 	ShaderManager* GetSMgr()
 	{
