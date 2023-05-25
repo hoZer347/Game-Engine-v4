@@ -59,6 +59,9 @@
     <ClCompile Include="Animation.cpp">
       <Filter>Engine\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="Algorithm.cpp">
+      <Filter>Engine\Algorithm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -120,6 +123,9 @@
     </Filter>
     <Filter Include="Engine\Animation">
       <UniqueIdentifier>{93a78557-42c9-4a70-8f3b-82de288d0d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Algorithm">
+      <UniqueIdentifier>{522dbdd6-a0d6-48fe-9e64-c428f0c3a9fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +195,9 @@
     <ClInclude Include="Animation.h">
       <Filter>Engine\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Algorithm.h">
+      <Filter>Engine\Algorithm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Grid.vert">
@@ -196,12 +205,6 @@
     </None>
     <None Include="shaders\Grid.frag">
       <Filter>Game\Grid</Filter>
-    </None>
-    <None Include="shaders\default.frag">
-      <Filter>Engine</Filter>
-    </None>
-    <None Include="shaders\default.vert">
-      <Filter>Engine</Filter>
     </None>
     <None Include="shaders\Geometry.frag">
       <Filter>Game\Geometry</Filter>
@@ -214,6 +217,12 @@
     </None>
     <None Include="shaders\Sprite.vert">
       <Filter>Engine\Sprite</Filter>
+    </None>
+    <None Include="shaders\Text.frag">
+      <Filter>Engine\Text</Filter>
+    </None>
+    <None Include="shaders\Text.vert">
+      <Filter>Engine\Text</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

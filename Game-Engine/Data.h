@@ -89,7 +89,6 @@ namespace loom
 	protected:
 		friend struct Loom;
 		virtual void unload()=0;
-		virtual ~Unloadable() { unload(); };
 		static void unload_all()
 		{
 			size_t i = 0;

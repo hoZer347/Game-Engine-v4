@@ -8,13 +8,9 @@ namespace loom
 	Unit::Unit(Sprite& sprite) :
 		sprite(sprite),
 		trns(sprite.trns)
-	{
-		
-	};
+	{ };
 	Unit::~Unit()
-	{
-
-	};
+	{ };
 	void Unit::update()
 	{
 

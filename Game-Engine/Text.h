@@ -7,6 +7,19 @@ using namespace glm;
 
 namespace loom
 {
+	// Letter
+	struct Letter final
+	{
+		vec2 size;
+		vec2 bearing;
+		vec2 stride;
+		vec4 texCoords;
+
+		uint8_t* data;
+	};
+
+
+
 	// Storage for the info needed to render text
 	struct Font final :
 		virtual protected Loadable,
@@ -18,20 +31,14 @@ namespace loom
 		friend struct StaticText;
 		friend struct DynamicText;
 		uint32_t texture = 0;
-		std::vector<vec4> vtxs =
-		{
-			{ 0, 0, 0, 1 }, { 0, 0, 0, 1 },
-			{ 1, 0, 0, 1 }, { 1, 0, 0, 1 },
-			{ 1, 1, 0, 1 }, { 1, 1, 0, 1 },
-			{ 0, 1, 0, 1 }, { 0, 1, 0, 1 },
-		};
+		const uint32_t size;
 
 	private:
 		void load() override;
 		void unload() override;
 
+		std::vector<Letter> letters;
 		const char* font_file;
-		uint32_t size;
 	};
 	//
 
@@ -39,7 +46,9 @@ namespace loom
 
 	// Static Text
 	// - Creates a static texture representing text
-	struct StaticText final : virtual protected Renderable
+	struct StaticText final :
+		virtual protected Loadable,
+		virtual protected Renderable
 	{
 		StaticText(Font& font, std::string&& body);
 		virtual ~StaticText();
@@ -47,6 +56,7 @@ namespace loom
 		mat4 trns = mat4(1);
 
 	private:
+		void load() override;
 		void render() override;
 
 		Font& font;
@@ -65,22 +75,28 @@ namespace loom
 
 	// DynamicText
 	// - Creates a text object by using the font's texture
-	struct DynamicText final : virtual protected Renderable
+	struct DynamicText final :
+		virtual protected Loadable,
+		virtual protected Renderable
 	{
 		DynamicText(Font& font, std::string&& body);
 		virtual ~DynamicText();
 
 		mat4 trns = mat4(1);
 
-		void push(std::string&& s);
-		void pop();
+		void push(std::string&& body);
+		void pop(uint32_t amount=1);
 		void clear();
 
 	private:
+		void load() override;
 		void render() override;
 
 		Font& font;
 		std::string body;
+		vec4 curr_pos = vec4(0, 0, 0, 0);
+		struct Vtx final { vec4 pos, cds; };
+		std::vector<Vtx> vtxs;
 	};
 	//
 };

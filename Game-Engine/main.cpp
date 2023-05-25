@@ -62,9 +62,10 @@ int main()
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, { 0, 320 }, { 32, 32 }, { 0, 0 }, 0 };
 
+
 	// Text
 	Font font{ "Resources/alagard.ttf" };
-	DynamicText text{ font, "Test" };
+	DynamicText text{ font, "Fuck Text Rendering this fucking sucks ass omfg" };
 
 
 	// Grid
