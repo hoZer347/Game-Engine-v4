@@ -14,11 +14,7 @@ namespace loom
 		p2.trns *= translate(vec3(arena_size * 1.5 * .7 - .5, 1 * arena_size / 2 - .5, .001));
 		p3.trns *= translate(vec3(arena_size * 1.5 * .9 - .5, 1 * arena_size / 2 - .5, .001));
 		ball.trns *= translate(vec3(1.5 * arena_size / 2 - .5, 1 * arena_size / 2 - .5, .001));
-<<<<<<< HEAD
-
-=======
 		
->>>>>>> 7b78e568609d687c3cb3fb403fe3d5dfab06d4b9
 		goal0.trns *= scale(vec3(1, 1 * (arena_size / 3), 0));
 		goal1.trns *= scale(vec3(1, 1 * (arena_size / 3), 0));
 		goal0.trns *= translate(vec3(-1, 1, 0));
@@ -40,18 +36,10 @@ namespace loom
 	};
 	void TestGame::update()
 	{
-<<<<<<< HEAD
-
-	};
-	void TestGame::render()
-	{
-
-=======
 		
 	};
 	void TestGame::render()
 	{
 		
->>>>>>> 7b78e568609d687c3cb3fb403fe3d5dfab06d4b9
 	};
 };
