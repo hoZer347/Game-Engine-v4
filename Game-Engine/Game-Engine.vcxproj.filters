@@ -210,12 +210,6 @@
     <ClInclude Include="Algorithm.h">
       <Filter>Engine\Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\TestGame.h">
-      <Filter>Game\Game</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Grid.vert">
