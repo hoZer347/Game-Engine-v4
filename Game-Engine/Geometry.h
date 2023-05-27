@@ -8,7 +8,9 @@ using namespace glm;
 
 namespace loom
 {
-	struct Cube final : virtual private Loadable, virtual private Renderable
+	struct Cube final :
+		virtual private Loadable,
+		virtual private Renderable
 	{
 		Cube()
 		{ };
@@ -44,7 +46,9 @@ namespace loom
 	};
 
 
-	struct Plane final : virtual private Loadable, virtual private Renderable
+	struct Plane final :
+		virtual private Loadable,
+		virtual private Renderable
 	{
 		vec4 color = vec4(1);
 		mat4 trns = mat4(1);
@@ -67,8 +71,10 @@ namespace loom
 		virtual private Loadable,
 		virtual private Renderable
 	{
+		const float radius = 1.0f;
+
 		vec4 color = vec4(1);
-		mat4 trns;
+		mat4 trns = mat4(1);
 
 	private:
 		void load() override;

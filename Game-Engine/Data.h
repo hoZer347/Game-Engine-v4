@@ -115,7 +115,9 @@ namespace loom
 
 
 	// Shader Object
-	struct Shader final : virtual protected Loadable, virtual protected Unloadable
+	struct Shader final :
+		virtual protected Loadable,
+		virtual protected Unloadable
 	{
 		// TODO: Make custom class for this, move to new file
 		// TODO: Push ShaderManager into this
@@ -137,7 +139,9 @@ namespace loom
 
 
 	// Texture Object
-	struct Texture final : virtual protected Loadable, virtual protected Unloadable
+	struct Texture final :
+		virtual protected Loadable,
+		virtual protected Unloadable
 	{
 		// TODO: Make custom class for this, move to new file
 

@@ -43,6 +43,7 @@ int main()
 	CollisionCompareFunction<Circle, Circle>([](Circle& p0, Circle& p1) { return true; });
 
 
+
 	Loom::Run();
 
 	Loom::Exit();
