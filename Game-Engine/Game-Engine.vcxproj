@@ -158,6 +158,7 @@
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Game\TestGame.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -169,7 +170,6 @@
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Unit.cpp" />
