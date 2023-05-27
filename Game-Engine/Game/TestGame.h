@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Data.h"
-#include "Geometry.h"
+#include "../Data.h"
+#include "../Geometry.h"
 
 #ifndef MAX_TEST_GAME_SPEED
 #define MAX_TEST_GAME_SPEED 1

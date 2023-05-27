@@ -197,7 +197,6 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="TestGame.h" />
     <ClInclude Include="Testing.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Unit.h" />
