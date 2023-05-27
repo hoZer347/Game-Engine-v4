@@ -166,8 +166,10 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Unit.cpp" />
@@ -182,6 +184,7 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="Game\TestGame.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Constants.h" />
@@ -191,6 +194,7 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Testing.h" />
@@ -199,6 +203,8 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Game\TestGameShader.frag" />
+    <None Include="Game\TestGameShader.vert" />
     <None Include="shaders\Text.frag" />
     <None Include="shaders\Text.vert" />
     <None Include="shaders\Geometry.frag" />

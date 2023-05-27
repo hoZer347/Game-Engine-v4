@@ -62,6 +62,12 @@
     <ClCompile Include="Algorithm.cpp">
       <Filter>Engine\Algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGame.cpp">
+      <Filter>Game\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -126,6 +132,12 @@
     </Filter>
     <Filter Include="Engine\Algorithm">
       <UniqueIdentifier>{522dbdd6-a0d6-48fe-9e64-c428f0c3a9fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Game">
+      <UniqueIdentifier>{240dd86f-c013-4210-92c0-fc9b27f006c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{85e78935-299e-4f18-99dd-cbfd0542af2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +210,12 @@
     <ClInclude Include="Algorithm.h">
       <Filter>Engine\Algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\TestGame.h">
+      <Filter>Game\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Grid.vert">
@@ -223,6 +241,12 @@
     </None>
     <None Include="shaders\Text.vert">
       <Filter>Engine\Text</Filter>
+    </None>
+    <None Include="Game\TestGameShader.frag">
+      <Filter>Game\Game</Filter>
+    </None>
+    <None Include="Game\TestGameShader.vert">
+      <Filter>Game\Game</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

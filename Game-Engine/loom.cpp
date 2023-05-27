@@ -19,10 +19,6 @@
 
 namespace loom
 {
-	static inline std::thread updater;
-	static inline std::atomic<bool> KILL = false;
-
-
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -73,7 +69,7 @@ namespace loom
 		glGenBuffers(1, &_inds);
 		glBindBuffer(GL_ARRAY_BUFFER, _vtxs);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _inds);
-		glVertexAttribPointer(VEC4_0_16, 4, GL_FLOAT, GL_FALSE, 0, (void*)(0 * sizeof(vec4)));
+		glVertexAttribPointer(VEC4_0_16, 4, GL_FLOAT, GL_FALSE,  0, (void*)(0 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_0_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(0 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_1_32, 4, GL_FLOAT, GL_FALSE, 32, (void*)(1 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_0_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(0 * sizeof(vec4)));
@@ -85,12 +81,24 @@ namespace loom
 		// Loading Items
 		Inputs::load();
 
-		
+
+		// Big Chungus
+		std::atomic<bool> KILL;
+
+
 		// Setting up Updater
-		updater = std::thread([]()
+		std::thread updater = std::thread([&KILL]()
 		{
 			while (!KILL)
 				Updateable::update_all();
+		});
+
+
+		// Setting up Physics
+		std::thread physics = std::thread([&KILL]()
+		{
+			while (!KILL)
+				Physicsable::physics_all();
 		});
 
 
@@ -121,6 +129,7 @@ namespace loom
 		// Syncing and ending all other threads
 		KILL = true;
 		updater.join();
+		physics.join();
 
 
 		// Deallocating everything allocated that uses openGL

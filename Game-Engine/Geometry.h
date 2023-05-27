@@ -44,7 +44,6 @@ namespace loom
 	};
 
 
-
 	struct Plane final : virtual private Loadable, virtual private Renderable
 	{
 		vec4 color = vec4(1);
@@ -61,5 +60,18 @@ namespace loom
 			vec4(1, 1, 0, 1),
 			vec4(0, 1, 0, 1),
 		};
+	};
+
+
+	struct Circle final :
+		virtual private Loadable,
+		virtual private Renderable
+	{
+		vec4 color = vec4(1);
+		mat4 trns;
+
+	private:
+		void load() override;
+		void render() override;
 	};
 };

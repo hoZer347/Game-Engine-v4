@@ -16,9 +16,6 @@ namespace loom
 	typedef std::function<void()> Task;
 
 
-	// Layout:
-	// [0]: The key on a keyboard from GLFW_KEY_<insert key here>
-	// [1]: The button 
 	union Input
 	{
 		struct
@@ -56,7 +53,6 @@ namespace loom
 
 	protected:
 		friend struct Loom;
-		friend struct InputMap;
 		friend class std::shared_ptr<Inputs>;
 		std::shared_ptr<Inputs> _prev = nullptr;
 		static void load();
@@ -71,15 +67,5 @@ namespace loom
 		std::vector<std::pair<Input, Task>> keys;
 		std::vector<std::pair<Input, Task>> mbns;
 		std::unordered_map<uint64_t, Task> inputs;
-	};
-
-	
-	// Maps strings to inputs
-	struct InputMap final
-	{
-		static inline void associate(std::string&& name, Input&& input, Task&& task);
-
-	private:
-		static inline std::unordered_map<std::string, Input> associations;
 	};
 };
