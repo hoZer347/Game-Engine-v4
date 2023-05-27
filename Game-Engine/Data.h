@@ -84,6 +84,17 @@ namespace loom
 				obj->update();
 		};
 	};
+	struct Physicsable : public GameObject<Physicsable>
+	{
+	protected:
+		friend struct Loom;
+		virtual void physics()=0;
+		static void physics_all()
+		{
+			for (auto& obj : objects)
+				obj->physics();
+		};
+	};
 	struct Unloadable : public GameObject<Unloadable>
 	{
 	protected:

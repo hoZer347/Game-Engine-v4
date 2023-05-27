@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "Enums.h"
 #include "Camera.h"
+#include "Collision.h"
 
 namespace loom
 {
@@ -83,5 +84,15 @@ namespace loom
 
 		glDisableVertexAttribArray(VEC4_0_16);
 		glUseProgram(0);
+	};
+
+
+	void Circle::load()
+	{
+
+	};
+	void Circle::render()
+	{
+
 	};
 };
