@@ -22,50 +22,63 @@ namespace loom
 	void Camera::InitiateFreeCam()
 	{
 		Inputs::next();
+		static mat4 mvp;
+		mvp = Camera::mvp;
+		Camera::mvp = mvp;
 
 
 		// WASD movement relative to where the camera is pointing (x, y)
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_W, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_A, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_S, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_D, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_SPACE, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
+		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
 		}, { GLFW_KEY_LEFT_CONTROL, 0, GLFW_PRESS, 0 });
 
 
 		// Click and drag m3 to rotate camera
-		Inputs::MouseButtonHold([&]()
+		Inputs::AddInput([&]()
 		{
 			static double mx, my;
 			Inputs::GetRelativeMousePos(mx, my);
 
 			Camera::yaww += (float)-mx * CAMERA_ROTATION_SPEED;
 			Camera::roll += (float)-my * CAMERA_ROTATION_SPEED;
+			if (Camera::roll > 180)
+				Camera::roll = 180;
+			if (Camera::roll < 0)
+				Camera::roll = 0;
+
 		}, { 0, GLFW_MOUSE_BUTTON_3, GLFW_PRESS, 0 });
-	};
 
 
-	void Camera::LeaveFreeCam()
-	{
-		Inputs::prev();
+		// On pressing escape, revert camera
+		Inputs::AddInput([]()
+		{
+			Inputs::prev();
+		}, { GLFW_KEY_ESCAPE, 0, GLFW_PRESS, 0 });
+
+
+		// Reset camera on prev
+		Inputs::AddOnPrev([]() { Camera::mvp = _mvp; });
 	};
 
 

@@ -4,6 +4,7 @@
 
 #include "Game/Grid.h"
 #include "Game/Unit.h"
+#include "Game/TestGame.h"
 
 
 #include "AI.h"
@@ -18,7 +19,6 @@
 #include "Geometry.h"
 #include "Cuda.cuh"
 #include "Matrix.h"
-#include "Game/TestGame.h"
 using namespace loom;
 
 
@@ -35,12 +35,9 @@ int main()
 	Loom::Init();
 
 
-	Commands::InitiateFreeCam();
+	Camera::InitiateFreeCam();
 
-	Plane plane;
-
-
-	Font font{ "Resources/alagard.ttf" };
+	Font font{ "Resources/alagard.ttf", 72 };
 	DynamicText text{ font, "Test" };
 
 

@@ -103,9 +103,6 @@
     <Filter Include="Engine\Cuda">
       <UniqueIdentifier>{8b380a6a-06f5-45e2-9001-4b9e59c01be4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Testing">
-      <UniqueIdentifier>{28f2031e-7cff-4d59-9282-ff6ece98c9b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Menu">
       <UniqueIdentifier>{f00587c5-8446-44ba-8180-ec17020bee60}</UniqueIdentifier>
     </Filter>

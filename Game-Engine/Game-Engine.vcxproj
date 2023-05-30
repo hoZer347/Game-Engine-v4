@@ -185,7 +185,6 @@
     <ClInclude Include="Game\TestGame.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Constants.h" />
     <ClInclude Include="Cuda.cuh" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />

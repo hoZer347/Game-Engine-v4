@@ -7,15 +7,7 @@ namespace loom
 {
 	struct StatSpread
 	{
-		uint8_t
-			HP,
-			STR,
-			DEX,
-			INT,
-			WIS,
-			DEF,
-			RES,
-			SPD;
+		uint8_t HP, STR, DEX, INT, WIS, DEF, RES, SPD;
 
 		std::string name;
 		StatSpread* _next = nullptr;

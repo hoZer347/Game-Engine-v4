@@ -9,11 +9,8 @@ using namespace glm;
 
 namespace loom
 {
-	// Camera, without this, you won't actually render anything
 	struct Camera final
 	{
-		static inline mat4	mvp			= mat4(1);
-
 		static inline float	fovy		= 45.f,
 							aspect		= 1.f,
 							near		= .1f,
@@ -38,8 +35,13 @@ namespace loom
 		static inline vec4	mpos, mdir;
 
 
+		// Initiates "Free Cam"
+		// Controls:
+		// - Press and hold middle mouse button to rotate camera
+		// - WASD movement relative to camera rotation around the Z axis
+		// - LEFT_CTRL + SPACE go up and down on the Z axis
+		// - ESCAPE exits Free Cam
 		static void InitiateFreeCam();
-		static void LeaveFreeCam();
 
 
 	protected:
@@ -48,6 +50,10 @@ namespace loom
 
 	private:
 		Camera() { };
+		static inline mat4 _mvp = mat4(1);
+
+	public:
+		static inline mat4& mvp = _mvp;
 	};
 	//
 };

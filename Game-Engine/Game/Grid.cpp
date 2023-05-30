@@ -48,19 +48,19 @@ namespace loom
 		for (size_t i = 0; i < x_size; i++)
 			for (size_t j = 0; j < y_size; j++)
 			{
-				cells[i][j].v0 = inds.size() + 0;
-				cells[i][j].v1 = inds.size() + 2;
-				cells[i][j].v2 = inds.size() + 4;
-				cells[i][j].v3 = inds.size() + 6;
+				cells[i][j].v0 = (uint32_t)inds.size() + 0;
+				cells[i][j].v1 = (uint32_t)inds.size() + 2;
+				cells[i][j].v2 = (uint32_t)inds.size() + 4;
+				cells[i][j].v3 = (uint32_t)inds.size() + 6;
 
-				inds.push_back(vtxs.size() + 0);
-				inds.push_back(vtxs.size() + 1);
-				inds.push_back(vtxs.size() + 1);
-				inds.push_back(vtxs.size() + 2);
-				inds.push_back(vtxs.size() + 2);
-				inds.push_back(vtxs.size() + 3);
-				inds.push_back(vtxs.size() + 3);
-				inds.push_back(vtxs.size() + 0);
+				inds.push_back((uint32_t)vtxs.size() + 0);
+				inds.push_back((uint32_t)vtxs.size() + 1);
+				inds.push_back((uint32_t)vtxs.size() + 1);
+				inds.push_back((uint32_t)vtxs.size() + 2);
+				inds.push_back((uint32_t)vtxs.size() + 2);
+				inds.push_back((uint32_t)vtxs.size() + 3);
+				inds.push_back((uint32_t)vtxs.size() + 3);
+				inds.push_back((uint32_t)vtxs.size() + 0);
 
 				vtxs.emplace_back(i, j, 0, 1);
 				vtxs.emplace_back(i + 1, j, 0, 1);
@@ -121,7 +121,7 @@ namespace loom
 	{
 		glUseProgram(shader.id);
 		glEnableVertexAttribArray(VEC4_0_16);
-		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+		glUniformMatrix4fv((GLint)_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 
 
 		// Drawing the constructed grid lines

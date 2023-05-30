@@ -7,7 +7,8 @@
 
 namespace loom
 {
-	static inline std::shared_ptr<Inputs> INPUT = std::make_shared<Inputs>();
+	static inline thread_local std::shared_ptr<Inputs> INPUT = nullptr;
+
 	Inputs::Inputs(std::shared_ptr<Inputs> _prev)
 	: _prev(_prev)
 	{ };
@@ -17,23 +18,25 @@ namespace loom
 	};
 	void Inputs::prev()
 	{
+		for (auto& task : INPUT->on_prev)
+			task();
+
 		INPUT = INPUT->_prev;
 	};
-	void Inputs::MouseButtonPress(Task&& task, Input&& input)
+	void Inputs::AddInput(Task&& task, Input&& input)
 	{
-		INPUT->inputs[input] = task;
+		INPUT->inputs.emplace_back(input, task);
 	};
-	void Inputs::KeyPress(Task&& task, Input&& input)
+	void Inputs::RmvInput(Input&& input)
 	{
-		INPUT->inputs[input] = task;
-	};
-	void Inputs::MouseButtonHold(Task&& task, Input&& input)
-	{
-		INPUT->mbns.emplace_back(input, task);
-	};
-	void Inputs::KeyHold(Task&& task, Input&& input)
-	{
-		INPUT->keys.emplace_back(input, task);
+		INPUT->inputs.erase(
+			std::remove_if(
+				INPUT->inputs.begin(),
+				INPUT->inputs.end(),
+				[&input](auto& p)
+				{
+					return p.first == input;
+				}));
 	};
 	void Inputs::GetMousePos(double& mx, double& my)
 	{
@@ -55,28 +58,18 @@ namespace loom
 		sx = Inputs::sx - Inputs::psx;
 		sy = Inputs::sy - Inputs::psy;
 	};
+	void Inputs::AddOnPrev(Task task)
+	{
+		INPUT->on_prev.emplace_back(task);
+	};
 	void Inputs::clear()
 	{
-		INPUT->keys.clear();
-		INPUT->mbns.clear();
 		INPUT->inputs.clear();
 	};
 	void Inputs::load()
 	{
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
-			glfwSetMouseButtonCallback(window, [](GLFWwindow*, GLint button, GLint action, GLint mods)
-			{
-				Input i{ { (uint16_t)0, (uint16_t)button, (uint16_t)action, (uint16_t)mods } };
-				if (INPUT->inputs[i.input])
-					INPUT->inputs[i.input]();
-			});
-			glfwSetKeyCallback(window, [](GLFWwindow*, GLint key, GLint scancode, GLint action, GLint mods)
-			{
-				Input i{ { (uint16_t)key, (uint16_t)action, (uint16_t)scancode, (uint16_t)mods } };
-				if (INPUT->inputs[i.input])
-					INPUT->inputs[i.input]();
-			});
 			glfwSetScrollCallback(window, [](GLFWwindow* window, double sx, double sy)
 			{
 				Inputs::sx += sx;
@@ -107,18 +100,15 @@ namespace loom
 			
 
 			// Process all keys currently being pressed
-			for (auto& i : INPUT->keys)
+			for (auto& i : INPUT->inputs)
 				if (glfwGetKey(window, i.first.data.key) == i.first.data.action)
 					i.second();
-			//
-
 
 
 			// Process all mouse buttons being pressed
-			for (auto& i : INPUT->mbns)
+			for (auto& i : INPUT->inputs)
 				if (glfwGetMouseButton(window, i.first.data.button) == i.first.data.action)
 					i.second();
-			//
 
 
 			// Recording the previous mouse / scroll position
