@@ -68,7 +68,4 @@ namespace loom
 		std::vector<std::pair<Input, Task>> inputs;
 		std::vector<Task> on_prev;
 	};
-
-
-
 };

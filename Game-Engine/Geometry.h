@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Data.h"
+#include "Enums.h"
+
 #include <glm/glm.hpp>
 using namespace glm;
 
@@ -18,10 +20,14 @@ namespace loom
 		vec4 color = vec4(0, 0, 1, 1);
 		mat4 trns = mat4(1);
 
+		static inline const int collision_type = COLLISION::CUBE;
+
 	private:
 		void load() override;
 		void render() override;
 
+	protected:
+		friend struct Geometry<Cube>;
 		static inline std::vector<vec4> vtxs =
 		{
 			vec4(0, 0, 0, 1),
@@ -46,17 +52,21 @@ namespace loom
 	};
 
 
-	struct Plane final :
+	struct Square final :
 		virtual private Loadable,
 		virtual private Renderable
 	{
 		vec4 color = vec4(1);
 		mat4 trns = mat4(1);
 
+		static inline const int collision_type = COLLISION::SQUARE;
+
 	private:
 		void load() override;
 		void render() override;
 
+	protected:
+		friend struct Geometry<Square>;
 		static inline std::vector<vec4> vtxs =
 		{
 			vec4(0, 0, 0, 1),
@@ -76,8 +86,14 @@ namespace loom
 		vec4 color = vec4(1);
 		mat4 trns = mat4(1);
 
+		static inline const int collision_type = COLLISION::CIRCLE;
+
 	private:
 		void load() override;
 		void render() override;
+
+	protected:
+		friend struct Geometry<Circle>;
+		std::vector<vec4> vtxs;
 	};
 };

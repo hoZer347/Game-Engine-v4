@@ -17,7 +17,10 @@ namespace loom
 	static inline uint32_t _location;
 	static inline Shader shader{ "Sprite" };
 
-	struct SpriteManager final : public Loadable, public Updateable, public Renderable
+	struct SpriteManager final :
+		virtual protected Loadable,
+		virtual protected Updateable,
+		virtual protected Renderable
 	{
 		static inline std::vector<vec4> vtxs
 		{

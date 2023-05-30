@@ -22,7 +22,6 @@ namespace loom
 	};
 
 
-
 	// Storage for the info needed to render text
 	struct Font final :
 		virtual protected Loadable,
@@ -44,7 +43,6 @@ namespace loom
 		const char* font_file;
 	};
 	//
-
 
 
 	// Static Text
@@ -73,7 +71,6 @@ namespace loom
 		};
 	};
 	//
-
 
 
 	// DynamicText

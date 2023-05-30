@@ -36,4 +36,16 @@ namespace loom
 		PTCH,
 		YAWW,
 	};
+
+	enum COLLISION // Collision types
+	{
+		SQUARE,
+		PLANE,
+		CUBE,
+		LINE,
+		RAY,
+		TRIANGLE,
+		CIRCLE,
+		SPHERE,
+	};
 };

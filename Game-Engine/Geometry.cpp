@@ -57,7 +57,7 @@ namespace loom
 
 
 
-	void Plane::load()
+	void Square::load()
 	{
 		if (!_color)
 			_color = glGetUniformLocation(shader.id, "color"); // This can be improved (called once only)
@@ -66,7 +66,7 @@ namespace loom
 		if (!_mvp)
 			_mvp = glGetUniformLocation(shader.id, "mvp"); // This can be improved (called once only)
 	};
-	void Plane::render()
+	void Square::render()
 	{
 		glUseProgram(shader.id);
 		glEnableVertexAttribArray(VEC4_0_16);

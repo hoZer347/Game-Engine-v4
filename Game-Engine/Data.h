@@ -111,8 +111,7 @@ namespace loom
 			objects.clear();
 		};
 	};
-	//
-
+	
 
 	// Shader Object
 	struct Shader final :
@@ -134,8 +133,6 @@ namespace loom
 
 		std::vector<std::string> files;
 	};
-	//
-
 
 
 	// Texture Object
@@ -159,5 +156,38 @@ namespace loom
 		uint32_t type = 0;
 		int32_t nrChannels = -1;
 	};
-	//
+	
+
+	// Allows the object to be treated as an object with geometry
+	struct _Geometry
+	{
+		void operator*=(mat4&& mat) { trns *= mat; };
+		void operator=(mat4&& mat) { trns = mat; };
+
+		const uint32_t& collision_type;
+
+	protected:
+		_Geometry(const uint32_t& collision_type, mat4& trns, std::vector<vec4>& vtxs) :
+			collision_type(collision_type),
+			trns(trns),
+			vtxs(vtxs)
+		{ };
+
+	private:
+		mat4& trns;
+		std::vector<vec4>& vtxs;
+		
+		// Represents a bounding box
+		vec3 pos {0}, size {0};
+	};
+	template <typename T>
+	struct Geometry final : public _Geometry
+	{
+		Geometry(auto&&... args) :
+			obj(args...),
+			_Geometry(obj.collision_type, obj.trns, obj.vtxs)
+		{ };
+
+		T obj;
+	};
 };

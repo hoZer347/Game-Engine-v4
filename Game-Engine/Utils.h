@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Data.h"
+
 #include <chrono>
 #include <atomic>
 #include <functional>
@@ -32,13 +34,13 @@ namespace loom
 		struct Timer final
 		{
 			// Gets the difference between the last pinged time and the current one in seconds
-			_NODISCARD const double GetDiff_s()   const { return (double)(Clock::now() - _clock).count() / 1000000000; };
+			_NODISCARD const double GetDiff_s()   const { return (double)(Clock::now() - _clock).count() / 1000000000.0; };
 			
 			// Gets the difference between the last pinged time and the current one in milliseconds
-			_NODISCARD const double GetDiff_mls() const { return (double)(Clock::now() - _clock).count() / 1000; };
+			_NODISCARD const double GetDiff_mls() const { return (double)(Clock::now() - _clock).count() / 1000.0; };
 
 			// Gets the difference between the last pinged time and the current one in microseconds
-			_NODISCARD const double GetDiff_mcs() const { return (double)(Clock::now() - _clock).count() / 1000000; };
+			_NODISCARD const double GetDiff_mcs() const { return (double)(Clock::now() - _clock).count() / 1000000.0; };
 			
 			// Gets the difference between the last pinged time and the current one in nanoseconds
 			_NODISCARD const double GetDiff_ns()  const { return (double)(Clock::now() - _clock).count(); };
@@ -53,6 +55,8 @@ namespace loom
 		private:
 			Time _clock = Clock::now();
 		};
-		//
+
+
+		static double TimedFunc(void(*f)());
 	};
 };

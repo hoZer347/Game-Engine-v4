@@ -7,7 +7,9 @@ using namespace glm;
 
 namespace loom
 {
-	struct Sprite final : public Loadable, public GameObject<Sprite>
+	struct Sprite final :
+		virtual protected Loadable,
+		public GameObject<Sprite>
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		

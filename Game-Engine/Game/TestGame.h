@@ -22,7 +22,7 @@ namespace loom
 
 		float arena_size = 15;
 
-		Plane arena, p0, p1, p2, p3, goal0, goal1, ball;
+		Square arena, p0, p1, p2, p3, goal0, goal1, ball;
 
 		static inline Shader shader{ "Game/TestGameShader" };
 	};

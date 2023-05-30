@@ -34,12 +34,12 @@ int main()
 {
 	Loom::Init();
 
-
 	Camera::InitiateFreeCam();
 
-	Font font{ "Resources/alagard.ttf", 72 };
+	Font font{ "Resources/Vogue.ttf", 72 };
 	DynamicText text{ font, "Test" };
 
+	Geometry<Square> square;
 
 	Loom::Run();
 
