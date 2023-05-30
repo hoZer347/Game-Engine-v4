@@ -17,7 +17,7 @@
 
 namespace loom
 {
-	static inline Shader shader{ "Text" };
+	static inline Shader shader{ "shaders/Text" };
 	static inline uint32_t _mvp;
 	static inline uint32_t _trns;
 

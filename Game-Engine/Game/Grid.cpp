@@ -1,20 +1,24 @@
 #include "Grid.h"
 
+
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
+
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/intersect.hpp>
-#include "Utils.h"
-#include "Enums.h"
-#include "Camera.h"
+
+
+#include "../Utils.h"
+#include "../Enums.h"
+#include "../Camera.h"
 
 #include <thread>
 
 
 namespace loom
 {
-	static inline Shader shader{ "shaders/Grid" };
+	static inline Shader shader{ "Grid" };
 
 
 	Grid::Grid(size_t x_size, size_t y_size)

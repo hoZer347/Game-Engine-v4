@@ -5,9 +5,6 @@
     <ClCompile Include="Loom.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Game\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Sprite</Filter>
     </ClCompile>
@@ -27,10 +24,10 @@
       <Filter>Engine\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp">
-      <Filter>Game\Geometry</Filter>
+      <Filter>Engine\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Commands.cpp">
-      <Filter>Game\Commands</Filter>
+      <Filter>Engine\Commands</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Engine\Utils</Filter>
@@ -44,17 +41,8 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>Engine\Matrix</Filter>
     </ClCompile>
-    <ClCompile Include="Testing.cpp">
-      <Filter>Engine\Testing</Filter>
-    </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>Engine\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Engine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Unit.cpp">
-      <Filter>Game\Unit</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Engine\Animation</Filter>
@@ -65,8 +53,14 @@
     <ClCompile Include="Physics.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="TestGame.cpp">
+    <ClCompile Include="Game\TestGame.cpp">
       <Filter>Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Grid.cpp">
+      <Filter>Game\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Unit.cpp">
+      <Filter>Game\Unit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,12 +88,6 @@
     <Filter Include="Engine\Text">
       <UniqueIdentifier>{1302366d-7860-4d07-98e6-86ffc8a35f5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Geometry">
-      <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Commands">
-      <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Utils">
       <UniqueIdentifier>{37e0137c-e624-438e-825a-4e9823ab1b1b}</UniqueIdentifier>
     </Filter>
@@ -121,9 +109,6 @@
     <Filter Include="Engine\Menu">
       <UniqueIdentifier>{f00587c5-8446-44ba-8180-ec17020bee60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Collision">
-      <UniqueIdentifier>{388c826f-0e11-4d0a-9cee-157f4e348a9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Unit">
       <UniqueIdentifier>{6dc960fe-e185-4f3f-919e-645302bb4924}</UniqueIdentifier>
     </Filter>
@@ -139,13 +124,16 @@
     <Filter Include="Engine\Physics">
       <UniqueIdentifier>{85e78935-299e-4f18-99dd-cbfd0542af2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Commands">
+      <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Geometry">
+      <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Game\Grid</Filter>
     </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Engine\Sprite</Filter>
@@ -169,13 +157,10 @@
       <Filter>Engine\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
-      <Filter>Game\Geometry</Filter>
+      <Filter>Engine\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Commands.h">
-      <Filter>Game\Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="Constants.h">
-      <Filter>Engine</Filter>
+      <Filter>Engine\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Engine\Utils</Filter>
@@ -192,17 +177,8 @@
     <ClInclude Include="Cuda.cuh">
       <Filter>Engine\Cuda</Filter>
     </ClInclude>
-    <ClInclude Include="Testing.h">
-      <Filter>Engine\Testing</Filter>
-    </ClInclude>
     <ClInclude Include="Menu.h">
       <Filter>Engine\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Engine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Unit.h">
-      <Filter>Game\Unit</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Engine\Animation</Filter>
@@ -210,37 +186,49 @@
     <ClInclude Include="Algorithm.h">
       <Filter>Engine\Algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="Game\TestGame.h">
+      <Filter>Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Grid.h">
+      <Filter>Game\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Unit.h">
+      <Filter>Game\Unit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\Grid.vert">
-      <Filter>Game\Grid</Filter>
-    </None>
-    <None Include="shaders\Grid.frag">
-      <Filter>Game\Grid</Filter>
-    </None>
-    <None Include="shaders\Geometry.frag">
-      <Filter>Game\Geometry</Filter>
-    </None>
-    <None Include="shaders\Geometry.vert">
-      <Filter>Game\Geometry</Filter>
-    </None>
     <None Include="shaders\Sprite.frag">
       <Filter>Engine\Sprite</Filter>
     </None>
     <None Include="shaders\Sprite.vert">
       <Filter>Engine\Sprite</Filter>
     </None>
-    <None Include="shaders\Text.frag">
-      <Filter>Engine\Text</Filter>
-    </None>
-    <None Include="shaders\Text.vert">
-      <Filter>Engine\Text</Filter>
-    </None>
     <None Include="Game\TestGameShader.frag">
       <Filter>Game\Game</Filter>
     </None>
     <None Include="Game\TestGameShader.vert">
       <Filter>Game\Game</Filter>
+    </None>
+    <None Include="Text.frag">
+      <Filter>Engine\Text</Filter>
+    </None>
+    <None Include="Text.vert">
+      <Filter>Engine\Text</Filter>
+    </None>
+    <None Include="Geometry.vert">
+      <Filter>Engine\Geometry</Filter>
+    </None>
+    <None Include="Geometry.frag">
+      <Filter>Engine\Geometry</Filter>
+    </None>
+    <None Include="Game\Grid.frag">
+      <Filter>Game\Grid</Filter>
+    </None>
+    <None Include="Game\Grid.vert">
+      <Filter>Game\Grid</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

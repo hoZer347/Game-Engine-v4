@@ -12,11 +12,10 @@
 
 namespace loom
 {
-	static inline Shader shader{ "Geometry" };
+	static inline Shader shader{ "shaders/Geometry" };
 	static inline uint32_t _color = 0;
 	static inline uint32_t _trns = 0;
 	static inline uint32_t _mvp = 0;
-
 
 
 	void Cube::load()
@@ -54,7 +53,6 @@ namespace loom
 		glDisableVertexAttribArray(VEC4_0_16);
 		glUseProgram(0);
 	};
-
 
 
 	void Plane::load()

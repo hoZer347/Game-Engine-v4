@@ -37,11 +37,6 @@ namespace loom
 
 		static inline vec4	mpos, mdir;
 
-
-		static void InitiateFreeCam();
-		static void LeaveFreeCam();
-
-
 	protected:
 		friend struct Loom;
 		static void update();

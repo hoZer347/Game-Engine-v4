@@ -157,9 +157,10 @@
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Game\Grid.cpp" />
     <ClCompile Include="Game\TestGame.cpp" />
+    <ClCompile Include="Game\Unit.cpp" />
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
@@ -170,7 +171,6 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
-    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -181,9 +181,10 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="Game\Grid.h" />
     <ClInclude Include="Game\TestGame.h" />
+    <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Grid.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Cuda.cuh" />
     <ClInclude Include="Input.h" />
@@ -195,20 +196,19 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
-    <ClInclude Include="Unit.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Game\Grid.frag" />
+    <None Include="Game\Grid.vert" />
     <None Include="Game\TestGameShader.frag" />
     <None Include="Game\TestGameShader.vert" />
-    <None Include="shaders\Text.frag" />
-    <None Include="shaders\Text.vert" />
-    <None Include="shaders\Geometry.frag" />
-    <None Include="shaders\Geometry.vert" />
-    <None Include="shaders\Grid.frag" />
-    <None Include="shaders\Grid.vert" />
+    <None Include="Geometry.frag" />
+    <None Include="Geometry.vert" />
     <None Include="shaders\Sprite.frag" />
     <None Include="shaders\Sprite.vert" />
+    <None Include="Text.frag" />
+    <None Include="Text.vert" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Cuda.cu" />

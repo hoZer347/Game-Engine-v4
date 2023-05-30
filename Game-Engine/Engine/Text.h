@@ -1,12 +1,9 @@
 #pragma once
 
+#include "Data.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
-
-
-#include "Data.h"
-
 
 namespace loom
 {

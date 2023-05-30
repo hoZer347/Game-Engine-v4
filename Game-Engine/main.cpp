@@ -2,17 +2,19 @@
 #include "GLFW/glfw3.h"
 
 
+#include "Game/Grid.h"
+#include "Game/Unit.h"
+
+
 #include "AI.h"
 #include "Camera.h"
 #include "Data.h"
-#include "Unit.h"
 #include "Text.h"
 #include "Input.h"
 #include "Utils.h"
 #include "Sprite.h"
 #include "Commands.h"
 #include "Physics.h"
-#include "Grid.h"
 #include "Geometry.h"
 #include "Cuda.cuh"
 #include "Matrix.h"
@@ -38,10 +40,8 @@ int main()
 	Plane plane;
 
 
-	Collision<Circle> circle {};
-	OnCollisionFunction<Circle, Circle>([](Circle& p0, Circle& p1) { std::cout << "Test" << std::endl; });
-	CollisionCompareFunction<Circle, Circle>([](Circle& p0, Circle& p1) { return true; });
-
+	Font font{ "Resources/alagard.ttf" };
+	DynamicText text{ font, "Test" };
 
 
 	Loom::Run();

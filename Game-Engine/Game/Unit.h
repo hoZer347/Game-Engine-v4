@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Data.h"
-#include "Sprite.h"
+#include "../Data.h"
+#include "../Sprite.h"
 
 namespace loom
 {

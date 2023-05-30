@@ -11,64 +11,6 @@
 
 namespace loom
 {
-	// TODO: Add this to a presets file
-	static inline const float
-		CAMERA_ROTATION_SPEED = .1f,
-		CAMERA_MOVEMENT_SPEED = .1f,
-		CAMERA_ZOOM_SPEED = .4f,
-		MIN_CAMERA_ZOOM = 1.f,
-		MAX_CAMERA_ZOOM = 20.f;
-
-	void Camera::InitiateFreeCam()
-	{
-		Inputs::next();
-
-
-		// WASD movement relative to where the camera is pointing (x, y)
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_W, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_A, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_S, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_D, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_SPACE, 0, GLFW_PRESS, 0 });
-		Inputs::KeyHold([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_LEFT_CONTROL, 0, GLFW_PRESS, 0 });
-
-
-		// Click and drag m3 to rotate camera
-		Inputs::MouseButtonHold([&]()
-		{
-			static double mx, my;
-			Inputs::GetRelativeMousePos(mx, my);
-
-			Camera::yaww += (float)-mx * CAMERA_ROTATION_SPEED;
-			Camera::roll += (float)-my * CAMERA_ROTATION_SPEED;
-		}, { 0, GLFW_MOUSE_BUTTON_3, GLFW_PRESS, 0 });
-	};
-
-
-	void Camera::LeaveFreeCam()
-	{
-		Inputs::prev();
-	};
-
-
     void  calculateRotationMatrix(float& roll, float& pitch, float& yaw, mat4& rotationMatrix) {
         // Convert degrees to radians
         float rollRad = radians(roll);

@@ -15,7 +15,7 @@ namespace loom
 	static inline uint32_t _mvp;
 	static inline uint32_t _trns;
 	static inline uint32_t _location;
-	static inline Shader shader{ "Sprite" };
+	static inline Shader shader{ "shaders/Sprite" };
 
 	struct SpriteManager final : public Loadable, public Updateable, public Renderable
 	{
