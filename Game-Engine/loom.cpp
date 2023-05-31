@@ -19,6 +19,8 @@
 
 namespace loom
 {
+	static inline bool isRunning;
+
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -26,6 +28,8 @@ namespace loom
 	};
 	void Loom::Run()
 	{
+		isRunning = true;
+
 		// TIMER for FPS counting
 		Utils::Timer TIMER;
 
@@ -143,10 +147,16 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
+
+		isRunning = false;
 	};
 	void Loom::Exit()
 	{
 
+	};
+	const bool& Loom::GetIsRunning()
+	{
+		return isRunning;
 	};
 
 

@@ -12,6 +12,8 @@ namespace loom
 		static void Run();
 		static void Exit();
 
+		static const bool& GetIsRunning();
+
 	private:
 		Loom() { };
 	};

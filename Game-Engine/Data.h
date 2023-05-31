@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Loom.h"
+#include "Enums.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -28,21 +29,14 @@ namespace loom
 	public:
 		friend struct Loom;
 		GameObject()
-		{
-			objects.push_back(static_cast<T*>(this));
-		};
+		{ };
 		virtual ~GameObject()
+		{ };
+		static void clear()
 		{
-			// TODO: Improve this somehow
-
-			for (int64_t i = objects.size() - 1; i >= 0; i--)
-				if (objects[i] == static_cast<T*>(this))
-				{
-					objects[i] = objects.back();
-					objects.pop_back();
-					break;
-				};
+			objects.clear();
 		};
+
 		static inline std::vector<T*> objects;
 	};
 	struct Loadable : public GameObject<Loadable>
@@ -52,13 +46,10 @@ namespace loom
 		virtual void load() = 0;
 		static void load_all()
 		{
-			size_t i = 0;
-			while (i < objects.size())
-			{
+			for (auto i = 0; i < objects.size(); i++)
 				objects[i]->load();
-				i++;
-			};
-			objects.clear();
+
+			GameObject<Loadable>::clear();
 		};
 	};
 	struct Renderable : public GameObject<Renderable>
@@ -69,8 +60,8 @@ namespace loom
 		virtual void render()=0;
 		static void render_all()
 		{
-			for (auto& obj : objects)
-				obj->render();
+			for (auto i = 0; i < objects.size(); i++)
+				objects[i]->render();
 		};
 	};
 	struct Updateable : public GameObject<Updateable>
@@ -80,8 +71,8 @@ namespace loom
 		virtual void update()=0;
 		static void update_all()
 		{
-			for (auto& obj : objects)
-				obj->update();
+			for (auto i = 0; i < objects.size(); i++)
+				objects[i]->update();
 		};
 	};
 	struct Physicsable : public GameObject<Physicsable>
@@ -91,8 +82,8 @@ namespace loom
 		virtual void physics()=0;
 		static void physics_all()
 		{
-			for (auto& obj : objects)
-				obj->physics();
+			for (auto i = 0; i < objects.size(); i++)
+				objects[i]->physics();
 		};
 	};
 	struct Unloadable : public GameObject<Unloadable>
@@ -102,13 +93,10 @@ namespace loom
 		virtual void unload()=0;
 		static void unload_all()
 		{
-			size_t i = 0;
-			while (i < objects.size())
-			{
+			for (auto i = 0; i < objects.size(); i++)
 				objects[i]->unload();
-				i++;
-			};
-			objects.clear();
+
+			GameObject<Unloadable>::clear();
 		};
 	};
 	
@@ -125,7 +113,13 @@ namespace loom
 		
 		Shader(std::string files...)
 		: files({ files })
-		{ };
+		{
+			if (!Loom::GetIsRunning())
+			{
+				GameObject<Loadable>::objects.push_back(this);
+				GameObject<Unloadable>::objects.push_back(this);
+			};
+		};
 
 	private:
 		void load();
@@ -165,7 +159,7 @@ namespace loom
 		void operator=(mat4&& mat) { trns = mat; };
 
 		const uint32_t& collision_type;
-
+		
 	protected:
 		_Geometry(const uint32_t& collision_type, mat4& trns, std::vector<vec4>& vtxs) :
 			collision_type(collision_type),
@@ -189,5 +183,40 @@ namespace loom
 		{ };
 
 		T obj;
+	};
+
+
+	template <typename S>
+	void Mount(S* s)
+	{
+		if constexpr (std::is_base_of_v<Loadable, S>)
+			GameObject<Loadable>::objects.push_back((Loadable*)s);
+		if constexpr (std::is_base_of_v<Updateable, S>)
+			GameObject<Updateable>::objects.push_back((Updateable*)s);
+		if constexpr (std::is_base_of_v<Renderable, S>)
+			GameObject<Renderable>::objects.push_back((Renderable*)s);
+		if constexpr (std::is_base_of_v<Physicsable, S>)
+			GameObject<Physicsable>::objects.push_back((Physicsable*)s);
+		if constexpr (std::is_base_of_v<Unloadable, S>)
+			GameObject<Unloadable>::objects.push_back((Unloadable*)s);
+	};
+	template <typename S, typename T, typename... REMAINING>
+	void Mount(S* s, T* t, REMAINING*... to_add)
+	{
+		Mount<S>(s);
+		Mount<T, REMAINING...>(t, to_add...);
+	};
+	
+
+	template <typename S>
+	void Unmount(S* s)
+	{
+		std::cout << "UNMOUNT NOT SUPPORTED YET" << std::endl;
+	};
+	template <typename S, typename T, typename... REMAINING>
+	void Unmount(S* s, T* t, REMAINING*... to_add)
+	{
+		Unmount<S>(s);
+		Unmount<T, REMAINING...>(t, to_add...);
 	};
 };

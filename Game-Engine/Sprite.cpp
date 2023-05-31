@@ -17,25 +17,18 @@ namespace loom
 	static inline uint32_t _location;
 	static inline Shader shader{ "Sprite" };
 
+
 	struct SpriteManager final :
 		virtual protected Loadable,
 		virtual protected Updateable,
 		virtual protected Renderable
 	{
-		static inline std::vector<vec4> vtxs
-		{
-			vec4(0, 0, 0, 1),
-			vec4(1, 0, 0, 1),
-			vec4(1, 0, 1, 1),
-			vec4(0, 0, 1, 1),
-		};
-
 		void load() override;
 		void update() override;
 		void render() override;
 	};
-
 	static inline SpriteManager manager;
+
 
 	Sprite::Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16_t ups) :
 		texture(texture),
@@ -74,14 +67,14 @@ namespace loom
 		glEnableVertexAttribArray(VEC4_0_16);
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vec4) * vtxs.size(), vtxs.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vec4) * Sprite::vtxs.size(), Sprite::vtxs.data(), GL_STATIC_DRAW);
 		
 		for (auto& sprite : GameObject<Sprite>::objects)
 		{
 			glUniformMatrix4fv(_trns, 1, GL_FALSE, &sprite->trns[0][0]);
 			glUniform4fv(_location, 1, &sprite->location[0]);
 			glBindTexture(GL_TEXTURE_2D, sprite->texture.id);
-			glDrawArrays(GL_QUADS, 0, (GLsizei)vtxs.size());
+			glDrawArrays(GL_QUADS, 0, (GLsizei)Sprite::vtxs.size());
 		};
 
 		glBindTexture(GL_TEXTURE_2D, 0);

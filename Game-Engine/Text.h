@@ -6,6 +6,7 @@ using namespace glm;
 
 
 #include "Data.h"
+#include "Camera.h"
 
 
 namespace loom
@@ -42,7 +43,6 @@ namespace loom
 		std::vector<Letter> letters;
 		const char* font_file;
 	};
-	//
 
 
 	// Static Text
@@ -70,7 +70,6 @@ namespace loom
 			{ 0, 1, 0, 1 },
 		};
 	};
-	//
 
 
 	// DynamicText
@@ -83,6 +82,7 @@ namespace loom
 		virtual ~DynamicText();
 
 		mat4 trns = mat4(1);
+		mat4& mvp = Camera::mvp;
 
 		void push(std::string&& body);
 		void pop(uint32_t amount=1);
@@ -98,5 +98,4 @@ namespace loom
 		struct Vtx final { vec4 pos, cds; };
 		std::vector<Vtx> vtxs;
 	};
-	//
 };

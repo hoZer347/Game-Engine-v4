@@ -1,7 +1,5 @@
 #include "Text.h"
 
-#include "Enums.h"
-
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -100,10 +98,10 @@ namespace loom
 			glTexSubImage2D(
 				GL_TEXTURE_2D,
 				0,
-				letter.texCoords.x,
-				letter.texCoords.y,
-				letter.size.x,
-				letter.size.y,
+				(GLint)letter.texCoords.x,
+				(GLint)letter.texCoords.y,
+				(GLsizei)letter.size.x,
+				(GLsizei)letter.size.y,
 				GL_ALPHA,
 				GL_UNSIGNED_BYTE,
 				letter.data);
