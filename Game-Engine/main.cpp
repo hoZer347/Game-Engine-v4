@@ -35,11 +35,11 @@ int main()
 	DynamicText text{ font, "Test" };
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
-	Geometry<Sprite> sprite { texture, vec2{ 32 * 10, 32 * 10 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 60 };
+	Geometry<Sprite> sprite { texture, vec2{ 32 * 11, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 60 };
 
 	Square square;
 	
-	Mount(&font, &text, &texture, &sprite, &square);
+	Mount(&texture, &sprite, &square);
 
 	Loom::Run();
 

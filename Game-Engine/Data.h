@@ -101,57 +101,6 @@ namespace loom
 	};
 	
 
-	// Shader Object
-	struct Shader final :
-		virtual protected Loadable,
-		virtual protected Unloadable
-	{
-		// TODO: Make custom class for this, move to new file
-		// TODO: Push ShaderManager into this
-
-		uint32_t id = 0;
-		
-		Shader(std::string files...)
-		: files({ files })
-		{
-			if (!Loom::GetIsRunning())
-			{
-				GameObject<Loadable>::objects.push_back(this);
-				GameObject<Unloadable>::objects.push_back(this);
-			};
-		};
-
-	private:
-		void load();
-		void unload() { };
-
-		std::vector<std::string> files;
-	};
-
-
-	// Texture Object
-	struct Texture final :
-		virtual protected Loadable,
-		virtual protected Unloadable
-	{
-		// TODO: Make custom class for this, move to new file
-
-		uint32_t id = 0;
-		int32_t w = -1, h = -1;
-
-		Texture(std::string file, uint32_t type);
-
-	private:
-		void load();
-		void unload() { };
-
-		std::function<void()> f;
-		std::string file;
-		uint32_t type = 0;
-		int32_t nrChannels = -1;
-	};
-	
-
 	// Allows the object to be treated as an object with geometry
 	struct _Geometry
 	{
@@ -175,20 +124,22 @@ namespace loom
 		vec3 pos {0}, size {0};
 	};
 	template <typename T>
-	struct Geometry final : public _Geometry
+	struct Geometry final :
+		public T,
+		public _Geometry
 	{
 		Geometry(auto&&... args) :
-			obj(args...),
-			_Geometry(obj.collision_type, obj.trns, obj.vtxs)
+			T(args...),
+			_Geometry(T::collision_type, T::trns, T::vtxs)
 		{ };
-
-		T obj;
 	};
 
 
 	template <typename S>
 	void Mount(S* s)
 	{
+		if constexpr (std::is_base_of_v<GameObject<S>, S>)
+			GameObject<S>::objects.push_back(s);
 		if constexpr (std::is_base_of_v<Loadable, S>)
 			GameObject<Loadable>::objects.push_back((Loadable*)s);
 		if constexpr (std::is_base_of_v<Updateable, S>)
@@ -218,5 +169,52 @@ namespace loom
 	{
 		Unmount<S>(s);
 		Unmount<T, REMAINING...>(t, to_add...);
+	};
+
+
+	// Shader Object
+	struct Shader :
+		virtual protected Loadable,
+		virtual protected Unloadable
+	{
+		// TODO: Make custom class for this, move to new file
+		// TODO: Push ShaderManager into this
+
+		uint32_t id = 0;
+
+		Shader(std::string files...)
+			: files({ files })
+		{
+			Mount(this);
+		};
+
+	private:
+		void load();
+		void unload() { };
+
+		std::vector<std::string> files;
+	};
+
+
+	// Texture Object
+	struct Texture :
+		virtual protected Loadable,
+		virtual protected Unloadable
+	{
+		// TODO: Make custom class for this, move to new file
+
+		uint32_t id = 0;
+		int32_t w = -1, h = -1;
+
+		Texture(std::string file, uint32_t type);
+
+	private:
+		void load();
+		void unload() { };
+
+		std::function<void()> f;
+		std::string file;
+		uint32_t type = 0;
+		int32_t nrChannels = -1;
 	};
 };
