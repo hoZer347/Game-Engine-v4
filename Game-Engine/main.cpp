@@ -23,7 +23,6 @@ using namespace loom;
 using namespace glm;
 
 #include <iostream>
-#include <type_traits>
 
 
 int main()

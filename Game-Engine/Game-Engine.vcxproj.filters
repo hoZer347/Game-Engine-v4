@@ -62,7 +62,6 @@
     <ClCompile Include="Game\Unit.cpp">
       <Filter>Game\Unit</Filter>
     </ClCompile>
-    <ClCompile Include="SafeVector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -196,7 +195,6 @@
     <ClInclude Include="Game\Unit.h">
       <Filter>Game\Unit</Filter>
     </ClInclude>
-    <ClInclude Include="SafeVector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\Sprite.frag">

@@ -43,7 +43,7 @@ namespace loom
 	{
 	protected:
 		friend struct Loom;
-		virtual void load() = 0;
+		virtual void load()=0;
 		static void load_all()
 		{
 			for (auto i = 0; i < objects.size(); i++)

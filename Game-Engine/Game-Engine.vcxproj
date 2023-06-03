@@ -168,7 +168,6 @@
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="SafeVector.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -193,7 +192,6 @@
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="SafeVector.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
