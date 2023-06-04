@@ -119,7 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\GameDev\OpenCL\include;C:\GameDev\Freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GameDev\OpenCL\include;C:\GameDev\Freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\Vulkan\Include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -158,16 +158,14 @@
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="Game\Grid.cpp" />
-    <ClCompile Include="Game\TestGame.cpp" />
+    <ClCompile Include="Game\Map.cpp" />
     <ClCompile Include="Game\Unit.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="AI.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -182,16 +180,14 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="Game\Grid.h" />
-    <ClInclude Include="Game\TestGame.h" />
+    <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Cuda.cuh" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />
-    <ClInclude Include="AI.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Physics.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />
@@ -200,8 +196,8 @@
   <ItemGroup>
     <None Include="Game\Grid.frag" />
     <None Include="Game\Grid.vert" />
-    <None Include="Game\TestGameShader.frag" />
-    <None Include="Game\TestGameShader.vert" />
+    <None Include="Game\Outline.frag" />
+    <None Include="Game\Outline.vert" />
     <None Include="Geometry.frag" />
     <None Include="Geometry.vert" />
     <None Include="shaders\Sprite.frag" />

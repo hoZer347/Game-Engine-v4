@@ -55,6 +55,7 @@ namespace loom
 		virtual ~StaticText();
 
 		mat4 trns = mat4(1);
+		mat4& mvp = Camera::mvp;
 
 	private:
 		void load() override;

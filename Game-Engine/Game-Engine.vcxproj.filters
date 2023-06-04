@@ -32,9 +32,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Engine\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="AI.cpp">
-      <Filter>Engine\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Error.cpp">
       <Filter>Engine\Error</Filter>
     </ClCompile>
@@ -50,17 +47,14 @@
     <ClCompile Include="Algorithm.cpp">
       <Filter>Engine\Algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="Physics.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\TestGame.cpp">
-      <Filter>Game\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Grid.cpp">
       <Filter>Game\Grid</Filter>
     </ClCompile>
     <ClCompile Include="Game\Unit.cpp">
       <Filter>Game\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Map.cpp">
+      <Filter>Game\Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -91,9 +85,6 @@
     <Filter Include="Engine\Utils">
       <UniqueIdentifier>{37e0137c-e624-438e-825a-4e9823ab1b1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\AI">
-      <UniqueIdentifier>{272c4286-1b85-4971-afa0-2ebd5a2ea951}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Error">
       <UniqueIdentifier>{9262b84c-55db-4a2f-a097-106fd8c01886}</UniqueIdentifier>
     </Filter>
@@ -118,14 +109,14 @@
     <Filter Include="Game\Game">
       <UniqueIdentifier>{240dd86f-c013-4210-92c0-fc9b27f006c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Physics">
-      <UniqueIdentifier>{85e78935-299e-4f18-99dd-cbfd0542af2b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Commands">
       <UniqueIdentifier>{756f4786-8fb9-463e-868f-ccc7aedf38c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Geometry">
       <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Map">
+      <UniqueIdentifier>{c675e85b-b798-4c99-aec2-bbbe0f30b176}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -162,9 +153,6 @@
     <ClInclude Include="Utils.h">
       <Filter>Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="AI.h">
-      <Filter>Engine\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Error.h">
       <Filter>Engine\Error</Filter>
     </ClInclude>
@@ -183,17 +171,14 @@
     <ClInclude Include="Algorithm.h">
       <Filter>Engine\Algorithm</Filter>
     </ClInclude>
-    <ClInclude Include="Game\TestGame.h">
-      <Filter>Game\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Grid.h">
       <Filter>Game\Grid</Filter>
     </ClInclude>
     <ClInclude Include="Game\Unit.h">
       <Filter>Game\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Map.h">
+      <Filter>Game\Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -202,12 +187,6 @@
     </None>
     <None Include="shaders\Sprite.vert">
       <Filter>Engine\Sprite</Filter>
-    </None>
-    <None Include="Game\TestGameShader.frag">
-      <Filter>Game\Game</Filter>
-    </None>
-    <None Include="Game\TestGameShader.vert">
-      <Filter>Game\Game</Filter>
     </None>
     <None Include="Text.frag">
       <Filter>Engine\Text</Filter>
@@ -226,6 +205,12 @@
     </None>
     <None Include="Game\Grid.vert">
       <Filter>Game\Grid</Filter>
+    </None>
+    <None Include="Game\Outline.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\Outline.vert">
+      <Filter>Game\Map</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

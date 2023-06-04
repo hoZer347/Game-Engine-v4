@@ -7,6 +7,7 @@ using namespace glm;
 #include "../Data.h"
 
 
+#include <unordered_set>
 #include <functional>
 #include <memory>
 
@@ -14,6 +15,20 @@ using namespace glm;
 namespace loom
 {
 	typedef std::function<void()> Task;
+	
+	struct Unit;
+	struct Terrain;
+
+	struct Cell
+	{
+		const ivec2 pos;
+		int32_t v0 = -1, v1 = v0, v2 = v0, v3 = v0;
+		Task onHover = []() {};
+		Task onUnhover = []() {};
+		Cell* U = nullptr, * D = nullptr, * L = nullptr, * R = nullptr;
+		Unit* unit;
+		Terrain* terrain;
+	};
 
 	struct Grid final :
 		virtual private Loadable,
@@ -22,15 +37,6 @@ namespace loom
 	{
 	protected:
 		friend struct Commands;
-
-		struct Cell
-		{
-			const ivec2 pos;
-			uint32_t v0 = -1, v1 = v0, v2 = v0, v3 = v0;
-			Task onHover = []() {};
-			Task onUnhover = []() {};
-			Cell *U = nullptr, *D = nullptr, *L = nullptr, *R = nullptr;
-		};
 
 		struct Column
 		{
@@ -47,16 +53,19 @@ namespace loom
 		std::vector<vec4> vtxs;
 		std::vector<uint32_t> inds;
 
+		std::atomic<std::vector<uint32_t>*> reds = nullptr;
+		std::atomic<std::vector<uint32_t>*> blues = nullptr;
+
 		size_t x_size, y_size;
-		size_t _trns = 0, _mvp = 0;
-		
-		std::vector<std::vector<Cell>> cells;
+
+		std::vector<std::vector<Cell*>> cells;
 
 	public:
 		Grid(size_t x_size, size_t y_size);
 		virtual ~Grid();
 
-		std::vector<Cell>& operator[](uint32_t i) { return cells[i]; };
+		void addUnit(Unit* unit, uint32_t x, uint32_t y);
+		auto& operator[](auto i) { return cells[i]; };
 
 	protected:
 		friend struct Utils;

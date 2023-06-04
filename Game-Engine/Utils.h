@@ -56,7 +56,6 @@ namespace loom
 			Time _clock = Clock::now();
 		};
 
-
 		static double TimedFunc(void(*f)());
 	};
 };

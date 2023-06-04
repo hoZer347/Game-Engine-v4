@@ -6,6 +6,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <barrier>
 
 #include <iostream>
 
@@ -17,9 +18,11 @@
 #include "Input.h"
 #include "Text.h"
 
+
 namespace loom
 {
 	static inline bool isRunning;
+	static inline std::atomic<uint32_t> threads;
 
 	void Loom::Init()
 	{
@@ -87,26 +90,6 @@ namespace loom
 		Inputs::load();
 
 
-		// Big Chungus
-		std::atomic<bool> KILL;
-
-
-		// Setting up Updater
-		std::thread updater = std::thread([&KILL]()
-		{
-			while (!KILL)
-				Updateable::update_all();
-		});
-
-
-		// Setting up Physics
-		std::thread physics = std::thread([&KILL]()
-		{
-			while (!KILL)
-				Physicsable::physics_all();
-		});
-
-
 		// Main loop
 		while (!glfwWindowShouldClose(window))
 		{
@@ -116,6 +99,7 @@ namespace loom
 
 			// Doing openGL-dependent loads
 			Loadable::load_all();
+			Updateable::update_all();
 			Camera::update();
 			
 
@@ -129,12 +113,6 @@ namespace loom
 			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
 			TIMER.restart();
 		};
-
-
-		// Syncing and ending all other threads
-		KILL = true;
-		updater.join();
-		physics.join();
 
 
 		// Deallocating everything allocated that uses openGL
@@ -153,6 +131,11 @@ namespace loom
 	void Loom::Exit()
 	{
 
+	};
+	void Loom::Exec(Task&& task)
+	{
+		std::thread thread = std::thread([task]() { task(); });
+		thread.detach();
 	};
 	const bool& Loom::GetIsRunning()
 	{

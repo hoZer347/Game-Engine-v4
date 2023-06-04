@@ -7,7 +7,7 @@ using namespace glm;
 
 namespace loom
 {
-	struct Sprite :
+	struct alignas(256) Sprite :
 		virtual protected Loadable,
 		virtual protected Updateable,
 		virtual protected Renderable,
@@ -15,8 +15,8 @@ namespace loom
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		
-		mat4 trns = mat4(1);
-		mat4& mvp;
+		Mat4 trns;
+		Mat4 mvp;
 
 		static inline const int collision_type = COLLISION::SQUARE;
 		

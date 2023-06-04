@@ -48,4 +48,22 @@ namespace loom
 		CIRCLE,
 		SPHERE,
 	};
+
+	enum PHASE // Phases of rendering / updating game objects
+	{
+		LOAD,
+		UPDATE,
+		RENDER,
+		PHYSICS,
+		UNLOAD,
+	};
+
+	enum LAYERS
+	{
+		HEIGHTS,
+		PASSABILITY,
+		ALLY_RANGES,
+		ENEMY_RANGES,
+		MAX,
+	};
 };

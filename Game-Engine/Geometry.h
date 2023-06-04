@@ -18,7 +18,7 @@ namespace loom
 		{ };
 
 		vec4 color = vec4(0, 0, 1, 1);
-		mat4 trns = mat4(1);
+		Mat4 trns;
 
 		static inline const int collision_type = COLLISION::CUBE;
 
@@ -54,16 +54,18 @@ namespace loom
 
 	struct Square final :
 		virtual private Loadable,
-		virtual private Renderable
+		virtual private Renderable,
+		virtual private Updateable
 	{
 		vec4 color = vec4(1);
-		mat4 trns = mat4(1);
+		Mat4 trns;
 
 		static inline const int collision_type = COLLISION::SQUARE;
 
 	private:
 		void load() override;
 		void render() override;
+		void update() override { };
 
 	protected:
 		friend struct Geometry<Square>;
@@ -84,7 +86,7 @@ namespace loom
 		const float radius = 1.0f;
 
 		vec4 color = vec4(1);
-		mat4 trns = mat4(1);
+		Mat4 trns;
 
 		static inline const int collision_type = COLLISION::CIRCLE;
 

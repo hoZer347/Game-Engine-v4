@@ -29,13 +29,13 @@ namespace loom
 	public:
 		friend struct Loom;
 		GameObject()
-		{ };
+		{
+			objects.push_back(static_cast<T*>(this));
+		};
 		virtual ~GameObject()
 		{ };
-		static void clear()
-		{
-			objects.clear();
-		};
+
+		operator T*() { return static_cast<T*>(this); };
 
 		static inline std::vector<T*> objects;
 	};
@@ -49,7 +49,7 @@ namespace loom
 			for (auto i = 0; i < objects.size(); i++)
 				objects[i]->load();
 
-			GameObject<Loadable>::clear();
+			GameObject<Loadable>::objects.clear();
 		};
 	};
 	struct Renderable : public GameObject<Renderable>
@@ -75,17 +75,6 @@ namespace loom
 				objects[i]->update();
 		};
 	};
-	struct Physicsable : public GameObject<Physicsable>
-	{
-	protected:
-		friend struct Loom;
-		virtual void physics()=0;
-		static void physics_all()
-		{
-			for (auto i = 0; i < objects.size(); i++)
-				objects[i]->physics();
-		};
-	};
 	struct Unloadable : public GameObject<Unloadable>
 	{
 	protected:
@@ -96,7 +85,7 @@ namespace loom
 			for (auto i = 0; i < objects.size(); i++)
 				objects[i]->unload();
 
-			GameObject<Unloadable>::clear();
+			GameObject<Unloadable>::objects.clear();
 		};
 	};
 	
@@ -135,43 +124,6 @@ namespace loom
 	};
 
 
-	template <typename S>
-	void Mount(S* s)
-	{
-		if constexpr (std::is_base_of_v<GameObject<S>, S>)
-			GameObject<S>::objects.push_back(s);
-		if constexpr (std::is_base_of_v<Loadable, S>)
-			GameObject<Loadable>::objects.push_back((Loadable*)s);
-		if constexpr (std::is_base_of_v<Updateable, S>)
-			GameObject<Updateable>::objects.push_back((Updateable*)s);
-		if constexpr (std::is_base_of_v<Renderable, S>)
-			GameObject<Renderable>::objects.push_back((Renderable*)s);
-		if constexpr (std::is_base_of_v<Physicsable, S>)
-			GameObject<Physicsable>::objects.push_back((Physicsable*)s);
-		if constexpr (std::is_base_of_v<Unloadable, S>)
-			GameObject<Unloadable>::objects.push_back((Unloadable*)s);
-	};
-	template <typename S, typename T, typename... REMAINING>
-	void Mount(S* s, T* t, REMAINING*... to_add)
-	{
-		Mount<S>(s);
-		Mount<T, REMAINING...>(t, to_add...);
-	};
-	
-
-	template <typename S>
-	void Unmount(S* s)
-	{
-		std::cout << "UNMOUNT NOT SUPPORTED YET" << std::endl;
-	};
-	template <typename S, typename T, typename... REMAINING>
-	void Unmount(S* s, T* t, REMAINING*... to_add)
-	{
-		Unmount<S>(s);
-		Unmount<T, REMAINING...>(t, to_add...);
-	};
-
-
 	// Shader Object
 	struct Shader :
 		virtual protected Loadable,
@@ -184,9 +136,7 @@ namespace loom
 
 		Shader(std::string files...)
 			: files({ files })
-		{
-			Mount(this);
-		};
+		{ };
 
 	private:
 		void load();
@@ -216,5 +166,21 @@ namespace loom
 		std::string file;
 		uint32_t type = 0;
 		int32_t nrChannels = -1;
+	};
+
+
+	struct Mat4
+	{
+		void bind(mat4& mat) { _m = mat; };
+		void reset() { _m = m; };
+
+		operator mat4&() const { return _m; };
+		auto& operator[](auto i) const { return _m[i]; };
+		mat4& operator*=(mat4& mat) { return _m *= mat; };
+		void operator=(mat4&& mat) { _m = (mat4)mat; };
+
+	private:
+		mat4& _m = m;
+		mat4 m = mat4(1);
 	};
 };

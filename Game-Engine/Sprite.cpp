@@ -22,9 +22,8 @@ namespace loom
 		texture(texture),
 		location(start, size),
 		stride(stride),
-		ups(ups),
-		mvp(Camera::mvp)
-	{ };
+		ups(ups)
+	{ mvp.bind(Camera::mvp); };
 	void Sprite::load()
 	{
 		location.x /= texture.w;

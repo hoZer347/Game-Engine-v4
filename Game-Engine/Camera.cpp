@@ -31,27 +31,27 @@ namespace loom
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_W, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_W, 255, GLFW_PRESS, 0 });
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_A, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_A, 255, GLFW_PRESS, 0 });
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_S, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_S, 255, GLFW_PRESS, 0 });
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_D, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_D, 255, GLFW_PRESS, 0 });
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_SPACE, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_SPACE, 255, GLFW_PRESS, 0 });
 		Inputs::AddInput([&]()
 		{
 			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_LEFT_CONTROL, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_LEFT_CONTROL, 255, GLFW_PRESS, 0 });
 
 
 		// Click and drag m3 to rotate camera
@@ -74,7 +74,7 @@ namespace loom
 		Inputs::AddInput([]()
 		{
 			Inputs::prev();
-		}, { GLFW_KEY_ESCAPE, 0, GLFW_PRESS, 0 });
+		}, { GLFW_KEY_ESCAPE, 255, GLFW_PRESS, 0 });
 
 
 		// Reset camera on prev

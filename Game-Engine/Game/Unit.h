@@ -13,17 +13,14 @@ namespace loom
 		StatSpread* _next = nullptr;
 	};
 
-	struct Unit final :
-		virtual protected Updateable
+	struct Sprite;
+	
+	struct Unit final
 	{
 		Unit(Sprite& sprite);
 		virtual ~Unit();
 
-		void update() override;
-
-		mat4& trns;
-		
-	private:
-		Sprite& sprite;
+		Mat4 trns;
+		Sprite* sprite = nullptr;
 	};
 };

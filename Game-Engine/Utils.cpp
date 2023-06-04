@@ -8,5 +8,5 @@ namespace loom
 		TIMER.restart();
 		f();
 		return TIMER.GetDiff_mls();
-	}
+	};
 };
