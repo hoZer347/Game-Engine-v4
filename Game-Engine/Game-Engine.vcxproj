@@ -164,7 +164,6 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -183,10 +182,8 @@
     <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Cuda.cuh" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Loom.h" />
-    <ClInclude Include="Matrix.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
@@ -196,6 +193,8 @@
   <ItemGroup>
     <None Include="Game\Grid.frag" />
     <None Include="Game\Grid.vert" />
+    <None Include="Game\Highlights.frag" />
+    <None Include="Game\Highlights.vert" />
     <None Include="Game\Outline.frag" />
     <None Include="Game\Outline.vert" />
     <None Include="Geometry.frag" />
@@ -204,9 +203,6 @@
     <None Include="shaders\Sprite.vert" />
     <None Include="Text.frag" />
     <None Include="Text.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="Cuda.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

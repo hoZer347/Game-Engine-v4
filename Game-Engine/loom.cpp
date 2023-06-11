@@ -22,7 +22,6 @@
 namespace loom
 {
 	static inline bool isRunning;
-	static inline std::atomic<uint32_t> threads;
 
 	void Loom::Init()
 	{

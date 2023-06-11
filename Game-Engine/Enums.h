@@ -62,6 +62,7 @@ namespace loom
 	{
 		HEIGHTS,
 		PASSABILITY,
+		HIGHLIGHTS,
 		ALLY_RANGES,
 		ENEMY_RANGES,
 		MAX,

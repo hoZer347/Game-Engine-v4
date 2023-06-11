@@ -90,23 +90,41 @@ namespace loom
 	};
 	
 
+	// glm::mat4 wrapper to allow binding to new sources
+	struct Mat4
+	{
+		void bind(mat4& mat) { _m = mat; };
+		void reset() { _m = m; };
+
+		operator mat4& () const { return _m; };
+		auto& operator[](auto i) const { return _m[i]; };
+		mat4& operator*=(mat4& mat) { return _m *= mat; };
+		void operator=(mat4&& mat) { _m = (mat4)mat; };
+		void operator=(Mat4& mat) { _m = mat._m; };
+
+	private:
+		mat4& _m = m;
+		mat4 m = mat4(1);
+	};
+
+
 	// Allows the object to be treated as an object with geometry
 	struct _Geometry
 	{
-		void operator*=(mat4&& mat) { trns *= mat; };
-		void operator=(mat4&& mat) { trns = mat; };
+		void operator*=(Mat4&& mat) { trns *= mat; };
+		void operator=(Mat4& mat) { trns = mat; };
 
 		const uint32_t& collision_type;
 		
 	protected:
-		_Geometry(const uint32_t& collision_type, mat4& trns, std::vector<vec4>& vtxs) :
+		_Geometry(const uint32_t& collision_type, Mat4& trns, std::vector<vec4>& vtxs) :
 			collision_type(collision_type),
 			trns(trns),
 			vtxs(vtxs)
 		{ };
 
 	private:
-		mat4& trns;
+		Mat4& trns;
 		std::vector<vec4>& vtxs;
 		
 		// Represents a bounding box
@@ -166,21 +184,5 @@ namespace loom
 		std::string file;
 		uint32_t type = 0;
 		int32_t nrChannels = -1;
-	};
-
-
-	struct Mat4
-	{
-		void bind(mat4& mat) { _m = mat; };
-		void reset() { _m = m; };
-
-		operator mat4&() const { return _m; };
-		auto& operator[](auto i) const { return _m[i]; };
-		mat4& operator*=(mat4& mat) { return _m *= mat; };
-		void operator=(mat4&& mat) { _m = (mat4)mat; };
-
-	private:
-		mat4& _m = m;
-		mat4 m = mat4(1);
 	};
 };

@@ -11,19 +11,38 @@ using namespace glm;
 
 namespace loom
 {
-	struct Map final
+	struct alignas(64) Cell final
 	{
-		Map(const uint16_t& x, const uint16_t& y);
+		const ivec2 pos{ 0 };
+		uint8 highlight = 0;
+		uint8 filler = 0;
 
-		std::vector<std::vector<float>>& operator[](auto i) { return data[i]; }
+		uint32 v0 = -1, v1 = v0, v2 = v0, v3 = v0;
 
-		const uint16_t x, y;
-
-	private:
-		std::vector<std::vector<std::vector<float>>> data;
+		Cell	*U = nullptr,
+				*D = nullptr,
+				*L = nullptr,
+				*R = nullptr;
 	};
 
+	struct Map final
+	{
+		Map(const uint8& w, const uint8& h);
 
+		Cell* operator[](auto i) { return &cells.data()[i * h]; }
+		const uint8 w, h;
+
+		auto begin() const { return cells.begin(); };
+		auto end()   const { return cells.end();   };
+
+	protected:
+		friend struct GridOutline;
+		friend struct Highlights;
+		std::vector<vec4>	vtxs;
+		std::vector<Cell>	cells;
+ 	};
+
+	 
 	struct GridOutline final :
 		virtual protected Loadable,
 		virtual protected Renderable
@@ -35,25 +54,28 @@ namespace loom
 		void load() override;
 		void render() override;
 
-		std::vector<vec4>		vtxs;
-		std::vector<uint32_t>	inds;
-
+		Map& map;
+		std::vector<uint32>	inds;
 		static inline Shader shader{ "Game/Outline" };
 	};
 
 
 	struct Highlights final :
+		virtual protected Loadable,
 		virtual protected Renderable
 	{
 		Highlights(Map& map);
-		void reassign(Map& map);
+		void reassign(vec4&& new_color = vec4{1});
 
 	private:
+		void load() override;
 		void render() override;
 
-		std::atomic<std::vector<vec4>*>		vtxs = nullptr;
-		std::atomic<std::vector<uint32_t>*>	inds = nullptr;
+		Map& map;
+		vec4 color;
+		std::atomic<std::shared_ptr<std::vector<uint32>>>	inds = nullptr;
+		std::atomic<std::shared_ptr<std::vector<uint32>>>	outs = nullptr;
 
-		static inline Shader shader{ "Game/CellHighlights" };
+		static inline Shader shader{ "Game/Highlights" };
 	};
 };

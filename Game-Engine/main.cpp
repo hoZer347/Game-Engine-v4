@@ -1,7 +1,6 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "Game/Grid.h"
 #include "Game/Unit.h"
 #include "Game/Map.h"
 
@@ -14,8 +13,6 @@
 #include "Sprite.h"
 #include "Commands.h"
 #include "Geometry.h"
-#include "Cuda.cuh"
-#include "Matrix.h"
 #include "vulkan/vulkan.h"
 using namespace loom;
 
@@ -32,16 +29,16 @@ int main()
 
 	Camera::InitiateFreeCam();
 
-	Font font{ "Resources/Vogue.ttf", 72 };
-	DynamicText text{ font, "Test" };
-
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Geometry<Sprite> sprite { texture, vec2{ 32 * 11, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 60 };
 
-	Square square;
-
-	Map map{ 10, 10 };
+	Map map{ 4, 8 };
 	GridOutline outline{ map };
+	Highlights highlights{ map };
+	map[1][1].highlight = 1;
+	map[1][2].highlight = 1;
+	map[2][2].highlight = 1;
+	map[2][1].highlight = 1;
 
 	Inputs::AddInput([]()
 	{
