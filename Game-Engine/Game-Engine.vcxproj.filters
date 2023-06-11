@@ -35,9 +35,6 @@
     <ClCompile Include="Error.cpp">
       <Filter>Engine\Error</Filter>
     </ClCompile>
-    <ClCompile Include="Matrix.cpp">
-      <Filter>Engine\Matrix</Filter>
-    </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>Engine\Menu</Filter>
     </ClCompile>
@@ -87,12 +84,6 @@
     </Filter>
     <Filter Include="Engine\Error">
       <UniqueIdentifier>{9262b84c-55db-4a2f-a097-106fd8c01886}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Matrix">
-      <UniqueIdentifier>{acfe3003-b39d-47ca-beec-870371f94f5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Cuda">
-      <UniqueIdentifier>{8b380a6a-06f5-45e2-9001-4b9e59c01be4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Menu">
       <UniqueIdentifier>{f00587c5-8446-44ba-8180-ec17020bee60}</UniqueIdentifier>
@@ -156,12 +147,6 @@
     <ClInclude Include="Error.h">
       <Filter>Engine\Error</Filter>
     </ClInclude>
-    <ClInclude Include="Matrix.h">
-      <Filter>Engine\Matrix</Filter>
-    </ClInclude>
-    <ClInclude Include="Cuda.cuh">
-      <Filter>Engine\Cuda</Filter>
-    </ClInclude>
     <ClInclude Include="Menu.h">
       <Filter>Engine\Menu</Filter>
     </ClInclude>
@@ -212,10 +197,11 @@
     <None Include="Game\Outline.vert">
       <Filter>Game\Map</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="Cuda.cu">
-      <Filter>Engine\Cuda</Filter>
-    </CudaCompile>
+    <None Include="Game\Highlights.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\Highlights.vert">
+      <Filter>Game\Map</Filter>
+    </None>
   </ItemGroup>
 </Project>

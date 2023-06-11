@@ -6,10 +6,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include <unordered_map>
-
 namespace loom
-{	
+{
 	void Shader::load()
 	{
 		id = GetSMgr()->create(files);

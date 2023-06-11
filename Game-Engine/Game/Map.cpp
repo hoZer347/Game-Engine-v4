@@ -11,38 +11,56 @@ namespace loom
 {
 	static inline GLint _color, _mvp;
 
-	Map::Map(const uint16_t& x, const uint16_t& y) :
-		x(x), y(y),
-		data(LAYERS::MAX, std::vector<std::vector<float>>(x, std::vector<float>(y, 0)))
-	{ };
+	Map::Map(const uint8& w, const uint8& h) :
+		w(w), h(h)
+	{
+		vtxs.reserve((w + 1) * (h + 1));
+		cells.reserve(w * h);
+		
+		for (auto j = 0; j < (h + 1); j++)
+			for (auto i = 0; i < (w + 1); i++)
+				vtxs.emplace_back(vec4{ i, j, 0, 1});
+
+		for (auto i = 0; i < w; i++)
+			for (auto j = 0; j < h; j++)
+				cells.emplace_back(
+					Cell{ { i, j }, 0, 0,
+					(uint32)(i + 0) + (w + 1) * (j + 0),
+					(uint32)(i + 1) + (w + 1) * (j + 0),
+					(uint32)(i + 1) + (w + 1) * (j + 1),
+					(uint32)(i + 0) + (w + 1) * (j + 1), });
+
+		for (auto i = 0; i < w; i++)
+			for (auto j = 0; j < h; j++)
+			{
+				if (i)			(*this)[i][j].L = &(*this)[i-1][j];
+				if (i < w-1)	(*this)[i][j].R = &(*this)[i+1][j];
+				if (j)			(*this)[i][j].U = &(*this)[i][j+1];
+				if (j < h-1)	(*this)[i][j].D = &(*this)[i][j-1];
+			};
+	};
 	
-	GridOutline::GridOutline(Map& map)
+
+	GridOutline::GridOutline(Map& map) :
+		map(map)
 	{
 		reassign(map);
 	};
 	void GridOutline::reassign(Map& map)
 	{
-		const uint16_t x = map.x+1, y = map.y+1;
-
-		vtxs.reserve(x * y);
-		for (auto i = 0; i < x; i++)
-			for (auto j = 0; j < y; j++)
-				vtxs.emplace_back(vec4{ i, j, 0, 1 });
-
-		inds.reserve((x-1) * (y-1) * 8);
-		for (auto i = 0; i < x-1; i++)
-			for (auto j = 0; j < y-1; j++)
-				if (map[LAYERS::PASSABILITY][j][i] == 0)
-				{
-					inds.push_back((j + 0) + y * (i + 0));
-					inds.push_back((j + 1) + y * (i + 0));
-					inds.push_back((j + 1) + y * (i + 0));
-					inds.push_back((j + 1) + y * (i + 1));
-					inds.push_back((j + 1) + y * (i + 1));
-					inds.push_back((j + 0) + y * (i + 1));
-					inds.push_back((j + 0) + y * (i + 1));
-					inds.push_back((j + 0) + y * (i + 0));
-				};
+		inds.clear();
+		inds.reserve(map.w * map.h * 8);
+		for (auto& cell : map.cells)
+		{
+			inds.emplace_back(cell.v0);
+			inds.emplace_back(cell.v1);
+			inds.emplace_back(cell.v1);
+			inds.emplace_back(cell.v2);
+			inds.emplace_back(cell.v2);
+			inds.emplace_back(cell.v3);
+			inds.emplace_back(cell.v3);
+			inds.emplace_back(cell.v0);
+		};
 	};
 	void GridOutline::load()
 	{
@@ -52,14 +70,13 @@ namespace loom
 	void GridOutline::render()
 	{
 		glUseProgram(shader.id);
-
 		glEnableVertexAttribArray(VEC4_0_16);
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 
 		glBufferData(
 			GL_ARRAY_BUFFER,
-			vtxs.size() * sizeof(vec4),
-			vtxs.data(),
+			map.vtxs.size() * sizeof(vec4),
+			map.vtxs.data(),
 			GL_DYNAMIC_DRAW);
 
 		glBufferData(
@@ -69,33 +86,83 @@ namespace loom
 			GL_DYNAMIC_DRAW);
 
 		glDrawElements(GL_LINES, (GLsizei)inds.size(), GL_UNSIGNED_INT, nullptr);
-
 		glDisableVertexAttribArray(VEC4_0_16);
-
 		glUseProgram(0);
 	};
 
 
-	Highlights::Highlights(Map& map)
+	Highlights::Highlights(Map& map) :
+		map(map)
 	{
-		reassign(map);
-	};
-	void Highlights::reassign(Map& map)
+		reassign();
+	}
+	void Highlights::reassign(vec4&& new_color)
 	{
-		std::thread thread = std::thread([&, this]()
+		std::thread thread = std::thread([this, new_color]()
 		{
-			std::vector<vec4>*		vtxs = new std::vector<vec4>();
-			std::vector<uint32_t>*	inds = new std::vector<uint32_t>();
+			std::shared_ptr<std::vector<uint32>> _inds = std::make_shared<std::vector<uint32>>();
+			std::shared_ptr<std::vector<uint32>> _outs = std::make_shared<std::vector<uint32>>();
 
+			for (auto i = 0; i < map.w; i++)
+				for (auto j = 0; j < map.h; j++)
+				{
+					if (!map[i][j].highlight)
+						continue;
 
+					_outs->push_back(map[i][j].v1);
+					_outs->push_back(map[i][j].v2);
+					_outs->push_back(map[i][j].v3);
+					_outs->push_back(map[i][j].v0);
+					_outs->push_back(map[i][j].v0);
+					_outs->push_back(map[i][j].v1);
+					_outs->push_back(map[i][j].v2);
+					_outs->push_back(map[i][j].v3);
 
-			delete this->vtxs.exchange(vtxs);
-			delete this->inds.exchange(inds);
+					_inds->push_back(map[i][j].v0);
+					_inds->push_back(map[i][j].v1);
+					_inds->push_back(map[i][j].v2);
+					_inds->push_back(map[i][j].v3);
+				};
+
+			inds.exchange(_inds);
+			outs.exchange(_outs);
 		});
 		thread.detach();
 	};
+	void Highlights::load()
+	{
+		_mvp = glGetUniformLocation(shader.id, "mvp");
+		_color = glGetUniformLocation(shader.id, "color");
+	};
 	void Highlights::render()
 	{
+		std::shared_ptr<std::vector<uint32>> _inds = inds.load();
+		std::shared_ptr<std::vector<uint32>> _outs = outs.load();
 
+		if (_inds && _outs)
+		{
+			glUseProgram(shader.id);
+			glEnableVertexAttribArray(VEC4_0_16);
+			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+
+			glUniform4fv(_color, 1, &vec4(0, 0, .5, .5)[0]);
+			glBufferData(
+				GL_ELEMENT_ARRAY_BUFFER,
+				_inds->size() * sizeof(uint32),
+				_inds->data(),
+				GL_DYNAMIC_DRAW);
+			glDrawElements(GL_QUADS, (GLsizei)_inds->size(), GL_UNSIGNED_INT, nullptr);
+			
+			glUniform4fv(_color, 1, &vec4(0, 0, 0, .5)[0]);
+			glBufferData(
+				GL_ELEMENT_ARRAY_BUFFER,
+				_outs->size() * sizeof(uint32),
+				_outs->data(),
+				GL_DYNAMIC_DRAW);
+			glDrawElements(GL_LINES, (GLsizei)_outs->size(), GL_UNSIGNED_INT, nullptr);
+
+			glDisableVertexAttribArray(VEC4_0_16);
+			glUseProgram(0);
+		};
 	};
 };
