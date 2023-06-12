@@ -64,12 +64,14 @@ namespace loom
 	};
 	void GridOutline::load()
 	{
-		_mvp = glGetUniformLocation(shader.id, "mvp");
-		_color = glGetUniformLocation(shader.id, "color");
+		if (!_mvp)
+			_mvp = glGetUniformLocation(map.shader.id, "mvp");
+		if (!_color)
+			_color = glGetUniformLocation(map.shader.id, "color");
 	};
 	void GridOutline::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(map.shader.id);
 		glEnableVertexAttribArray(VEC4_0_16);
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 
@@ -106,17 +108,31 @@ namespace loom
 			for (auto i = 0; i < map.w; i++)
 				for (auto j = 0; j < map.h; j++)
 				{
-					if (!map[i][j].highlight)
+					Cell& cell = map[i][j];
+
+					if (!cell.highlight)
 						continue;
 
-					_outs->push_back(map[i][j].v1);
-					_outs->push_back(map[i][j].v2);
-					_outs->push_back(map[i][j].v3);
-					_outs->push_back(map[i][j].v0);
-					_outs->push_back(map[i][j].v0);
-					_outs->push_back(map[i][j].v1);
-					_outs->push_back(map[i][j].v2);
-					_outs->push_back(map[i][j].v3);
+					if (cell.U && cell.U->highlight != cell.highlight || !cell.U)
+					{
+						_outs->push_back(cell.v2);
+						_outs->push_back(cell.v3);
+					};
+					if (cell.D && cell.D->highlight != cell.highlight || !cell.D)
+					{
+						_outs->push_back(cell.v0);
+						_outs->push_back(cell.v1);
+					};
+					if (cell.L && cell.L->highlight != cell.highlight || !cell.L)
+					{
+						_outs->push_back(cell.v3);
+						_outs->push_back(cell.v0);
+					};
+					if (cell.R && cell.R->highlight != cell.highlight || !cell.R)
+					{
+						_outs->push_back(cell.v1);
+						_outs->push_back(cell.v2);
+					};
 
 					_inds->push_back(map[i][j].v0);
 					_inds->push_back(map[i][j].v1);
@@ -131,8 +147,10 @@ namespace loom
 	};
 	void Highlights::load()
 	{
-		_mvp = glGetUniformLocation(shader.id, "mvp");
-		_color = glGetUniformLocation(shader.id, "color");
+		if (!_mvp)
+			_mvp = glGetUniformLocation(map.shader.id, "mvp");
+		if (!_color)
+			_color = glGetUniformLocation(map.shader.id, "color");
 	};
 	void Highlights::render()
 	{
@@ -141,9 +159,11 @@ namespace loom
 
 		if (_inds && _outs)
 		{
-			glUseProgram(shader.id);
+			glUseProgram(map.shader.id);
 			glEnableVertexAttribArray(VEC4_0_16);
 			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+
+			glLineWidth(20);
 
 			glUniform4fv(_color, 1, &vec4(0, 0, .5, .5)[0]);
 			glBufferData(
@@ -160,6 +180,8 @@ namespace loom
 				_outs->data(),
 				GL_DYNAMIC_DRAW);
 			glDrawElements(GL_LINES, (GLsizei)_outs->size(), GL_UNSIGNED_INT, nullptr);
+
+			glLineWidth(1);
 
 			glDisableVertexAttribArray(VEC4_0_16);
 			glUseProgram(0);

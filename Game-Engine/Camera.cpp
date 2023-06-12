@@ -70,13 +70,6 @@ namespace loom
 		}, { 0, GLFW_MOUSE_BUTTON_3, GLFW_PRESS, 0 });
 
 
-		// On pressing escape, revert camera
-		Inputs::AddInput([]()
-		{
-			Inputs::prev();
-		}, { GLFW_KEY_ESCAPE, 255, GLFW_PRESS, 0 });
-
-
 		// Reset camera on prev
 		Inputs::AddOnPrev([]() { Camera::mvp = _mvp; });
 	};

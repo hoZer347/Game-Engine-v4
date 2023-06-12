@@ -7,11 +7,8 @@ using namespace glm;
 
 namespace loom
 {
-	struct alignas(256) Sprite :
-		virtual protected Loadable,
-		virtual protected Updateable,
-		virtual protected Renderable,
-		public GameObject<Sprite>
+	struct Sprite :
+		virtual protected Loadable
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		
@@ -23,20 +20,11 @@ namespace loom
 	protected:
 		friend struct SpriteManager;
 		friend struct Geometry<Sprite>;
-		static inline std::vector<vec4> vtxs
-		{
-			vec4(0, 0, 0, 1),
-			vec4(1, 0, 0, 1),
-			vec4(1, 0, 1, 1),
-			vec4(0, 0, 1, 1),
-		};
 		vec4 location;
 
 	private:
 		void load() override;
-		void update() override;
-		void render() override;
-		
+
 		Texture& texture;
 
 		vec2 stride;

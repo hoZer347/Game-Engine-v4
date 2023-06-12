@@ -38,8 +38,10 @@ namespace loom
 	protected:
 		friend struct GridOutline;
 		friend struct Highlights;
+
 		std::vector<vec4>	vtxs;
 		std::vector<Cell>	cells;
+		static inline Shader shader{ "Game/Map" };
  	};
 
 	 
@@ -56,7 +58,6 @@ namespace loom
 
 		Map& map;
 		std::vector<uint32>	inds;
-		static inline Shader shader{ "Game/Outline" };
 	};
 
 
@@ -75,7 +76,5 @@ namespace loom
 		vec4 color;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	inds = nullptr;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	outs = nullptr;
-
-		static inline Shader shader{ "Game/Highlights" };
 	};
 };

@@ -58,7 +58,7 @@ namespace loom
 		sx = Inputs::sx - Inputs::psx;
 		sy = Inputs::sy - Inputs::psy;
 	};
-	void Inputs::AddOnPrev(Task task)
+	void Inputs::AddOnPrev(Task&& task)
 	{
 		INPUT->on_prev.emplace_back(task);
 	};

@@ -11,9 +11,7 @@
 #include "Input.h"
 #include "Utils.h"
 #include "Sprite.h"
-#include "Commands.h"
 #include "Geometry.h"
-#include "vulkan/vulkan.h"
 using namespace loom;
 
 #include <glm/glm.hpp>
@@ -30,7 +28,7 @@ int main()
 	Camera::InitiateFreeCam();
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
-	Geometry<Sprite> sprite { texture, vec2{ 32 * 11, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 60 };
+	Geometry<Sprite> sprite { texture, vec2{ 30 * 11, 32 * 10 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
 
 	Map map{ 4, 8 };
 	GridOutline outline{ map };

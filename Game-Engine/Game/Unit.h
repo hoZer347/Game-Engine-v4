@@ -17,7 +17,7 @@ namespace loom
 	
 	struct Unit final
 	{
-		Unit(Sprite& sprite);
+		Unit(Sprite* sprite);
 		virtual ~Unit();
 
 		Mat4 trns;

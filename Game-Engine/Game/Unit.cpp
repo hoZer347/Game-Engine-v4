@@ -17,10 +17,10 @@ namespace loom
 	static inline UnitManager manager;
 
 
-	Unit::Unit(Sprite& sprite) :
+	Unit::Unit(Sprite* sprite) :
 		sprite(sprite)
 	{
-		trns.bind(sprite.trns);
+		trns.bind(sprite->trns);
 	};
 	Unit::~Unit()
 	{ };

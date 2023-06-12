@@ -49,7 +49,7 @@ namespace loom
 		static void GetScrollPos(double& sx, double& sy);
 		static void GetRelativeScrollPos(double& sx, double& sy);
 
-		static void AddOnPrev(Task task);
+		static void AddOnPrev(Task&& task);
 
 		static void clear();
 
