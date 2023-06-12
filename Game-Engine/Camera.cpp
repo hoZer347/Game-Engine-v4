@@ -23,8 +23,7 @@ namespace loom
 	{
 		Inputs::next();
 		static mat4 mvp;
-		mvp = Camera::mvp;
-		Camera::mvp = mvp;
+		mvp = (mat4)Camera::mvp;
 
 
 		// WASD movement relative to where the camera is pointing (x, y)
@@ -71,7 +70,7 @@ namespace loom
 
 
 		// Reset camera on prev
-		Inputs::AddOnPrev([]() { Camera::mvp = _mvp; });
+		Inputs::AddOnPrev([]() { Camera::mvp = mvp; });
 	};
 
 

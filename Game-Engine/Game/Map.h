@@ -2,6 +2,7 @@
 
 #include "../Enums.h"
 #include "../Data.h"
+#include "../Geometry.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -11,21 +12,10 @@ using namespace glm;
 
 namespace loom
 {
-	struct alignas(64) Cell final
-	{
-		const ivec2 pos{ 0 };
-		uint8 highlight = 0;
-		uint8 filler = 0;
+	struct Cell;
 
-		uint32 v0 = -1, v1 = v0, v2 = v0, v3 = v0;
-
-		Cell	*U = nullptr,
-				*D = nullptr,
-				*L = nullptr,
-				*R = nullptr;
-	};
-
-	struct Map final
+	struct Map final :
+		virtual protected Updateable
 	{
 		Map(const uint8& w, const uint8& h);
 
@@ -39,9 +29,13 @@ namespace loom
 		friend struct GridOutline;
 		friend struct Highlights;
 
+		Square hovered;
 		std::vector<vec4>	vtxs;
 		std::vector<Cell>	cells;
 		static inline Shader shader{ "Game/Map" };
+
+	private:
+		void update() override;
  	};
 
 	 
@@ -51,6 +45,8 @@ namespace loom
 	{
 		GridOutline(Map& map);
 		void reassign(Map& map);
+
+		bool show = true;
 
 	private:
 		void load() override;
@@ -76,5 +72,12 @@ namespace loom
 		vec4 color;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	inds = nullptr;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	outs = nullptr;
+	};
+
+
+	struct Hovered final
+	{
+		static inline Cell* cell = nullptr;
+		static inline std::vector<uint32> inds;
 	};
 };

@@ -51,8 +51,8 @@ namespace loom
         for (auto& file : file_names)
             f += file;
 
-        if (programs[f])
-            return programs[f];
+        //if (programs[f])
+        //    return programs[f];
 
         GLuint program = glCreateProgram();
 

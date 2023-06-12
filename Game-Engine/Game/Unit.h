@@ -1,26 +1,29 @@
 #pragma once
 
 #include "../Data.h"
-#include "../Sprite.h"
 
 namespace loom
 {
 	struct StatSpread
 	{
-		uint8_t HP, STR, DEX, INT, WIS, DEF, RES, SPD;
+		uint8 HP, STR, DEX, INT, WIS, DEF, RES, SPD;
 
 		std::string name;
 		StatSpread* _next = nullptr;
 	};
-
-	struct Sprite;
 	
+	struct Cell;
+	struct Sprite;
+	struct Animation;
+
 	struct Unit final
 	{
-		Unit(Sprite* sprite);
+		Unit(Sprite& sprite, Cell& cell);
 		virtual ~Unit();
 
-		Mat4 trns;
-		Sprite* sprite = nullptr;
+		StatSpread stats;
+		Cell& cell;
+		Sprite& sprite;
+		Animation* animation = nullptr;
 	};
 };

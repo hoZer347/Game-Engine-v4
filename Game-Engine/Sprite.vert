@@ -10,6 +10,6 @@ layout(location = 1) uniform mat4 trns = mat4(1);
 
 void main()
 {
-    _pos = pos;
-    gl_Position = mvp * trns * pos;
+	_pos = pos;
+	gl_Position = mvp * trns * pos;
 };

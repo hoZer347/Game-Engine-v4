@@ -9,5 +9,5 @@ layout (binding = 0) uniform sampler2D tex;
 
 void main()
 {
-    clr = texture(tex, loc.xy + _pos.xz * loc.zw);
+	clr = texture(tex, loc.xy + _pos.xz * loc.zw);
 };

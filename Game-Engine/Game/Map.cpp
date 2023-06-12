@@ -2,8 +2,13 @@
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
+#include "glm/gtx/intersect.hpp"
 
+#include "../Utils.h"
 #include "../Camera.h"
+#include "../Geometry.h"
+
+#include "Cell.h"
 
 #include <thread>
 
@@ -11,24 +16,30 @@ namespace loom
 {
 	static inline GLint _color, _mvp;
 
+
 	Map::Map(const uint8& w, const uint8& h) :
 		w(w), h(h)
 	{
 		vtxs.reserve((w + 1) * (h + 1));
 		cells.reserve(w * h);
 		
+		hovered.color = vec4(1, 0, 0, .5);
+
+
 		for (auto j = 0; j < (h + 1); j++)
 			for (auto i = 0; i < (w + 1); i++)
 				vtxs.emplace_back(vec4{ i, j, 0, 1});
 
+
 		for (auto i = 0; i < w; i++)
 			for (auto j = 0; j < h; j++)
 				cells.emplace_back(
-					Cell{ { i, j }, 0, 0,
+					Cell{ { i, j, 0 }, 0,
 					(uint32)(i + 0) + (w + 1) * (j + 0),
 					(uint32)(i + 1) + (w + 1) * (j + 0),
 					(uint32)(i + 1) + (w + 1) * (j + 1),
 					(uint32)(i + 0) + (w + 1) * (j + 1), });
+
 
 		for (auto i = 0; i < w; i++)
 			for (auto j = 0; j < h; j++)
@@ -38,6 +49,40 @@ namespace loom
 				if (j)			(*this)[i][j].U = &(*this)[i][j+1];
 				if (j < h-1)	(*this)[i][j].D = &(*this)[i][j-1];
 			};
+	};
+	void Map::update()
+	{
+		static Utils::Timer timer;
+
+		if (timer.GetDiff_mls() < 1000.f / 60)
+			return;
+		timer.push(std::chrono::milliseconds(1000 / 60));
+
+		Loom::Exec([&]() {
+			vec2 b;
+			float d;
+
+			for (auto& cell : cells)
+				if (&cell && cell.v0 == -1) continue;
+				else if (intersectRayTriangle(vec3(Camera::mpos), vec3(Camera::mdir),
+					vec3(vtxs[cell.v0]),
+					vec3(vtxs[cell.v1]),
+					vec3(vtxs[cell.v2]),
+					b, d) ||
+					intersectRayTriangle(vec3(Camera::mpos), vec3(Camera::mdir),
+					vec3(vtxs[cell.v0]),
+					vec3(vtxs[cell.v3]),
+					vec3(vtxs[cell.v2]),
+					b, d))
+				{
+					hovered.vtxs[0] = vtxs[cell.v0];
+					hovered.vtxs[1] = vtxs[cell.v1];
+					hovered.vtxs[2] = vtxs[cell.v2];
+					hovered.vtxs[3] = vtxs[cell.v3];
+
+					break;
+				};
+		});
 	};
 	
 
@@ -50,6 +95,8 @@ namespace loom
 	{
 		inds.clear();
 		inds.reserve(map.w * map.h * 8);
+
+
 		for (auto& cell : map.cells)
 		{
 			inds.emplace_back(cell.v0);
@@ -64,10 +111,8 @@ namespace loom
 	};
 	void GridOutline::load()
 	{
-		if (!_mvp)
-			_mvp = glGetUniformLocation(map.shader.id, "mvp");
-		if (!_color)
-			_color = glGetUniformLocation(map.shader.id, "color");
+		_mvp = glGetUniformLocation(map.shader.id, "mvp");
+		_color = glGetUniformLocation(map.shader.id, "color");
 	};
 	void GridOutline::render()
 	{
@@ -147,10 +192,8 @@ namespace loom
 	};
 	void Highlights::load()
 	{
-		if (!_mvp)
-			_mvp = glGetUniformLocation(map.shader.id, "mvp");
-		if (!_color)
-			_color = glGetUniformLocation(map.shader.id, "color");
+		_mvp = glGetUniformLocation(map.shader.id, "mvp");
+		_color = glGetUniformLocation(map.shader.id, "color");
 	};
 	void Highlights::render()
 	{
@@ -173,7 +216,7 @@ namespace loom
 				GL_DYNAMIC_DRAW);
 			glDrawElements(GL_QUADS, (GLsizei)_inds->size(), GL_UNSIGNED_INT, nullptr);
 			
-			glUniform4fv(_color, 1, &vec4(0, 0, 0, .5)[0]);
+			glUniform4fv(_color, 1, &vec4(0, 0, 0, 1)[0]);
 			glBufferData(
 				GL_ELEMENT_ARRAY_BUFFER,
 				_outs->size() * sizeof(uint32),

@@ -10,15 +10,22 @@ using namespace glm;
 
 namespace loom
 {
+	struct Geometry
+	{
+	protected:
+		static inline Shader shader{ "Geometry" };
+		static inline uint32_t _color = 0;
+		static inline uint32_t _trns = 0;
+		static inline uint32_t _mvp = 0;
+	};
+
 	struct Cube final :
+		public Geometry,
 		virtual private Loadable,
 		virtual private Renderable
 	{
-		Cube()
-		{ };
-
 		vec4 color = vec4(0, 0, 1, 1);
-		Mat4 trns;
+		mat4 trns;
 
 		static inline const int collision_type = COLLISION::CUBE;
 
@@ -27,7 +34,6 @@ namespace loom
 		void render() override;
 
 	protected:
-		friend struct Geometry<Cube>;
 		static inline std::vector<vec4> vtxs =
 		{
 			vec4(0, 0, 0, 1),
@@ -53,40 +59,40 @@ namespace loom
 
 
 	struct Square final :
+		public Geometry,
 		virtual private Loadable,
 		virtual private Renderable,
 		virtual private Updateable
 	{
-		vec4 color = vec4(1);
-		Mat4 trns;
+		vec4 color{ 1 };
+		mat4 trns{ 1 };
 
 		static inline const int collision_type = COLLISION::SQUARE;
 
-	private:
-		void load() override;
-		void render() override;
-		void update() override { };
-
-	protected:
-		friend struct Geometry<Square>;
-		static inline std::vector<vec4> vtxs =
+		std::vector<vec4> vtxs =
 		{
 			vec4(0, 0, 0, 1),
 			vec4(1, 0, 0, 1),
 			vec4(1, 1, 0, 1),
 			vec4(0, 1, 0, 1),
 		};
+
+	private:
+		void load() override;
+		void render() override;
+		void update() override { };
 	};
 
 
 	struct Circle final :
+		public Geometry,
 		virtual private Loadable,
 		virtual private Renderable
 	{
 		const float radius = 1.0f;
 
 		vec4 color = vec4(1);
-		Mat4 trns;
+		mat4 trns;
 
 		static inline const int collision_type = COLLISION::CIRCLE;
 
@@ -95,7 +101,6 @@ namespace loom
 		void render() override;
 
 	protected:
-		friend struct Geometry<Circle>;
 		std::vector<vec4> vtxs;
 	};
 };

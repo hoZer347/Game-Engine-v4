@@ -12,15 +12,15 @@ namespace loom
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		
-		Mat4 trns;
-		Mat4 mvp;
+		mat4 trns;
+		mat4& mvp;
 
 		static inline const int collision_type = COLLISION::SQUARE;
 		
 	protected:
 		friend struct SpriteManager;
-		friend struct Geometry<Sprite>;
 		vec4 location;
+		std::vector<vec4>& vtxs;
 
 	private:
 		void load() override;

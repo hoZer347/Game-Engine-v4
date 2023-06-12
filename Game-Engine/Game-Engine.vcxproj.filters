@@ -41,6 +41,9 @@
     <ClCompile Include="Game\Map.cpp">
       <Filter>Game\Map</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Cell.cpp">
+      <Filter>Game\Cell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -84,6 +87,9 @@
     </Filter>
     <Filter Include="Game\Map">
       <UniqueIdentifier>{c675e85b-b798-4c99-aec2-bbbe0f30b176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Cell">
+      <UniqueIdentifier>{d3970cf5-8c8b-4e59-8ed9-c2ead66aa78f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,14 +135,11 @@
     <ClInclude Include="Game\Map.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Cell.h">
+      <Filter>Game\Cell</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\Sprite.frag">
-      <Filter>Engine\Sprite</Filter>
-    </None>
-    <None Include="shaders\Sprite.vert">
-      <Filter>Engine\Sprite</Filter>
-    </None>
     <None Include="Text.frag">
       <Filter>Engine\Text</Filter>
     </None>
@@ -160,6 +163,12 @@
     </None>
     <None Include="Game\Map.vert">
       <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Sprite.frag">
+      <Filter>Engine\Sprite</Filter>
+    </None>
+    <None Include="Sprite.vert">
+      <Filter>Engine\Sprite</Filter>
     </None>
   </ItemGroup>
 </Project>

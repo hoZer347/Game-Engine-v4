@@ -11,21 +11,12 @@
 
 namespace loom
 {
-	static inline Shader shader{ "Geometry" };
-	static inline uint32_t _color = 0;
-	static inline uint32_t _trns = 0;
-	static inline uint32_t _mvp = 0;
-
-
-
 	void Cube::load()
 	{
-		if (!_color)
-			_color = glGetUniformLocation(shader.id, "color"); // This can be improved (called once only)
-		if (!_trns)
-			_trns = glGetUniformLocation(shader.id, "trns"); // This can be improved (called once only)
-		if (!_mvp)
-			_mvp = glGetUniformLocation(shader.id, "mvp"); // This can be improved (called once only)
+		// This can be improved (called once only)
+		_color = glGetUniformLocation(shader.id, "color");
+		_trns = glGetUniformLocation(shader.id, "trns");
+		_mvp = glGetUniformLocation(shader.id, "mvp");
 	};
 	void Cube::render()
 	{
@@ -55,15 +46,12 @@ namespace loom
 	};
 
 
-
 	void Square::load()
 	{
-		if (!_color)
-			_color = glGetUniformLocation(shader.id, "color"); // This can be improved (called once only)
-		if (!_trns)
-			_trns = glGetUniformLocation(shader.id, "trns"); // This can be improved (called once only)
-		if (!_mvp)
-			_mvp = glGetUniformLocation(shader.id, "mvp"); // This can be improved (called once only)
+		// This can be improved (called once only)
+		_color = glGetUniformLocation(shader.id, "color");
+		_trns = glGetUniformLocation(shader.id, "trns");
+		_mvp = glGetUniformLocation(shader.id, "mvp");
 	};
 	void Square::render()
 	{

@@ -3,6 +3,7 @@
 
 #include "Game/Unit.h"
 #include "Game/Map.h"
+#include "Game/Cell.h"
 
 #include "Camera.h"
 #include "Data.h"
@@ -28,7 +29,7 @@ int main()
 	Camera::InitiateFreeCam();
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
-	Geometry<Sprite> sprite { texture, vec2{ 30 * 11, 32 * 10 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
+	Sprite sprite { texture, vec2{ 32 * 11, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
 
 	Map map{ 4, 8 };
 	GridOutline outline{ map };
@@ -38,13 +39,7 @@ int main()
 	map[2][2].highlight = 1;
 	map[2][1].highlight = 1;
 
-	Inputs::AddInput([]()
-	{
-		static mat4 m = mat4(1);
-		Square* square = new Square();
-		square->trns *= m *= translate(vec3(0, 0.1, 0.1));
-
-	}, { GLFW_KEY_Q, 255, GLFW_PRESS, 0 });
+	Unit unit{ sprite, map[1][2] };
 
 	Loom::Run();
 

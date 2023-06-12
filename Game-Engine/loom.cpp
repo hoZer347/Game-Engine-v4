@@ -88,6 +88,13 @@ namespace loom
 		// Loading Items
 		Inputs::load();
 
+		Loadable::load_all();
+		std::atomic<bool> KILL = false;
+		std::thread updater {[&]()
+		{
+			while (!KILL)
+				Updateable::update_all();
+		}};
 
 		// Main loop
 		while (!glfwWindowShouldClose(window))
@@ -98,7 +105,6 @@ namespace loom
 
 			// Doing openGL-dependent loads
 			Loadable::load_all();
-			Updateable::update_all();
 			Camera::update();
 			
 
@@ -115,6 +121,8 @@ namespace loom
 
 
 		// Deallocating everything allocated that uses openGL
+		KILL = true;
+		updater.join();
 		Unloadable::unload_all();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

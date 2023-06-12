@@ -12,9 +12,9 @@
 
 namespace loom
 {
-	static inline uint32_t _mvp;
-	static inline uint32_t _trns;
-	static inline uint32_t _location;
+	static inline uint32 _mvp;
+	static inline uint32 _trns;
+	static inline uint32 _location;
 	static inline Shader shader{ "Sprite" };
 
 
@@ -23,8 +23,7 @@ namespace loom
 		virtual protected Updateable,
 		virtual protected Renderable
 	{
-		static inline std::atomic<std::vector<Sprite*>*> sprites;
-
+		static inline std::atomic<std::vector<Sprite*>*> sprites = new std::vector<Sprite*>();
 		static inline std::vector<vec4> vtxs
 		{
 			vec4(0, 0, 0, 1),
@@ -44,16 +43,17 @@ namespace loom
 
 	Sprite::Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16_t ups) :
 		texture(texture),
+		vtxs(manager.vtxs),
 		location(start, size),
 		stride(stride),
-		ups(ups)
+		ups(ups),
+		mvp(Camera::mvp)
 	{
-		mvp.bind(Camera::mvp);
 		std::vector<Sprite*>* sprites;
 		while (!(sprites = manager.sprites.exchange(nullptr)));
 
 		sprites->push_back(this);
-		manager.sprites = sprites;
+		manager.sprites.exchange(sprites);
 	};
 	void Sprite::load()
 	{
@@ -92,12 +92,14 @@ namespace loom
 
 		for (auto& sprite : *sprites)
 		{
-			glUniformMatrix4fv(_trns, 1, GL_FALSE, &sprite->trns[0][0]);
-			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &sprite->mvp[0][0]);
-			glUniform4fv(_location, 1, &sprite->location[0]);
 			glBindTexture(GL_TEXTURE_2D, sprite->texture.id);
+			glUniformMatrix4fv(_trns, 1, GL_FALSE, &sprite->trns[0][0]);
+			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+			glUniform4fv(_location, 1, &sprite->location[0]);
 			glDrawArrays(GL_QUADS, 0, (GLsizei)SpriteManager::vtxs.size());
 		};
+
+		this->sprites.exchange(sprites);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisableVertexAttribArray(VEC4_0_16);

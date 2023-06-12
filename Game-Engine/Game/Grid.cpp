@@ -78,7 +78,6 @@ namespace loom
 	{
 		Cell* cell = cells[x][y];
 		cell->unit = unit;
-		unit->trns = translate(vec3(vtxs[inds[cell->v0]]) + vec3(0, .5, 0));
 	};
 	void Grid::load()
 	{
