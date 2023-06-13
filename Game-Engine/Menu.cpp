@@ -5,20 +5,20 @@
 
 #include "Input.h"
 
-#include <mutex>
-
 namespace loom
 {
-	std::shared_ptr<Menu> MENU = nullptr;
-	static inline std::recursive_mutex mut;
-
+	static inline std::shared_ptr<Menu> MENU = nullptr;
 
 	void Menu::Init()
 	{
+		std::scoped_lock<std::recursive_mutex> lock{mut};
+
 
 	};
 	void Menu::Exit()
 	{
+		std::scoped_lock<std::recursive_mutex> lock{mut};
+
 
 	};
 	void Menu::next()

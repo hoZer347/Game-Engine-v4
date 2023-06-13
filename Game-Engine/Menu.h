@@ -24,5 +24,6 @@ namespace loom
 		static void Init();
 		static void Exit();
 		std::shared_ptr<Menu> _prev = nullptr;
+		static inline std::recursive_mutex mut;
 	};
 };

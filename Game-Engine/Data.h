@@ -30,54 +30,34 @@ namespace loom
 		friend struct Loom;
 		GameObject()
 		{
-			claim();
+			std::scoped_lock<std::recursive_mutex> lock{mut};
+
 			objects.push_back(static_cast<T*>(this));
-			release();
 		};
 		virtual ~GameObject()
 		{
-			claim();
+			std::scoped_lock<std::recursive_mutex> lock{mut};
+
 			objects.erase(std::remove(objects.begin(), objects.end(), static_cast<T*>(this)), objects.end());
-			release();
 		};
 		static void access(void(*f)(T&))
 		{
-			claim();
+			std::scoped_lock<std::recursive_mutex> lock{mut};
+
 			for (auto& object : objects)
 				f(*object);
-			release();
 		};
 		static void clear()
 		{
-			claim();
+			std::scoped_lock<std::recursive_mutex> lock{mut};
+
 			objects.clear();
-			release();
 		};
 
 		operator T*() { return static_cast<T*>(this); };
 		 
 	private:
-		static void claim()
-		{
-			if (owned_by_this_thread)
-				return;
-
-			bool test = false;
-			while (!(test = accessible.exchange(false)));
-			owned_by_this_thread++;
-		};
-
-		static void release()
-		{
-			if (--owned_by_this_thread)
-				return;
-
-			owned_by_this_thread = false;
-			accessible = true;
-		};
-
-		static inline thread_local uint64 owned_by_this_thread = false;
-		static inline std::atomic<bool> accessible = true;
+		static inline std::recursive_mutex mut;
 		static inline std::vector<T*> objects;
 	};
 	struct Loadable : public GameObject<Loadable>
