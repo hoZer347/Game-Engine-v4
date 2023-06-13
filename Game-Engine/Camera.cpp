@@ -107,39 +107,37 @@ namespace loom
         rotationMatrix[3][3] = 1.0f;
     };
 
-	void Camera::update()
+
+	void Camera::render()
 	{
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
-			int w, h;
-			glfwGetWindowSize(window, &w, &h);
-			if (w == 0 || h == 0)
+			glfwGetWindowSize(window, &screen_w, &screen_h);
+			if (screen_w <= 0 || screen_h <= 0)
 				return;
-			aspect = (float)w / (float)h;
+
+			aspect = (float)screen_w / (float)screen_h;
 			proj = perspective(fovy, aspect, near, far);
-            view = lookAt(eye, ctr, up);
-            calculateRotationMatrix(roll, ptch, yaww, rotn);
+			view = lookAt(eye, ctr, up);
+			calculateRotationMatrix(roll, ptch, yaww, rotn);
 			mode = rotn * trns;
 			mvp = proj * view * mode;
 
-            roll_mat = rotate(radians(roll), vec3(1, 0, 0));
-            ptch_mat = rotate(radians(ptch), vec3(0, 1, 0));
-            yaww_mat = rotate(radians(yaww), vec3(0, 0, 1));
+			roll_mat = rotate(radians(roll), vec3(1, 0, 0));
+			ptch_mat = rotate(radians(ptch), vec3(0, 1, 0));
+			yaww_mat = rotate(radians(yaww), vec3(0, 0, 1));
 
 			double mx, my;
 			Inputs::GetMousePos(mx, my);
 
-			mpos = inverse(Camera::mvp) * vec4(2 * mx / w - 1, 1 - 2 * my / h,  0, 1);
-			mdir =
-                inverse(Camera::rotn) *
-                inverse(Camera::proj) *
-                inverse(Camera::view) *
-                vec4(2 * mx / w - 1, 1 - 2 * my / h, -1, 1);
+			mpos =	inverse(Camera::mvp) * vec4(2 * mx / screen_w - 1, 1 - 2 * my / screen_h, 0, 1);
+			mdir =	inverse(Camera::rotn) *
+					inverse(Camera::proj) *
+					inverse(Camera::view) *
+					vec4(2 * mx / screen_w - 1, 1 - 2 * my / screen_h, -1, 1);
 
 			mpos /= mpos.w;
 			mdir /= mdir.w;
-
-			Renderable::render_all();
 		};
 	};
 };

@@ -9,7 +9,8 @@ using namespace glm;
 
 namespace loom
 {
-	struct Camera final
+	struct Camera final :
+		virtual protected Renderable
 	{
 		static inline float	fovy		= 45.f,
 							aspect		= 1.f,
@@ -35,6 +36,7 @@ namespace loom
 
 		static inline vec4	mpos, mdir;
 
+		static inline int	screen_w = 1, screen_h = 1;
 
 		// Initiates "Free Cam"
 		// Controls:
@@ -44,13 +46,13 @@ namespace loom
 		// - ESCAPE exits Free Cam
 		static void InitiateFreeCam();
 
-
 	protected:
 		friend struct Loom;
-		static void update();
+		Camera()
+		{ };
 
 	private:
-		Camera() { };
+		void render() override;
 	};
 	//
 };

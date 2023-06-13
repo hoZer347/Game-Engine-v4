@@ -32,14 +32,14 @@ namespace loom
 		operator uint64_t() { return input; }
 	};
 
-
+		
 	// Singly linked list of input layers and associations
 	struct Inputs final
 	{
 		Inputs(std::shared_ptr<Inputs> _prev = nullptr);
 
-		static void next();
-		static void prev();
+		static void next(Task&& setup = []() {});
+		static void prev(Task&& setup = []() {});
 
 		static void AddInput(Task&& task, Input&& input);
 		static void RmvInput(Input&& input);
@@ -49,7 +49,9 @@ namespace loom
 		static void GetScrollPos(double& sx, double& sy);
 		static void GetRelativeScrollPos(double& sx, double& sy);
 
+		static void AddOnNext(Task&& task);
 		static void AddOnPrev(Task&& task);
+		static void AddTask(Task&& task);
 
 		static void clear();
 
@@ -65,7 +67,10 @@ namespace loom
 		static inline double sx=0, sy=0;	// Current scroll position
 		static inline double psx=0, psy=0;	// Scroll Position at last tick
 
+
 		std::vector<std::pair<Input, Task>> inputs;
+		std::vector<Task> on_next;
 		std::vector<Task> on_prev;
+		std::vector<Task> tasks;
 	};
 };

@@ -5,13 +5,16 @@ using namespace glm;
 
 namespace loom
 {
-	struct alignas(64) Cell final
+	struct Unit;
+
+	struct Cell final
 	{
-		vec3 pos{ 0 };
+		const ivec2 pos{ 0 };
 		uint32 highlight = 0;
 
 		uint32 v0 = -1, v1 = v0, v2 = v0, v3 = v0;
 
+		Unit* unit = nullptr;
 		Cell* U = nullptr,
 			* D = nullptr,
 			* L = nullptr,

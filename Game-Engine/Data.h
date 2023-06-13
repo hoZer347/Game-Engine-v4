@@ -20,7 +20,7 @@ namespace loom
 	struct ShaderManager;
 	ShaderManager* GetSMgr();
 	//
-
+	
 
 	// GameObjects
 	template <typename T>
@@ -30,13 +30,54 @@ namespace loom
 		friend struct Loom;
 		GameObject()
 		{
+			claim();
 			objects.push_back(static_cast<T*>(this));
+			release();
 		};
 		virtual ~GameObject()
-		{ };
+		{
+			claim();
+			objects.erase(std::remove(objects.begin(), objects.end(), static_cast<T*>(this)), objects.end());
+			release();
+		};
+		static void access(void(*f)(T&))
+		{
+			claim();
+			for (auto& object : objects)
+				f(*object);
+			release();
+		};
+		static void clear()
+		{
+			claim();
+			objects.clear();
+			release();
+		};
 
 		operator T*() { return static_cast<T*>(this); };
+		 
+	private:
+		static void claim()
+		{
+			if (owned_by_this_thread)
+				return;
 
+			bool test = false;
+			while (!(test = accessible.exchange(false)));
+			owned_by_this_thread++;
+		};
+
+		static void release()
+		{
+			if (--owned_by_this_thread)
+				return;
+
+			owned_by_this_thread = false;
+			accessible = true;
+		};
+
+		static inline thread_local uint64 owned_by_this_thread = false;
+		static inline std::atomic<bool> accessible = true;
 		static inline std::vector<T*> objects;
 	};
 	struct Loadable : public GameObject<Loadable>
@@ -44,13 +85,6 @@ namespace loom
 	protected:
 		friend struct Loom;
 		virtual void load()=0;
-		static void load_all()
-		{
-			for (auto i = 0; i < objects.size(); i++)
-				objects[i]->load();
-
-			GameObject<Loadable>::objects.clear();
-		};
 	};
 	struct Renderable : public GameObject<Renderable>
 	{
@@ -58,35 +92,18 @@ namespace loom
 		friend struct Loom;
 		friend struct Camera;
 		virtual void render()=0;
-		static void render_all()
-		{
-			for (auto i = 0; i < objects.size(); i++)
-				objects[i]->render();
-		};
 	};
 	struct Updateable : public GameObject<Updateable>
 	{
 	protected:
 		friend struct Loom;
 		virtual void update()=0;
-		static void update_all()
-		{
-			for (auto i = 0; i < objects.size(); i++)
-				objects[i]->update();
-		};
 	};
 	struct Unloadable : public GameObject<Unloadable>
 	{
 	protected:
 		friend struct Loom;
 		virtual void unload()=0;
-		static void unload_all()
-		{
-			for (auto i = 0; i < objects.size(); i++)
-				objects[i]->unload();
-
-			GameObject<Unloadable>::objects.clear();
-		};
 	};
 
 

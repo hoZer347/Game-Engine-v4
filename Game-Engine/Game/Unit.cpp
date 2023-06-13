@@ -15,8 +15,6 @@ namespace loom
 		virtual protected Updateable
 	{
 		void update() override;
-
-		std::atomic<std::vector<Unit*>*> units = new std::vector<Unit*>();
 	};
 	static inline UnitManager manager;
 
@@ -25,29 +23,21 @@ namespace loom
 		sprite(sprite),
 		cell(cell)
 	{
-		std::vector<Unit*>* units;
-		while (!(units = manager.units.exchange(nullptr)));
-
-		units->push_back(this);
-		manager.units.exchange(units);
+		cell.unit = this;
 	};
 	Unit::~Unit()
 	{ };
 	void UnitManager::update()
 	{
-		std::vector<Unit*>* units;
-		while (!(units = this->units.exchange(nullptr)));
-
-
-		for (auto& unit : *units)
+		GameObject<Unit>::access([](auto& unit)
 		{
 			// Resetting Position
 			mat4 mat{ 1 };
 
 
 			// If no animation is present, keep sprite in place on cell
-			if (!unit->animation)
-				mat *= translate(unit->cell.pos + vec3(0, .5, 0));
+			if (!unit.animation)
+				mat *= translate(vec3((vec2)unit.cell.pos + vec2(0, .5), 0));
 
 
 			// Facing Camera
@@ -59,9 +49,7 @@ namespace loom
 
 
 			// Setting new sprite position
-			unit->sprite.trns = mat;
-		};
-		
-		this->units.exchange(units);
+			unit.sprite.trns = mat;
+		});
 	};
 };

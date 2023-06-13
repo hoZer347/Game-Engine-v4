@@ -30,6 +30,7 @@ namespace loom
 	};
 	void Loom::Run()
 	{
+		Camera camera;
 		isRunning = true;
 
 		// TIMER for FPS counting
@@ -85,16 +86,19 @@ namespace loom
 		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
 
 
-		// Loading Items
+		// Loading Required Items
 		Inputs::load();
+		Loadable::access([](auto& object) { object.load(); });
 
-		Loadable::load_all();
+		
+		// Initializing updater
 		std::atomic<bool> KILL = false;
 		std::thread updater {[&]()
 		{
 			while (!KILL)
-				Updateable::update_all();
+				Updateable::access([](auto& object) { object.update(); });
 		}};
+
 
 		// Main loop
 		while (!glfwWindowShouldClose(window))
@@ -104,9 +108,10 @@ namespace loom
 
 
 			// Doing openGL-dependent loads
-			Loadable::load_all();
-			Camera::update();
+			Loadable::access([](auto& object) { object.load(); });
+			Loadable::clear();
 			
+			Renderable::access([](auto& object) { object.render(); });
 
 			// OpenGL Stuff
 			glfwSwapBuffers(window);
@@ -123,7 +128,8 @@ namespace loom
 		// Deallocating everything allocated that uses openGL
 		KILL = true;
 		updater.join();
-		Unloadable::unload_all();
+		Unloadable::access([](auto& object) { object.unload(); });
+		Unloadable::clear();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glDeleteBuffers(1, &_vtxs);

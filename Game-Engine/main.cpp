@@ -21,6 +21,10 @@ using namespace glm;
 
 #include <iostream>
 
+// TODO: Make sprites animate
+// TODO: Make map highlights have an outline
+// TODO: Fix load() functions to assign shader variables once only
+// TODO: Make GameObject's destructor more efficient
 
 int main()
 {

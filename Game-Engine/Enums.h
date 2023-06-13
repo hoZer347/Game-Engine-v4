@@ -49,13 +49,13 @@ namespace loom
 		SPHERE,
 	};
 
-	enum PHASE // Phases of rendering / updating game objects
+	enum THREAD
 	{
-		LOAD,
+		NONE,
 		UPDATE,
 		RENDER,
 		PHYSICS,
-		UNLOAD,
+		LOADER,
 	};
 
 	enum LAYERS

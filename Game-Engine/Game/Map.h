@@ -25,6 +25,8 @@ namespace loom
 		auto begin() const { return cells.begin(); };
 		auto end()   const { return cells.end();   };
 
+		void reset_highlights();
+
 	protected:
 		friend struct GridOutline;
 		friend struct Highlights;
@@ -38,7 +40,7 @@ namespace loom
 		void update() override;
  	};
 
-	 
+	
 	struct GridOutline final :
 		virtual protected Loadable,
 		virtual protected Renderable
@@ -70,6 +72,7 @@ namespace loom
 
 		Map& map;
 		vec4 color;
+		std::atomic<std::shared_ptr<std::vector<vec4>>>		vtxs = nullptr;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	inds = nullptr;
 		std::atomic<std::shared_ptr<std::vector<uint32>>>	outs = nullptr;
 	};

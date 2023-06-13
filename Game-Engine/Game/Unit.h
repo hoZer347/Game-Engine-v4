@@ -16,7 +16,8 @@ namespace loom
 	struct Sprite;
 	struct Animation;
 
-	struct Unit final
+	struct Unit final :
+		public GameObject<Unit>
 	{
 		Unit(Sprite& sprite, Cell& cell);
 		virtual ~Unit();

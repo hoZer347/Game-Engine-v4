@@ -32,9 +32,6 @@
     <ClCompile Include="Menu.cpp">
       <Filter>Engine\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Grid.cpp">
-      <Filter>Game\Grid</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Unit.cpp">
       <Filter>Game\Unit</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
     </Filter>
     <Filter Include="Engine\Sprite">
       <UniqueIdentifier>{d2bbe52b-7bae-49a5-82a2-a60e8ec0927f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Grid">
-      <UniqueIdentifier>{ddfcf1da-348c-461f-b2bc-1dee2808de01}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Camera">
       <UniqueIdentifier>{7ba8ea3b-649b-4176-b36b-6443e574014b}</UniqueIdentifier>
@@ -126,9 +120,6 @@
     <ClInclude Include="Menu.h">
       <Filter>Engine\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Grid.h">
-      <Filter>Game\Grid</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Unit.h">
       <Filter>Game\Unit</Filter>
     </ClInclude>
@@ -151,12 +142,6 @@
     </None>
     <None Include="Geometry.frag">
       <Filter>Engine\Geometry</Filter>
-    </None>
-    <None Include="Game\Grid.frag">
-      <Filter>Game\Grid</Filter>
-    </None>
-    <None Include="Game\Grid.vert">
-      <Filter>Game\Grid</Filter>
     </None>
     <None Include="Game\Map.frag">
       <Filter>Game\Map</Filter>

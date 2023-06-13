@@ -154,7 +154,6 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="Game\Cell.cpp" />
-    <ClCompile Include="Game\Grid.cpp" />
     <ClCompile Include="Game\Map.cpp" />
     <ClCompile Include="Game\Unit.cpp" />
     <ClCompile Include="Geometry.cpp" />
@@ -172,7 +171,6 @@
     <ClInclude Include="Data.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Game\Cell.h" />
-    <ClInclude Include="Game\Grid.h" />
     <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
@@ -185,8 +183,6 @@
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Game\Grid.frag" />
-    <None Include="Game\Grid.vert" />
     <None Include="Game\Map.frag" />
     <None Include="Game\Map.vert" />
     <None Include="Geometry.frag" />

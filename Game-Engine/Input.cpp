@@ -8,27 +8,44 @@
 namespace loom
 {
 	static inline thread_local std::shared_ptr<Inputs> INPUT = nullptr;
+	static inline std::recursive_mutex mut;
 
 	Inputs::Inputs(std::shared_ptr<Inputs> _prev)
 	: _prev(_prev)
 	{ };
-	void Inputs::next()
+	void Inputs::next(Task&& setup)
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
+		if (INPUT)
+			for (auto& task : INPUT->on_next)
+				task();
+
+		setup();
+
 		INPUT = std::make_shared<Inputs>(INPUT);
 	};
-	void Inputs::prev()
+	void Inputs::prev(Task&& setup)
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		for (auto& task : INPUT->on_prev)
 			task();
 
+		setup();
+		
 		INPUT = INPUT->_prev;
 	};
 	void Inputs::AddInput(Task&& task, Input&& input)
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		INPUT->inputs.emplace_back(input, task);
 	};
 	void Inputs::RmvInput(Input&& input)
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		INPUT->inputs.erase(
 			std::remove_if(
 				INPUT->inputs.begin(),
@@ -58,12 +75,28 @@ namespace loom
 		sx = Inputs::sx - Inputs::psx;
 		sy = Inputs::sy - Inputs::psy;
 	};
+	void Inputs::AddOnNext(Task&& task)
+	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
+		INPUT->on_next.emplace_back(task);
+	};
 	void Inputs::AddOnPrev(Task&& task)
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		INPUT->on_prev.emplace_back(task);
+	};
+	void Inputs::AddTask(Task&& task)
+	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
+		INPUT->tasks.emplace_back(task);
 	};
 	void Inputs::clear()
 	{
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		INPUT->inputs.clear();
 	};
 	void Inputs::load()
@@ -94,6 +127,8 @@ namespace loom
 			return;
 		timer.push(std::chrono::milliseconds(1000 / INPUT_TICKRATE));
 		
+		std::lock_guard<std::recursive_mutex> lock{mut};
+
 		if (GLFWwindow* window = glfwGetCurrentContext())
 		{
 			glfwPollEvents();
@@ -117,6 +152,11 @@ namespace loom
 			psx = sx;
 			psy = sy;
 			//
+
+
+			// Doing per-update tasks
+			for (auto& task : INPUT->tasks)
+				task();
 		};
 	};
 };

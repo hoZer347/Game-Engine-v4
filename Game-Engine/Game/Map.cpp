@@ -34,7 +34,7 @@ namespace loom
 		for (auto i = 0; i < w; i++)
 			for (auto j = 0; j < h; j++)
 				cells.emplace_back(
-					Cell{ { i, j, 0 }, 0,
+					Cell{ { i, j }, 0,
 					(uint32)(i + 0) + (w + 1) * (j + 0),
 					(uint32)(i + 1) + (w + 1) * (j + 0),
 					(uint32)(i + 1) + (w + 1) * (j + 1),
@@ -49,6 +49,11 @@ namespace loom
 				if (j)			(*this)[i][j].U = &(*this)[i][j+1];
 				if (j < h-1)	(*this)[i][j].D = &(*this)[i][j-1];
 			};
+	};
+	void Map::reset_highlights()
+	{
+		for (auto& cell : cells)
+			cell.highlight = 0;
 	};
 	void Map::update()
 	{
@@ -116,6 +121,9 @@ namespace loom
 	};
 	void GridOutline::render()
 	{
+		if (!show)
+			return;
+
 		glUseProgram(map.shader.id);
 		glEnableVertexAttribArray(VEC4_0_16);
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
@@ -142,13 +150,14 @@ namespace loom
 		map(map)
 	{
 		reassign();
-	}
+	};
 	void Highlights::reassign(vec4&& new_color)
 	{
 		std::thread thread = std::thread([this, new_color]()
 		{
-			std::shared_ptr<std::vector<uint32>> _inds = std::make_shared<std::vector<uint32>>();
-			std::shared_ptr<std::vector<uint32>> _outs = std::make_shared<std::vector<uint32>>();
+			std::shared_ptr<std::vector<vec4>>		_vtxs = std::make_shared<std::vector<vec4>>();
+			std::shared_ptr<std::vector<uint32>>	_inds = std::make_shared<std::vector<uint32>>();
+			std::shared_ptr<std::vector<uint32>>	_outs = std::make_shared<std::vector<uint32>>();
 
 			for (auto i = 0; i < map.w; i++)
 				for (auto j = 0; j < map.h; j++)
@@ -158,33 +167,19 @@ namespace loom
 					if (!cell.highlight)
 						continue;
 
-					if (cell.U && cell.U->highlight != cell.highlight || !cell.U)
-					{
-						_outs->push_back(cell.v2);
-						_outs->push_back(cell.v3);
-					};
-					if (cell.D && cell.D->highlight != cell.highlight || !cell.D)
-					{
-						_outs->push_back(cell.v0);
-						_outs->push_back(cell.v1);
-					};
-					if (cell.L && cell.L->highlight != cell.highlight || !cell.L)
-					{
-						_outs->push_back(cell.v3);
-						_outs->push_back(cell.v0);
-					};
-					if (cell.R && cell.R->highlight != cell.highlight || !cell.R)
-					{
-						_outs->push_back(cell.v1);
-						_outs->push_back(cell.v2);
-					};
+					_inds->push_back((uint32)_vtxs->size());
+					_vtxs->push_back(map.vtxs[cell.v0]);
+					_inds->push_back((uint32)_vtxs->size());
+					_vtxs->push_back(map.vtxs[cell.v1]);
+					_inds->push_back((uint32)_vtxs->size());
+					_vtxs->push_back(map.vtxs[cell.v2]);
+					_inds->push_back((uint32)_vtxs->size());
+					_vtxs->push_back(map.vtxs[cell.v3]);
 
-					_inds->push_back(map[i][j].v0);
-					_inds->push_back(map[i][j].v1);
-					_inds->push_back(map[i][j].v2);
-					_inds->push_back(map[i][j].v3);
+					// TODO: Add outline algorithm
 				};
 
+			vtxs.exchange(_vtxs);
 			inds.exchange(_inds);
 			outs.exchange(_outs);
 		});
@@ -197,14 +192,21 @@ namespace loom
 	};
 	void Highlights::render()
 	{
-		std::shared_ptr<std::vector<uint32>> _inds = inds.load();
-		std::shared_ptr<std::vector<uint32>> _outs = outs.load();
+		std::shared_ptr<std::vector<vec4>>		_vtxs = vtxs.load();
+		std::shared_ptr<std::vector<uint32>>	_inds = inds.load();
+		std::shared_ptr<std::vector<uint32>>	_outs = outs.load();
 
-		if (_inds && _outs)
+		if (_vtxs && _inds && _outs)
 		{
 			glUseProgram(map.shader.id);
 			glEnableVertexAttribArray(VEC4_0_16);
 			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+
+			glBufferData(
+				GL_ARRAY_BUFFER,
+				_vtxs->size() * sizeof(vec4),
+				_vtxs->data(),
+				GL_DYNAMIC_DRAW);
 
 			glLineWidth(20);
 
