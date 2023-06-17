@@ -31,7 +31,7 @@ namespace loom
 		friend struct GridOutline;
 		friend struct Highlights;
 
-		Square hovered;
+		Rect hovered;
 		std::vector<vec4>	vtxs;
 		std::vector<Cell>	cells;
 		static inline Shader shader{ "Game/Map" };

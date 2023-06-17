@@ -15,7 +15,7 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "Input.h"
+#include "Control.h"
 #include "Text.h"
 
 
@@ -26,7 +26,6 @@ namespace loom
 	void Loom::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-		Inputs::next();
 	};
 	void Loom::Run()
 	{
@@ -87,8 +86,8 @@ namespace loom
 
 
 		// Loading Required Items
-		Inputs::load();
 		Loadable::access([](auto& object) { object.load(); });
+		Loadable::clear();
 
 		
 		// Initializing updater
@@ -103,10 +102,6 @@ namespace loom
 		// Main loop
 		while (!glfwWindowShouldClose(window))
 		{
-			// Updating Inputs
-			Inputs::update();
-
-
 			// Doing openGL-dependent loads
 			Loadable::access([](auto& object) { object.load(); });
 			Loadable::clear();

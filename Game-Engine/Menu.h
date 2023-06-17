@@ -2,28 +2,63 @@
 
 #include "Data.h"
 
+#include <list>
+
 namespace loom
 {
-	struct Option final
+	struct Control;
+	struct Rect;
+
+	struct Option
 	{
-		Task on_select;
-		std::function<bool()> hover_detection;
-		Task on_hover;
-		Task on_unhover;
+		Task on_select	= []() {};
+		Task on_hover	= []() {};
+		Task on_unhover = []() {};
+		std::function<bool()> hover_detection = []() { return true; };
 	};
+
 
 	struct Menu final
 	{
-		static void next();
-		static void prev();
+		Menu(Control& control);
+		static std::shared_ptr<Menu> make(Control& control);
 
-		static void AddOptions(Option* options...);
+		void next();
+		void prev();
+		void leave();
+
+		void AddOption(std::shared_ptr<Option> option);
+
+		template <typename... Options>
+		void AddOptions(std::shared_ptr<Option> option, Options... options);
 
 	private:
-		Menu() { };
-		static void Init();
-		static void Exit();
-		std::shared_ptr<Menu> _prev = nullptr;
-		static inline std::recursive_mutex mut;
+		static void AddOptions() { };
+		
+		Control& control;
+		std::shared_ptr<Option> hovered = nullptr;
+		std::list<std::vector<std::shared_ptr<Option>>> options;
+		std::recursive_mutex mut;
+	};
+
+
+	struct RectOption final :
+		virtual public Option
+	{
+		RectOption(float&& x, float&& y, float&& w, float&& h);
+		virtual ~RectOption() { };
+
+	private:
+		const float x, y, w, h;
+	};
+
+
+	struct TextRectOption final :
+		virtual public Option
+	{
+		TextRectOption();
+		
+
+
 	};
 };

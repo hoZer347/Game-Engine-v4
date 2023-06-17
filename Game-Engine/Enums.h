@@ -67,4 +67,17 @@ namespace loom
 		ENEMY_RANGES,
 		MAX,
 	};
+
+	namespace INPUTS
+	{
+		enum
+		{
+			KEYS_END = 256,
+			MOUSE,
+			MOUSE_MAX = MOUSE + 16,
+
+
+			MAX,
+		};
+	};
 };

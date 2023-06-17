@@ -14,7 +14,7 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Engine\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
+    <ClCompile Include="Control.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
@@ -40,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="Game\Cell.cpp">
       <Filter>Game\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Engine\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +88,9 @@
     <Filter Include="Game\Cell">
       <UniqueIdentifier>{d3970cf5-8c8b-4e59-8ed9-c2ead66aa78f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Mesh">
+      <UniqueIdentifier>{da2bee9b-f9fb-4ba4-9cf9-abdc1702a72b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -102,7 +108,7 @@
     <ClInclude Include="Shader.h">
       <Filter>Engine\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="Input.h">
+    <ClInclude Include="Control.h">
       <Filter>Engine\Input</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
@@ -128,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="Game\Cell.h">
       <Filter>Game\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Engine\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

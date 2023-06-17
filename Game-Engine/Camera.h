@@ -9,6 +9,7 @@ using namespace glm;
 
 namespace loom
 {
+	struct Control;
 	struct Camera final :
 		virtual protected Renderable
 	{
@@ -44,7 +45,7 @@ namespace loom
 		// - WASD movement relative to camera rotation around the Z axis
 		// - LEFT_CTRL + SPACE go up and down on the Z axis
 		// - ESCAPE exits Free Cam
-		static void InitiateFreeCam();
+		static void InitiateFreeCam(Control& control);
 
 	protected:
 		friend struct Loom;

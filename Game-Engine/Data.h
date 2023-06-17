@@ -31,32 +31,34 @@ namespace loom
 		GameObject()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
-
 			objects.push_back(static_cast<T*>(this));
 		};
 		virtual ~GameObject()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
-
 			objects.erase(std::remove(objects.begin(), objects.end(), static_cast<T*>(this)), objects.end());
 		};
 		static void access(void(*f)(T&))
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
-
 			for (auto& object : objects)
 				f(*object);
 		};
 		static void clear()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
-
 			objects.clear();
+		};
+
+		template <typename... ARGS>
+		static std::shared_ptr<T> make(ARGS... args)
+		{
+			return std::shared_ptr<T>(new T(args));
 		};
 
 		operator T*() { return static_cast<T*>(this); };
 		 
-	private:
+	protected:
 		static inline std::recursive_mutex mut;
 		static inline std::vector<T*> objects;
 	};

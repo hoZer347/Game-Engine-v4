@@ -157,10 +157,11 @@
     <ClCompile Include="Game\Map.cpp" />
     <ClCompile Include="Game\Unit.cpp" />
     <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Control.cpp" />
     <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -174,9 +175,10 @@
     <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
-    <ClInclude Include="Input.h" />
+    <ClInclude Include="Control.h" />
     <ClInclude Include="Loom.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Text.h" />

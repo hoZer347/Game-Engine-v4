@@ -2,26 +2,35 @@
 
 #include "Data.h"
 #include "Enums.h"
+#include "Camera.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
 
 #include <vector>
 
+#ifndef VTX_DEF
+#define VTX_DEF vec4
+#endif
+
 namespace loom
 {
+	typedef vec4 Vtx;
+
 	struct Geometry
 	{
 	protected:
-		static inline Shader shader{ "Geometry" };
+		static inline Shader geo_shader{"Geometry"};
 		static inline uint32_t _color = 0;
 		static inline uint32_t _trns = 0;
 		static inline uint32_t _mvp = 0;
+
+		Shader& shader = geo_shader;
 	};
+
 
 	struct Cube final :
 		public Geometry,
-		virtual private Loadable,
 		virtual private Renderable
 	{
 		vec4 color = vec4(0, 0, 1, 1);
@@ -30,7 +39,6 @@ namespace loom
 		static inline const int collision_type = COLLISION::CUBE;
 
 	private:
-		void load() override;
 		void render() override;
 
 	protected:
@@ -58,14 +66,13 @@ namespace loom
 	};
 
 
-	struct Square final :
+	struct Rect final :
 		public Geometry,
-		virtual private Loadable,
-		virtual private Renderable,
-		virtual private Updateable
+		virtual private Renderable
 	{
 		vec4 color{ 1 };
 		mat4 trns{ 1 };
+		mat4& mvp = Camera::mvp;
 
 		static inline const int collision_type = COLLISION::SQUARE;
 
@@ -78,15 +85,12 @@ namespace loom
 		};
 
 	private:
-		void load() override;
 		void render() override;
-		void update() override { };
 	};
 
 
 	struct Circle final :
 		public Geometry,
-		virtual private Loadable,
 		virtual private Renderable
 	{
 		const float radius = 1.0f;
@@ -97,7 +101,6 @@ namespace loom
 		static inline const int collision_type = COLLISION::CIRCLE;
 
 	private:
-		void load() override;
 		void render() override;
 
 	protected:

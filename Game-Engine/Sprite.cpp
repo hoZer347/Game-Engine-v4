@@ -36,7 +36,7 @@ namespace loom
 		void update() override;
 		void render() override;
 	};
-	SpriteManager manager;
+	static inline SpriteManager manager;
 
 
 	Sprite::Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16_t ups) :
@@ -74,13 +74,13 @@ namespace loom
 	{
 		glUseProgram(shader.id);
 		glEnableVertexAttribArray(VEC4_0_16);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vec4) * vtxs.size(), vtxs.data(), GL_STATIC_DRAW);
+		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+		glBufferData(GL_ARRAY_BUFFER, vtxs.size() * sizeof(vec4), vtxs.data(), GL_STATIC_DRAW);
 		
 		GameObject<Sprite>::access([](auto& sprite)
 		{
 			glBindTexture(GL_TEXTURE_2D, sprite.texture.id);
 			glUniformMatrix4fv(_trns, 1, GL_FALSE, &sprite.trns[0][0]);
-			glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 			glUniform4fv(_location, 1, &sprite.location[0]);
 			glDrawArrays(GL_QUADS, 0, (GLsizei)vtxs.size());
 		});

@@ -3,51 +3,109 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include "Input.h"
+#include "Control.h"
 
 namespace loom
 {
-	static inline std::shared_ptr<Menu> MENU = nullptr;
-
-	void Menu::Init()
+	Menu::Menu(Control& control) :
+		control(control)
 	{
-		std::scoped_lock<std::recursive_mutex> lock{mut};
-
-
+		next();
 	};
-	void Menu::Exit()
+	std::shared_ptr<Menu> Menu::make(Control& control)
 	{
-		std::scoped_lock<std::recursive_mutex> lock{mut};
-
-
+		return std::shared_ptr<Menu>(new Menu(control));
 	};
 	void Menu::next()
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		if (!MENU)
+		options.emplace_back();
+		if (options.size() == 1)
 		{
-			MENU = std::shared_ptr<Menu>(new Menu());
-			Menu::Init();
-		}
-		else
-		{
-			std::shared_ptr<Menu> menu = std::shared_ptr<Menu>(new Menu());
-			menu->_prev = MENU;
-			MENU = menu;
+			control.next([this]()
+			{
+				this->control.AddTask([this]()
+				{
+					std::scoped_lock<std::recursive_mutex> lock{mut};
+
+					if (options.empty())
+					{
+						this->control.prev();
+						return;
+					};
+
+					for (auto& option : options.back())
+						if (option->hover_detection())
+						{
+							// Skipping if hovered option is still hovered
+							if (hovered == option)
+								return;
+
+							// Unhovering last option
+							if (hovered)
+								hovered->on_unhover();
+
+							// Hovering current option
+							if (hovered != option)
+								option->on_hover();
+							
+							hovered = option;
+
+							return;
+						};
+
+					if (hovered)
+						hovered->on_unhover();
+
+					hovered = nullptr;
+				});
+				this->control.AddOutput([this](float& f)
+				{
+					if (f && hovered)
+						hovered->on_select();
+
+				}, GLFW_MOUSE_BUTTON_LEFT);
+				this->control.AddOnPrev([this]() { options.clear(); });
+			});
 		};
 	};
 	void Menu::prev()
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		if (!(MENU = MENU->_prev))
-			Menu::Exit();
+		options.pop_back();
 	};
-	void Menu::AddOptions(Option* options ...)
+	void Menu::leave()
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
+		control.prev();
+	};
+	void Menu::AddOption(std::shared_ptr<Option> option)
+	{
+		std::scoped_lock<std::recursive_mutex> lock{mut};
 
+		options.back().push_back(option);
+	};
+	template <typename... Options>
+	void Menu::AddOptions(std::shared_ptr<Option> option, Options... options)
+	{
+		AddOption(option);
+		AddOptions(options...);
+	};
+
+
+	RectOption::RectOption(float&& x, float&& y, float&& w, float&& h) :
+		x(x), y(y), w(w), h(h)
+	{
+		hover_detection = [x, y, w, h]()
+		{
+			return
+				Control::mx > x &&
+				Control::my > y &&
+				Control::mx < x + w &&
+				Control::my < y + h;
+		};
 	};
 };

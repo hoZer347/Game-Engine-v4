@@ -2,7 +2,7 @@
 
 #include "Enums.h"
 #include "Utils.h"
-#include "Input.h"
+#include "Control.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -11,7 +11,6 @@
 
 namespace loom
 {
-	// TODO: Add this to a presets file
 	static inline const float
 		CAMERA_ROTATION_SPEED = .1f,
 		CAMERA_MOVEMENT_SPEED = .1f,
@@ -19,58 +18,55 @@ namespace loom
 		MIN_CAMERA_ZOOM = 1.f,
 		MAX_CAMERA_ZOOM = 20.f;
 
-	void Camera::InitiateFreeCam()
+	void Camera::InitiateFreeCam(Control& control)
 	{
-		Inputs::next();
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 
-
-		// WASD movement relative to where the camera is pointing (x, y)
-		Inputs::AddInput([&]()
+		// Wrap into one mutex
+		control.next([&control]()
 		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_W, 255, GLFW_PRESS, 0 });
-		Inputs::AddInput([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_A, 255, GLFW_PRESS, 0 });
-		Inputs::AddInput([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_S, 255, GLFW_PRESS, 0 });
-		Inputs::AddInput([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_D, 255, GLFW_PRESS, 0 });
-		Inputs::AddInput([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_SPACE, 255, GLFW_PRESS, 0 });
-		Inputs::AddInput([&]()
-		{
-			Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-		}, { GLFW_KEY_LEFT_CONTROL, 255, GLFW_PRESS, 0 });
+			// WASD movement relative to where the camera is pointing (x, y)
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_W);
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_A);
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_S);
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_D);
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_SPACE);
+			control.AddOutput([](float& f)
+			{
+				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
+			}, GLFW_KEY_LEFT_CONTROL);
 
+			// Click and drag m3 to rotate camera
+			control.AddOutput([](float& f)
+			{
+				if (f)
+				{
+					Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
+					Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
 
-		// Click and drag m3 to rotate camera
-		Inputs::AddInput([&]()
-		{
-			static double mx, my;
-			Inputs::GetRelativeMousePos(mx, my);
-
-			Camera::yaww += (float)-mx * CAMERA_ROTATION_SPEED;
-			Camera::roll += (float)-my * CAMERA_ROTATION_SPEED;
-			if (Camera::roll > 180)
-				Camera::roll = 180;
-			if (Camera::roll < 0)
-				Camera::roll = 0;
-
-		}, { 0, GLFW_MOUSE_BUTTON_3, GLFW_PRESS, 0 });
-
-
-		// Reset camera on prev
-		Inputs::AddOnPrev([]() { Camera::mvp = mvp; });
+					if (Camera::roll > 180)
+						Camera::roll = 180;
+					if (Camera::roll < 0)
+						Camera::roll = 0;
+				};
+			}, GLFW_MOUSE_BUTTON_MIDDLE);
+		});
 	};
 
 
@@ -127,14 +123,11 @@ namespace loom
 			ptch_mat = rotate(radians(ptch), vec3(0, 1, 0));
 			yaww_mat = rotate(radians(yaww), vec3(0, 0, 1));
 
-			double mx, my;
-			Inputs::GetMousePos(mx, my);
-
-			mpos =	inverse(Camera::mvp) * vec4(2 * mx / screen_w - 1, 1 - 2 * my / screen_h, 0, 1);
+			mpos =	inverse(Camera::mvp) * vec4(2 * Control::mx / screen_w - 1, 1 - 2 * Control::my / screen_h, 0, 1);
 			mdir =	inverse(Camera::rotn) *
 					inverse(Camera::proj) *
 					inverse(Camera::view) *
-					vec4(2 * mx / screen_w - 1, 1 - 2 * my / screen_h, -1, 1);
+					vec4(2 * Control::mx / screen_w - 1, 1 - 2 * Control::my / screen_h, -1, 1);
 
 			mpos /= mpos.w;
 			mdir /= mdir.w;

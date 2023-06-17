@@ -9,8 +9,10 @@
 #include "Data.h"
 #include "Enums.h"
 #include "Text.h"
-#include "Input.h"
+#include "Mesh.h"
+#include "Control.h"
 #include "Utils.h"
+#include "Menu.h"
 #include "Sprite.h"
 #include "Geometry.h"
 using namespace loom;
@@ -30,10 +32,11 @@ int main()
 {
 	Loom::Init();
 
-	Camera::InitiateFreeCam();
+	Control control;
+	Camera::InitiateFreeCam(control);
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
-	Sprite sprite { texture, vec2{ 32 * 11, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
+	Sprite sprite { texture, vec2{ 0, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
 
 	Map map{ 4, 8 };
 	GridOutline outline{ map };
