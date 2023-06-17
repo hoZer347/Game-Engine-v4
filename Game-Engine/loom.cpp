@@ -85,11 +85,6 @@ namespace loom
 		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
 
 
-		// Loading Required Items
-		Loadable::access([](auto& object) { object.load(); });
-		Loadable::clear();
-
-		
 		// Initializing updater
 		std::atomic<bool> KILL = false;
 		std::thread updater {[&]()
@@ -106,6 +101,7 @@ namespace loom
 			Loadable::access([](auto& object) { object.load(); });
 			Loadable::clear();
 			
+			// Rendering Things
 			Renderable::access([](auto& object) { object.render(); });
 
 			// OpenGL Stuff
