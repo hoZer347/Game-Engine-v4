@@ -22,21 +22,33 @@ namespace loom
 	//
 	
 
+	template <typename S>
+	static inline std::shared_ptr<S> make(auto&&... args) { return std::shared_ptr<S>(new S(args...)); };
+
+
 	// GameObjects
 	template <typename T>
 	struct GameObject
 	{
 	public:
 		friend struct Loom;
-		GameObject()
+		GameObject(bool self_add = true)
 		{
-			std::scoped_lock<std::recursive_mutex> lock{mut};
-			objects.push_back(static_cast<T*>(this));
+			if (self_add)
+			{
+				std::scoped_lock<std::recursive_mutex> lock{mut};
+				objects.push_back(static_cast<T*>(this));
+			};
 		};
 		virtual ~GameObject()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
 			objects.erase(std::remove(objects.begin(), objects.end(), static_cast<T*>(this)), objects.end());
+		};
+		static void add(T* t)
+		{
+			std::scoped_lock<std::recursive_mutex> lock{mut};
+			objects.push_back(t);
 		};
 		static void access(void(*f)(T&))
 		{
@@ -48,12 +60,6 @@ namespace loom
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
 			objects.clear();
-		};
-
-		template <typename... ARGS>
-		static std::shared_ptr<T> make(ARGS... args)
-		{
-			return std::shared_ptr<T>(new T(args));
 		};
 
 		operator T*() { return static_cast<T*>(this); };

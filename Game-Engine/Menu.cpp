@@ -96,8 +96,7 @@ namespace loom
 	};
 
 
-	RectOption::RectOption(float&& x, float&& y, float&& w, float&& h) :
-		x(x), y(y), w(w), h(h)
+	RectOption::RectOption(float&& x, float&& y, float&& w, float&& h)
 	{
 		hover_detection = [x, y, w, h]()
 		{

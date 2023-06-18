@@ -117,6 +117,7 @@ namespace loom
 			view = lookAt(eye, ctr, up);
 			calculateRotationMatrix(roll, ptch, yaww, rotn);
 			mode = rotn * trns;
+			vp = proj * view;
 			mvp = proj * view * mode;
 
 			roll_mat = rotate(radians(roll), vec3(1, 0, 0));

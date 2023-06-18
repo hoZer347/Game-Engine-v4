@@ -25,7 +25,8 @@ namespace loom
 							ctr			= vec3(0, 0, 0),
 							up			= vec3(0, 1, 0);
 
-		static inline mat4	mvp			= mat4(1),
+		static inline mat4	vp			= mat4(1),
+							mvp			= mat4(1),
 							trns		= mat4(1),
 							rotn		= mat4(1),
 							mode		= mat4(1),

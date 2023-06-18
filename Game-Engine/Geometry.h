@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Data.h"
+#include "Mesh.h"
 #include "Enums.h"
 #include "Camera.h"
 

@@ -11,6 +11,8 @@ namespace loom
 
 	struct Option
 	{
+		virtual ~Option() { };
+
 		Task on_select	= []() {};
 		Task on_hover	= []() {};
 		Task on_unhover = []() {};
@@ -46,19 +48,5 @@ namespace loom
 		virtual public Option
 	{
 		RectOption(float&& x, float&& y, float&& w, float&& h);
-		virtual ~RectOption() { };
-
-	private:
-		const float x, y, w, h;
-	};
-
-
-	struct TextRectOption final :
-		virtual public Option
-	{
-		TextRectOption();
-		
-
-
 	};
 };
