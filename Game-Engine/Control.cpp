@@ -10,9 +10,13 @@
 namespace loom
 {
 	struct ControlManager :
-		virtual protected Loadable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Renderable
 	{
+		ControlManager()
+		{
+			Engine::Add(this);
+		};
 		void load() override
 		{
 			Control::inputs.fill(0);

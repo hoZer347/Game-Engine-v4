@@ -25,8 +25,8 @@ namespace loom
 
 	// Storage for the info needed to render text
 	struct Font final :
-		virtual protected Loadable,
-		virtual protected Unloadable
+		virtual public Loadable,
+		virtual public Unloadable
 	{
 		Font(const char*&& font_file, uint32_t&& size = 64);
 
@@ -48,8 +48,8 @@ namespace loom
 	// Static Text
 	// - Creates a static texture representing text
 	struct StaticText final :
-		virtual protected Loadable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Renderable
 	{
 		StaticText(Font& font, std::string&& body);
 		virtual ~StaticText();
@@ -76,8 +76,8 @@ namespace loom
 	// DynamicText
 	// - Creates a text object by using the font's texture
 	struct DynamicText final :
-		virtual protected Loadable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Renderable
 	{
 		DynamicText(Font& font, std::string&& body);
 		virtual ~DynamicText();

@@ -19,10 +19,12 @@ namespace loom
 
 
 	struct SpriteManager :
-		virtual protected Loadable,
-		virtual protected Updateable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Updateable,
+		virtual public Renderable
 	{
+		SpriteManager() { Engine::Add(this); };
+
 		static inline std::vector<vec4> vtxs
 		{
 			vec4(0, 0, 0, 1),

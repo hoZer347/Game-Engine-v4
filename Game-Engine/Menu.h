@@ -7,7 +7,6 @@
 namespace loom
 {
 	struct Control;
-	struct Rect;
 
 	struct Option
 	{

@@ -7,9 +7,14 @@
 namespace loom
 {
 	struct GeometryManager :
-		virtual protected Geometry,
-		virtual protected Loadable
+		virtual public Geometry,
+		virtual public Loadable
 	{
+		GeometryManager()
+		{
+			Engine::Add(this);
+		};
+
 		void load() override
 		{
 			_color = glGetUniformLocation(geo_shader.id, "color");

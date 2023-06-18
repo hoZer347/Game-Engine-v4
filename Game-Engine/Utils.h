@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Data.h"
-
 #include <chrono>
 #include <atomic>
 #include <functional>

@@ -12,7 +12,7 @@ using namespace glm;
 namespace loom
 {
 	struct UnitManager :
-		virtual protected Updateable
+		virtual public Updateable
 	{
 		void update() override;
 	};

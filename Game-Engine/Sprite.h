@@ -9,7 +9,7 @@ namespace loom
 {
 	struct Sprite :
 		public GameObject<Sprite>,
-		virtual protected Loadable
+		virtual public Loadable
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		
@@ -24,7 +24,6 @@ namespace loom
 
 	private:
 		void load() override;
-
 
 
 		Texture& texture;

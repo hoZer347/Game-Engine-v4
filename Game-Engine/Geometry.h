@@ -32,7 +32,7 @@ namespace loom
 
 	struct Cube final :
 		public Geometry,
-		virtual private Renderable
+		virtual public Renderable
 	{
 		vec4 color = vec4(0, 0, 1, 1);
 		mat4 trns;
@@ -69,7 +69,7 @@ namespace loom
 
 	struct Rect final :
 		public Geometry,
-		virtual private Renderable
+		virtual public Renderable
 	{
 		vec4 color{ 1 };
 		mat4 trns{ 1 };
@@ -92,7 +92,7 @@ namespace loom
 
 	struct Circle final :
 		public Geometry,
-		virtual private Renderable
+		virtual public Renderable
 	{
 		const float radius = 1.0f;
 

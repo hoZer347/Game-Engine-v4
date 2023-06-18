@@ -15,7 +15,7 @@ namespace loom
 	struct Cell;
 
 	struct Map final :
-		virtual protected Updateable
+		virtual public Updateable
 	{
 		Map(const uint8& w, const uint8& h);
 
@@ -42,8 +42,8 @@ namespace loom
 
 	
 	struct GridOutline final :
-		virtual protected Loadable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Renderable
 	{
 		GridOutline(Map& map);
 		void reassign(Map& map);
@@ -60,8 +60,8 @@ namespace loom
 
 
 	struct Highlights final :
-		virtual protected Loadable,
-		virtual protected Renderable
+		virtual public Loadable,
+		virtual public Renderable
 	{
 		Highlights(Map& map);
 		void reassign(vec4&& new_color = vec4{1});

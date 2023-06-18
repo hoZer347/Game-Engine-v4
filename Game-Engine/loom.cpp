@@ -29,12 +29,10 @@ namespace loom
 	};
 	void Engine::Run()
 	{
-		Camera camera;
 		isRunning = true;
 
 		// TIMER for FPS counting
 		Utils::Timer TIMER;
-
 
 		// Allowing access to shaders / textures
 		s_mgr = new ShaderManager();
@@ -101,8 +99,10 @@ namespace loom
 			Loadable::access([](auto& object) { object.load(); });
 			Loadable::clear();
 			
+
 			// Rendering Things
 			Renderable::access([](auto& object) { object.render(); });
+
 
 			// OpenGL Stuff
 			glfwSwapBuffers(window);
@@ -119,6 +119,7 @@ namespace loom
 		// Deallocating everything allocated that uses openGL
 		KILL = true;
 		updater.join();
+		isRunning = false;
 		Unloadable::access([](auto& object) { object.unload(); });
 		Unloadable::clear();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -129,12 +130,6 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
-
-		isRunning = false;
-	};
-	void Engine::Exit()
-	{
-
 	};
 	void Engine::Exec(Task&& task)
 	{

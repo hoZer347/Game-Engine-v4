@@ -34,6 +34,8 @@ int main()
 {
 	Engine::Init();
 
+	Camera camera;
+
 	Control control;
 	Camera::InitiateFreeCam(control);
 
@@ -51,18 +53,24 @@ int main()
 	Unit unit{ sprite, map[1][2] };
 
 	Shader shader{ "Geometry" };
-	auto mesh = Engine::make<Mesh3D>(shader, GL_QUADS, 4, 4, 4);
-	mesh->mvp = &Camera::vp;
-	mesh->allocate(0,
+	Mesh3D<4> mesh{ shader, GL_QUADS, 4, 4 };
+	mesh.mvp = &Camera::vp;
+	mesh.allocate(0,
 		vec4(0, 0, -10, 1),
 		vec4(1, 0, -10, 1),
 		vec4(1, 1, -10, 1),
 		vec4(0, 1, -10, 1));
-	mesh->index(0, 0, 1, 2, 3);
+	mesh.index(0, 0, 1, 2, 3);
+
+	Engine::Add(
+		&control,
+		&texture,
+		&sprite,
+		&map,
+		&outline,
+		&highlights);
 
 	Engine::Run();
-
-	Engine::Exit();
 
 	return 0;
 };

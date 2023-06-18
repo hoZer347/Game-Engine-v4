@@ -31,7 +31,7 @@ namespace loom
 	// Handles interactions between the game and the player
 	// Updated at a frequency equal to CONTROL_TICKRATE
 	struct Control final :
-		virtual protected Updateable
+		virtual public Updateable
 	{
 		// Creates a control layer above the current one
 		void next(Task&& task = []() {});

@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include "Loom.h"
 #include "Enums.h"
 #include "Utils.h"
 #include "Control.h"
@@ -18,7 +19,11 @@ namespace loom
 		MIN_CAMERA_ZOOM = 1.f,
 		MAX_CAMERA_ZOOM = 20.f;
 
-	void Camera::InitiateFreeCam(Control& control)
+	Camera::Camera()
+	{
+		Engine::Add(this);
+	};
+    void Camera::InitiateFreeCam(Control& control)
 	{
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
