@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Data.h"
 #include "Camera.h"
 
-#include <mutex>
-#include <atomic>
 #include <vector>
 #include <functional>
 
@@ -13,16 +10,13 @@ using namespace glm;
 
 namespace loom
 {
-	struct Texture;
-	struct Shader;
-	struct Mesh;
-
 	typedef unsigned int uint32;
 
-	struct alignas(32) Mesh :
+	struct Mesh :
 		public GameObject<Mesh>,
 		virtual protected Renderable
 	{
+	protected:
 		// Standard Mesh
 		// Used to render complex 3D objects
 		// Parameters:
@@ -31,19 +25,11 @@ namespace loom
 		// - vtx_size: size of a single vertex by number of floats
 		// - num_vtxs: number of vertices the mesh will hold
 		// - num_inds: number of indices the mesh will use
-		Mesh(Shader& shader, const auto& render_type, const auto& vtx_size, auto&& num_vtxs, auto&& num_inds = 0) :
-			shader(shader),
-			render_type(render_type),
-			vtx_size(vtx_size),
-			num_vtxs(num_vtxs),
-			num_inds(num_inds)
-		{
-			vtxs = std::shared_ptr<float[]>((float*)malloc(num_vtxs * vtx_size * sizeof(float)));
-			inds = std::shared_ptr<uint32[]>((uint32*)malloc(num_inds * sizeof(uint32)));
-		};
-		virtual ~Mesh()
-		{ };
+		Mesh(Shader& shader, const uint16& render_type, const uint8& vtx_size, uint32&& num_vtxs, uint32&& num_inds = 0);
+		virtual ~Mesh();
 
+	public:
+		Shader& shader;
 		const uint32 num_vtxs, num_inds;
 		const uint8 vtx_size;
 		const uint16 render_type;
@@ -78,30 +64,31 @@ namespace loom
 			index(start_pos + size, elements...);
 		};
 
-		// Combines multiple Mesh's vertices into one reduce draw calls
+		// Combines multiple Mesh's vertices to reduce draw calls
 		// TODO: Finish this description
-		template <typename... MESHES>
-		inline void combine(Mesh* receiver, MESHES*... to_combine)
+		static inline void combine(std::vector<std::shared_ptr<Mesh>>&& meshes)
 		{
+			std::thread thread{[meshes]()
+			{
+				std::shared_ptr<Mesh> new_mesh;
 
 
 
-			combine(to_combine);
+
+			}};
+			thread.detach();
 		};
 
 		void print();
 
-	protected:
-		Shader& shader;
-		std::shared_ptr<float[]>	vtxs;
-		std::shared_ptr<uint32[]>	inds;
-
 	private:
-		uint32 offset=0;
 		void render() override;
-		void combine();
 		void index(uint32 start_pos) { };
 		void allocate(uint32 start_pos) { };
+
+		uint32 offset = 0;
+		const std::shared_ptr<float[]>	vtxs;
+		const std::shared_ptr<uint32[]>	inds;
 	};
 
 
@@ -109,11 +96,13 @@ namespace loom
 		virtual public Mesh,
 		virtual private Loadable
 	{
-		Mesh3D(auto&&... args) : Mesh(args...)
-		{ };
-
 		mat4 trns{ 1 };
 		mat4* mvp { &Camera::mvp };
+
+	protected:
+		friend struct Engine;
+		Mesh3D(auto&&... args) : Mesh(args...)
+		{ };
 
 	private:
 		void load() override;
@@ -125,6 +114,8 @@ namespace loom
 	struct Mesh2D final :
 		virtual public Mesh
 	{
+	protected:
+		friend struct Engine;
 		Mesh2D(auto&&... args) : Mesh(args...)
 		{ };
 

@@ -23,11 +23,11 @@ namespace loom
 {
 	static inline bool isRunning;
 
-	void Loom::Init()
+	void Engine::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	};
-	void Loom::Run()
+	void Engine::Run()
 	{
 		Camera camera;
 		isRunning = true;
@@ -132,16 +132,16 @@ namespace loom
 
 		isRunning = false;
 	};
-	void Loom::Exit()
+	void Engine::Exit()
 	{
 
 	};
-	void Loom::Exec(Task&& task)
+	void Engine::Exec(Task&& task)
 	{
 		std::thread thread = std::thread([task]() { task(); });
 		thread.detach();
 	};
-	const bool& Loom::GetIsRunning()
+	const bool& Engine::GetIsRunning()
 	{
 		return isRunning;
 	};

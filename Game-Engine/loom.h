@@ -8,7 +8,7 @@ namespace loom
 	typedef std::function<void()> Task;
 
 	// The main engine singleton
-	struct Loom final
+	struct Engine final
 	{
 		static void Init();
 		static void Run();
@@ -17,8 +17,11 @@ namespace loom
 		static void Exec(Task&& task);
 		static const bool& GetIsRunning();
 
+		template <typename S>
+		static inline std::shared_ptr<S> make(auto&&... args) { return std::shared_ptr<S>(new S(args...)); };
+
 	private:
-		Loom() { };
+		Engine() { };
 	};
 	//
 };

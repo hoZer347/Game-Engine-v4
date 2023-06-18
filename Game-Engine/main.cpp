@@ -32,7 +32,7 @@ using namespace glm;
 
 int main()
 {
-	Loom::Init();
+	Engine::Init();
 
 	Control control;
 	Camera::InitiateFreeCam(control);
@@ -51,18 +51,18 @@ int main()
 	Unit unit{ sprite, map[1][2] };
 
 	Shader shader{ "Geometry" };
-	Mesh3D mesh = Mesh3D(shader, GL_QUADS, 4, 4, 4);
-	mesh.mvp = &Camera::vp;
-	mesh.allocate(0,
+	auto mesh = Engine::make<Mesh3D>(shader, GL_QUADS, 4, 4, 4);
+	mesh->mvp = &Camera::vp;
+	mesh->allocate(0,
 		vec4(0, 0, -10, 1),
 		vec4(1, 0, -10, 1),
 		vec4(1, 1, -10, 1),
 		vec4(0, 1, -10, 1));
-	mesh.index(0, 0, 1, 2, 3);
+	mesh->index(0, 0, 1, 2, 3);
 
-	Loom::Run();
+	Engine::Run();
 
-	Loom::Exit();
+	Engine::Exit();
 
 	return 0;
 };

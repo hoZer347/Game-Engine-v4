@@ -9,6 +9,24 @@
 
 namespace loom
 {
+	Mesh::Mesh(
+		Shader& shader,
+		const uint16& render_type,
+		const uint8& vtx_size,
+		uint32&& num_vtxs,
+		uint32&& num_inds) :
+		shader(shader),
+		render_type(render_type),
+		vtx_size(vtx_size),
+		num_vtxs(num_vtxs),
+		num_inds(num_inds),
+		vtxs((float*)malloc(num_vtxs* vtx_size * sizeof(float))),
+		inds((uint32*)malloc(num_inds * sizeof(uint32)))
+	{
+		
+	};
+	Mesh::~Mesh()
+	{ };
 	void Mesh::print()
 	{
 		std::cout << "Vertices: " << std::endl;

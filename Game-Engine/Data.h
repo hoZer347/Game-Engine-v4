@@ -20,10 +20,6 @@ namespace loom
 	struct ShaderManager;
 	ShaderManager* GetSMgr();
 	//
-	
-
-	template <typename S>
-	static inline std::shared_ptr<S> make(auto&&... args) { return std::shared_ptr<S>(new S(args...)); };
 
 
 	// GameObjects
@@ -31,7 +27,7 @@ namespace loom
 	struct GameObject
 	{
 	public:
-		friend struct Loom;
+		friend struct Engine;
 		GameObject(bool self_add = true)
 		{
 			if (self_add)
@@ -71,26 +67,26 @@ namespace loom
 	struct Loadable : public GameObject<Loadable>
 	{
 	protected:
-		friend struct Loom;
+		friend struct Engine;
 		virtual void load()=0;
 	};
 	struct Renderable : public GameObject<Renderable>
 	{
 	protected:
-		friend struct Loom;
+		friend struct Engine;
 		friend struct Camera;
 		virtual void render()=0;
 	};
 	struct Updateable : public GameObject<Updateable>
 	{
 	protected:
-		friend struct Loom;
+		friend struct Engine;
 		virtual void update()=0;
 	};
 	struct Unloadable : public GameObject<Unloadable>
 	{
 	protected:
-		friend struct Loom;
+		friend struct Engine;
 		virtual void unload()=0;
 	};
 

@@ -49,7 +49,7 @@ namespace loom
 		static void InitiateFreeCam(Control& control);
 
 	protected:
-		friend struct Loom;
+		friend struct Engine;
 		Camera()
 		{ };
 

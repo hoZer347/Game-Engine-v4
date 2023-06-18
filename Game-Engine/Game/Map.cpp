@@ -63,7 +63,7 @@ namespace loom
 			return;
 		timer.push(std::chrono::milliseconds(1000 / 60));
 
-		Loom::Exec([&]() {
+		Engine::Exec([&]() {
 			vec2 b;
 			float d;
 
