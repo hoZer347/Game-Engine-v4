@@ -17,10 +17,6 @@ namespace loom
 		public GameObject<Mesh<vtx_size>>,
 		virtual public Renderable
 	{
-		void print();
-
-	protected:
-		friend struct Engine;
 		// Standard Mesh
 		// Used to render complex 3D objects
 		// Parameters:
@@ -29,15 +25,14 @@ namespace loom
 		// - vtx_size: size of a single vertex by number of floats
 		// - num_vtxs: number of vertices the mesh will hold
 		// - num_inds: number of indices the mesh will use
-		Mesh(Shader& shader, const uint16& render_type, uint32&& num_vtxs, uint32&& num_inds = 0);
+		Mesh(ptr<Shader> shader, const uint16& render_type, uint32&& num_vtxs, uint32&& num_inds = 0);
 		virtual ~Mesh();
 
-		static_assert(
-			vtx_size == 4 ||
-			vtx_size == 8 || 
-			vtx_size == 16);
+		void print();
 
-		Shader& shader;
+		static_assert(vtx_size == 4 || vtx_size == 8 || vtx_size == 16);
+
+		ptr<Shader> shader;
 
 	public:
 		// Used to change values of vertices
@@ -48,8 +43,8 @@ namespace loom
 
 			if constexpr (size > 1)
 				for (uint32 i = 0; i < size; i++)
-					vtxs[start_pos + i + offset] = element[i];
-			else vtxs[start_pos + offset] = element;
+					vtxs[start_pos + i] = element[i];
+			else vtxs[start_pos] = element;
 
 			allocate(start_pos + size, elements...);
 		};
@@ -63,8 +58,8 @@ namespace loom
 
 			if constexpr (size > 1)
 				for (uint32 i = 0; i < size; i++)
-					inds[start_pos + i + offset] = element[i];
-			else inds[start_pos + offset] = element;
+					inds[start_pos + i] = element[i];
+			else inds[start_pos] = element;
 
 			index(start_pos + size, elements...);
 		};
@@ -91,7 +86,6 @@ namespace loom
 		void render() override;
 		virtual void subRender() { };
 
-		uint32 offset = 0;
 		const uint32 num_vtxs, num_inds;
 		const uint16 render_type;
 		const std::shared_ptr<float[]>	vtxs;
@@ -100,11 +94,12 @@ namespace loom
 
 
 	template <int8 vtx_size>
-	struct Mesh3D final :
+	struct Mesh3D :
 		virtual public Mesh<vtx_size>,
 		virtual public Loadable
 	{
-		Mesh3D(auto&&... args) : Mesh<vtx_size>(args...)
+		template <typename... ARGS>
+		Mesh3D(ARGS... args) : Mesh<vtx_size>(args...)
 		{ };
 
 		mat4 trns{ 1 };
@@ -118,7 +113,7 @@ namespace loom
 
 
 	template <int8 vtx_size>
-	struct Mesh2D final :
+	struct Mesh2D :
 		virtual public Mesh<vtx_size>
 	{
 		Mesh2D(auto&&... args) : Mesh<vtx_size>(args...)

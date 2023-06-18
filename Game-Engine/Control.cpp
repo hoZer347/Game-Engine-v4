@@ -13,10 +13,6 @@ namespace loom
 		virtual public Loadable,
 		virtual public Renderable
 	{
-		ControlManager()
-		{
-			Engine::Add(this);
-		};
 		void load() override
 		{
 			Control::inputs.fill(0);
@@ -59,7 +55,7 @@ namespace loom
 			};
 		};
 	};
-	static inline ControlManager manager;
+	static inline ptr<ControlManager> manager;
 
 
 	void Control::next(Task&& task)

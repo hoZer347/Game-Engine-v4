@@ -31,8 +31,10 @@ namespace loom
 	{
 		isRunning = true;
 
+
 		// TIMER for FPS counting
 		Utils::Timer TIMER;
+
 
 		// Allowing access to shaders / textures
 		s_mgr = new ShaderManager();
@@ -67,7 +69,12 @@ namespace loom
 			const void* userParam)
 			{
 				if (!((int)severity == (int)33387))
+				{
+					std::cout << type << std::endl;
+					std::cout << source << std::endl;
+					std::cout << id << std::endl;
 					std::cout << message << std::endl;
+				};
 			}, nullptr);
 		GLuint _vtxs, _inds;
 		glGenBuffers(1, &_vtxs);
@@ -119,7 +126,6 @@ namespace loom
 		// Deallocating everything allocated that uses openGL
 		KILL = true;
 		updater.join();
-		isRunning = false;
 		Unloadable::access([](auto& object) { object.unload(); });
 		Unloadable::clear();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -130,6 +136,8 @@ namespace loom
 		glfwDestroyWindow(window);
 		window = nullptr;
 		glfwTerminate();
+
+		isRunning = false;
 	};
 	void Engine::Exec(Task&& task)
 	{

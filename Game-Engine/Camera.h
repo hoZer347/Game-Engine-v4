@@ -13,8 +13,6 @@ namespace loom
 	struct Camera :
 		virtual public Renderable
 	{
-		Camera();
-
 		static inline float	fovy		= 45.f,
 							aspect		= 1.f,
 							near		= .1f,

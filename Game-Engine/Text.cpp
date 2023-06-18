@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Data.h"
+#include "Enums.h"
 #include "Utils.h"
 #include "Camera.h"
 
@@ -15,9 +16,21 @@
 
 namespace loom
 {
-	static inline Shader shader{ "Text" };
-	static inline uint32_t _mvp;
-	static inline uint32_t _trns;
+	struct Text :
+		virtual public Loadable
+	{
+		static inline ptr<Shader> shader{ "Text" };
+		static inline uint32_t _mvp;
+		static inline uint32_t _trns;
+
+	private:
+		void load() override
+		{
+			_mvp = glGetUniformLocation(shader->id, "mvp");
+			_trns = glGetUniformLocation(shader->id, "trns");
+		};
+	};
+	static inline ptr<Text> manager;
 
 
 	Font::Font(const char*&& font_file, uint32_t&& size) :
@@ -35,8 +48,6 @@ namespace loom
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		_mvp = glGetUniformLocation(shader.id, "mvp");
-		_trns = glGetUniformLocation(shader.id, "trns");
 
 
 		// Extracting info from FT_Face
@@ -180,14 +191,14 @@ namespace loom
 	};
 	void DynamicText::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(Text::shader->id);
 		glBindTexture(GL_TEXTURE_2D, font.texture);
 
 		glEnableVertexAttribArray(VEC4_0_32);
 		glEnableVertexAttribArray(VEC4_1_32);
 		
-		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
-		glUniformMatrix4fv(_trns, 1, GL_FALSE, &trns[0][0]);
+		glUniformMatrix4fv(Text::_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+		glUniformMatrix4fv(Text::_trns, 1, GL_FALSE, &trns[0][0]);
 		
 		glBufferData(
 			GL_ARRAY_BUFFER,

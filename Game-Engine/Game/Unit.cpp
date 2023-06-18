@@ -8,7 +8,7 @@
 
 #include "glm/gtx/transform.hpp"
 using namespace glm;
-
+/*
 namespace loom
 {
 	struct UnitManager :
@@ -16,7 +16,7 @@ namespace loom
 	{
 		void update() override;
 	};
-	static inline UnitManager manager;
+	static inline ptr<UnitManager> manager;
 
 
 	Unit::Unit(Sprite& sprite, Cell& cell) :
@@ -53,3 +53,4 @@ namespace loom
 		});
 	};
 };
+*/

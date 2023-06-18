@@ -22,7 +22,6 @@ namespace loom
 		uint8_t* data;
 	};
 
-
 	// Storage for the info needed to render text
 	struct Font final :
 		virtual public Loadable,

@@ -10,26 +10,19 @@ namespace loom
 		virtual public Geometry,
 		virtual public Loadable
 	{
-		GeometryManager()
-		{
-			Engine::Add(this);
-		};
-
 		void load() override
 		{
-			_color = glGetUniformLocation(geo_shader.id, "color");
-			_trns = glGetUniformLocation(geo_shader.id, "trns");
-			_mvp = glGetUniformLocation(geo_shader.id, "mvp");
+			_color = glGetUniformLocation(shader->id, "color");
+			_trns = glGetUniformLocation(shader->id, "trns");
+			_mvp = glGetUniformLocation(shader->id, "mvp");
 		};
-
-		
 	};
-	static inline GeometryManager manager;
+	static inline ptr<GeometryManager> manager;
 
 
 	void Cube::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(shader->id);
 		glEnableVertexAttribArray(VEC4_0_16);
 
 		glUniform4fv(_color, 1, &color[0]);
@@ -57,7 +50,7 @@ namespace loom
 
 	void Rect::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(shader->id);
 		glEnableVertexAttribArray(VEC4_0_16);
 
 		glUniform4fv(_color, 1, &color[0]);

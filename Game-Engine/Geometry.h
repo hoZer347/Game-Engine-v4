@@ -21,12 +21,10 @@ namespace loom
 	struct Geometry
 	{
 	protected:
-		static inline Shader geo_shader{"Geometry"};
+		static inline ptr<Shader> shader{"Geometry"};
 		static inline uint32_t _color = 0;
 		static inline uint32_t _trns = 0;
 		static inline uint32_t _mvp = 0;
-
-		Shader& shader = geo_shader;
 	};
 
 
@@ -35,7 +33,7 @@ namespace loom
 		virtual public Renderable
 	{
 		vec4 color = vec4(0, 0, 1, 1);
-		mat4 trns;
+		mat4 trns{ 1 };
 
 		static inline const int collision_type = COLLISION::CUBE;
 
@@ -97,7 +95,7 @@ namespace loom
 		const float radius = 1.0f;
 
 		vec4 color = vec4(1);
-		mat4 trns;
+		mat4 trns{ 1 };
 
 		static inline const int collision_type = COLLISION::CIRCLE;
 

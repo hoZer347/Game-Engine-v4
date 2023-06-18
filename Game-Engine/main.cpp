@@ -29,30 +29,24 @@ using namespace glm;
 // TODO: Make a Shader uniform extractor
 // TODO: Do a big glBufferData first, and make the other stuff use glBufferSubData
 // TODO: Hook up renderables to Mesh
+// TODO: Completely rework Map
 
 int main()
 {
 	Engine::Init();
 
-	Camera camera;
+	ptr<Camera> camera;
 
-	Control control;
-	Camera::InitiateFreeCam(control);
+	ptr<Control> control;
+	Camera::InitiateFreeCam(*control);
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
 	Sprite sprite{ texture, vec2{ 5 * 32, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
+	sprite.trns = translate(vec3(0));
+	
+	ptr<Rect> rect;
 
-	Map map{ 4, 8 };
-	GridOutline outline{ map };
-	Highlights highlights{ map };
-	map[1][1].highlight = 1;
-	map[1][2].highlight = 1;
-	map[2][2].highlight = 1;
-	map[2][1].highlight = 1;
-
-	Unit unit{ sprite, map[1][2] };
-
-	Shader shader{ "Geometry" };
+	ptr<Shader> shader{ "Geometry" };
 	Mesh3D<4> mesh{ shader, GL_QUADS, 4, 4 };
 	mesh.mvp = &Camera::vp;
 	mesh.allocate(0,
@@ -62,13 +56,7 @@ int main()
 		vec4(0, 1, -10, 1));
 	mesh.index(0, 0, 1, 2, 3);
 
-	Engine::Add(
-		&control,
-		&texture,
-		&sprite,
-		&map,
-		&outline,
-		&highlights);
+	Engine::Add(&texture, &sprite);
 
 	Engine::Run();
 

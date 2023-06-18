@@ -15,7 +15,6 @@ namespace loom
 	static inline uint32 _mvp;
 	static inline uint32 _trns;
 	static inline uint32 _location;
-	static inline Shader shader{ "Sprite" };
 
 
 	struct SpriteManager :
@@ -23,8 +22,6 @@ namespace loom
 		virtual public Updateable,
 		virtual public Renderable
 	{
-		SpriteManager() { Engine::Add(this); };
-
 		static inline std::vector<vec4> vtxs
 		{
 			vec4(0, 0, 0, 1),
@@ -38,7 +35,7 @@ namespace loom
 		void update() override;
 		void render() override;
 	};
-	static inline SpriteManager manager;
+	static inline ptr<SpriteManager> manager;
 
 
 	Sprite::Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16_t ups) :
@@ -61,9 +58,9 @@ namespace loom
 	};
 	void SpriteManager::load()
 	{
-		_mvp = glGetUniformLocation(shader.id, "mvp");
-		_trns = glGetUniformLocation(shader.id, "trns");
-		_location = glGetUniformLocation(shader.id, "loc");
+		_mvp = glGetUniformLocation(Sprite::shader->id, "mvp");
+		_trns = glGetUniformLocation(Sprite::shader->id, "trns");
+		_location = glGetUniformLocation(Sprite::shader->id, "loc");
 	};
 	void SpriteManager::update()
 	{
@@ -74,7 +71,7 @@ namespace loom
 	};
 	void SpriteManager::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(Sprite::shader->id);
 		glEnableVertexAttribArray(VEC4_0_16);
 		glUniformMatrix4fv(_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
 		glBufferData(GL_ARRAY_BUFFER, vtxs.size() * sizeof(vec4), vtxs.data(), GL_STATIC_DRAW);

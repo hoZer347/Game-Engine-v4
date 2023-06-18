@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
 #include "Data.h"
+#include "Enums.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -11,7 +12,7 @@ namespace loom
 {
 	template <int8 vtx_size>
 	Mesh<vtx_size>::Mesh(
-		Shader& shader,
+		ptr<Shader> shader,
 		const uint16& render_type,
 		uint32&& num_vtxs,
 		uint32&& num_inds) :
@@ -25,8 +26,6 @@ namespace loom
 	template <int8 vtx_size>
 	Mesh<vtx_size>::~Mesh()
 	{ };
-
-
 	template <int8 vtx_size>
 	void Mesh<vtx_size>::print()
 	{
@@ -37,7 +36,7 @@ namespace loom
 				std::cout << vtxs[i + j] << " ";
 			std::cout << std::endl;
 		};
-
+		
 		std::cout << "Indices: " << std::endl;
 		for (uint32 i = 0; i < num_inds; i++)
 			std::cout << inds[i] << " ";
@@ -54,7 +53,7 @@ namespace loom
 	template <int8 vtx_size>
 	void Mesh<vtx_size>::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(shader->id);
 
 		if constexpr (vtx_size == 16)
 		{
@@ -111,8 +110,8 @@ namespace loom
 	template <int8 vtx_size>
 	void Mesh3D<vtx_size>::load()
 	{
-		_mvp = glGetUniformLocation(Mesh<vtx_size>::shader.id, "mvp");
-		_trns = glGetUniformLocation(Mesh<vtx_size>::shader.id, "trns");
+		_mvp = glGetUniformLocation(Mesh<vtx_size>::shader->id, "mvp");
+		_trns = glGetUniformLocation(Mesh<vtx_size>::shader->id, "trns");
 	};
 	template <int8 vtx_size>
 	void Mesh3D<vtx_size>::subRender()
@@ -126,15 +125,16 @@ namespace loom
 
 	};
 
-	template struct Mesh<4u>;
-	template struct Mesh<8u>;
-	template struct Mesh<16u>;
 
-	template struct Mesh2D<4u>;
-	template struct Mesh2D<8u>;
-	template struct Mesh2D<16u>;
+	template struct Mesh<4>;
+	template struct Mesh<8>;
+	template struct Mesh<16>;
 
-	template struct Mesh3D<4u>;
-	template struct Mesh3D<8u>;
-	template struct Mesh3D<16u>;
+	template struct Mesh2D<4>;
+	template struct Mesh2D<8>;
+	template struct Mesh2D<16>;
+
+	template struct Mesh3D<4>;
+	template struct Mesh3D<8>;
+	template struct Mesh3D<16>;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Data.h"
-
+/*
 namespace loom
 {
 	struct StatSpread
@@ -28,3 +28,4 @@ namespace loom
 		Animation* animation = nullptr;
 	};
 };
+*/

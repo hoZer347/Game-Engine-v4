@@ -1,14 +1,11 @@
 #pragma once
 
 #include "Loom.h"
-#include "Enums.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
 
 #include <mutex>
-#include <thread>
-#include <atomic>
 #include <memory>
 #include <vector>
 #include <string>
@@ -23,20 +20,20 @@ namespace loom
 	//
 
 
-	// Works like an std::unique_ptr, but guarantees certain memory safties within the engine
+	// Works like an std::shared_ptr, but guarantees certain memory safties within the engine
 	// Modifying certain data during initialization is safe
 	// Create and Deletion are both safe
 	template <typename T>
-	struct ptr : std::unique_ptr<T>
+	struct ptr : std::shared_ptr<T>
 	{
 		template <typename... ARGS>
-		ptr(ARGS... args) : std::unique_ptr<T>(new T(args...))
+		ptr(ARGS... args) : std::shared_ptr<T>(new T(args...))
 		{
-			Engine::Add(std::unique_ptr<T>::get());
+			Engine::Add(std::shared_ptr<T>::get());
 		};
 		~ptr()
 		{
-			Engine::Rmv(std::unique_ptr<T>::get());
+			Engine::Rmv(std::shared_ptr<T>::get());
 		};
 	};
 
@@ -113,6 +110,8 @@ namespace loom
 	template <typename T, typename... ARGS>
 	inline void Engine::Add(T* t, ARGS... to_add)
 	{
+		if constexpr (std::is_base_of<GameObject<T>, T>::value)
+			t->GameObject<T>::AddToEngine();
 		if constexpr (std::is_base_of<Loadable, T>::value)
 			t->GameObject<Loadable>::AddToEngine();
 		if constexpr (std::is_base_of<Updateable, T>::value)
@@ -131,6 +130,8 @@ namespace loom
 	template <typename T, typename... ARGS>
 	inline void Engine::Rmv(T* t, ARGS... to_add)
 	{
+		if constexpr (std::is_base_of<GameObject<T>, T>::value)
+			t->GameObject<T>::RmvFromEngine();
 		if constexpr (std::is_base_of<Loadable, T>::value)
 			t->GameObject<Loadable>::RmvFromEngine();
 		if constexpr (std::is_base_of<Updateable, T>::value)
@@ -156,9 +157,7 @@ namespace loom
 
 		Shader(std::string files...)
 			: files({ files })
-		{
-			Engine::Add(this);
-		};
+		{ };
 
 	private:
 		void load();

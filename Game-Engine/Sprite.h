@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Data.h"
+#include "Enums.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -20,6 +21,7 @@ namespace loom
 		
 	protected:
 		friend struct SpriteManager;
+		static inline ptr<Shader> shader{ "Sprite" };
 		vec4 location;
 
 	private:
