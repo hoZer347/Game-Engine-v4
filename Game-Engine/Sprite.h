@@ -33,9 +33,4 @@ namespace loom
 		vec2 stride;
 		uint32_t ups;
 	};
-
-	struct Sprites
-	{
-		// TODO: Implement
-	};
 };

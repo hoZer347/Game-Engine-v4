@@ -73,8 +73,6 @@ namespace loom
 
 
     void  calculateRotationMatrix(float& roll, float& pitch, float& yaw, mat4& rotationMatrix) {
-		mat4 ret{0};
-		
 		// Convert degrees to radians
 		float rollRad = radians(roll);
 		float pitchRad = radians(pitch);
@@ -89,24 +87,22 @@ namespace loom
 		float cosYaww = cos(yawRad);
 
 		// Calculate the elements of the rotation matrix
-		ret[0][0] = cosYaww * cosPtch;
-		ret[0][1] = cosYaww * sinPtch * sinRoll - sinYaww * cosRoll;
-		ret[0][2] = cosYaww * sinPtch * cosRoll + sinYaww * sinRoll;
-		ret[0][3] = 0.0f;
-		ret[1][0] = sinYaww * cosPtch;
-		ret[1][1] = sinYaww * sinPtch * sinRoll + cosYaww * cosRoll;
-		ret[1][2] = sinYaww * sinPtch * cosRoll - cosYaww * sinRoll;
-		ret[1][3] = 0.0f;
-		ret[2][0] = -sinPtch;
-		ret[2][1] = cosPtch * sinRoll;
-		ret[2][2] = cosPtch * cosRoll;
-		ret[2][3] = 0.0f;
-		ret[3][0] = 0.0f;
-		ret[3][1] = 0.0f;
-		ret[3][2] = 0.0f;
-		ret[3][3] = 1.0f;
-
-		rotationMatrix = ret;
+		rotationMatrix[0][0] = cosYaww * cosPtch;
+		rotationMatrix[0][1] = cosYaww * sinPtch * sinRoll - sinYaww * cosRoll;
+		rotationMatrix[0][2] = cosYaww * sinPtch * cosRoll + sinYaww * sinRoll;
+		rotationMatrix[0][3] = 0.0f;
+		rotationMatrix[1][0] = sinYaww * cosPtch;
+		rotationMatrix[1][1] = sinYaww * sinPtch * sinRoll + cosYaww * cosRoll;
+		rotationMatrix[1][2] = sinYaww * sinPtch * cosRoll - cosYaww * sinRoll;
+		rotationMatrix[1][3] = 0.0f;
+		rotationMatrix[2][0] = -sinPtch;
+		rotationMatrix[2][1] = cosPtch * sinRoll;
+		rotationMatrix[2][2] = cosPtch * cosRoll;
+		rotationMatrix[2][3] = 0.0f;
+		rotationMatrix[3][0] = 0.0f;
+		rotationMatrix[3][1] = 0.0f;
+		rotationMatrix[3][2] = 0.0f;
+		rotationMatrix[3][3] = 1.0f;
 	};
 
 

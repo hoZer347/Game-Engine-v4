@@ -27,7 +27,7 @@ using namespace glm;
 // TODO: Make map highlights have an outline
 // TODO: Make GameObject's destructor more efficient
 // TODO: Make a Shader uniform extractor
-// TODO: Do a big glBufferData first, and make the other stuff use glBufferSubData
+// TODO: Make mesh do a big glBufferData first, and make the other stuff use glBufferSubData
 // TODO: Hook up renderables to Mesh
 // TODO: Completely rework Map
 
@@ -44,17 +44,7 @@ int main()
 	Sprite sprite{ texture, vec2{ 5 * 32, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
 	sprite.trns = translate(vec3(0));
 	
-	ptr<Rect> rect;
-
-	ptr<Shader> shader{ "Geometry" };
-	Mesh3D<4> mesh{ shader, GL_QUADS, 4, 4 };
-	mesh.mvp = &Camera::vp;
-	mesh.allocate(0,
-		vec4(0, 0, -10, 1),
-		vec4(1, 0, -10, 1),
-		vec4(1, 1, -10, 1),
-		vec4(0, 1, -10, 1));
-	mesh.index(0, 0, 1, 2, 3);
+	ptr<Cube> cube;
 
 	Engine::Add(&texture, &sprite);
 

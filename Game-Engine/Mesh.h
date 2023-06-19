@@ -12,29 +12,42 @@ namespace loom
 {
 	typedef unsigned int uint32;
 
-	template <int8 vtx_size>
+
+	// Standard Mesh
+	// Used to render complex 3D objects
+	// Parameters:
+	// - shader: the shader used to draw this
+	// - render_type: the shape alignment of the vertices (i.e. triangles, lines, etc.)
+	// - vtx_size: size of a single vertex by number of floats
+	// - num_vtxs: number of vertices the mesh will hold
+	// - num_inds: number of indices the mesh will use
 	struct Mesh :
-		public GameObject<Mesh<vtx_size>>,
+		public GameObject<Mesh>,
 		virtual public Renderable
 	{
-		// Standard Mesh
-		// Used to render complex 3D objects
-		// Parameters:
-		// - shader: the shader used to draw this
-		// - render_type: the shape alignment of the vertices (i.e. triangles, lines, etc.)
-		// - vtx_size: size of a single vertex by number of floats
-		// - num_vtxs: number of vertices the mesh will hold
-		// - num_inds: number of indices the mesh will use
-		Mesh(ptr<Shader> shader, const uint16& render_type, uint32&& num_vtxs, uint32&& num_inds = 0);
+		Mesh(auto&& shader,
+			auto&& vtx_size,
+			auto&& render_type,
+			auto&& num_vtxs,
+			auto&& num_inds) :
+			shader(shader),
+			vtx_size(vtx_size),
+			render_type(render_type),
+			num_vtxs(num_vtxs),
+			num_inds(num_inds),
+			vtxs((float*)malloc(num_vtxs* vtx_size * sizeof(float))),
+			inds((uint32*)malloc(num_inds * sizeof(uint32)))
+		{ };
+
 		virtual ~Mesh();
 
 		void print();
 
-		static_assert(vtx_size == 4 || vtx_size == 8 || vtx_size == 16);
-
 		ptr<Shader> shader;
+		const uint8 vtx_size;
+		const uint16 render_type;
+		const uint32 num_vtxs, num_inds;
 
-	public:
 		// Used to change values of vertices
 		// TODO: Finish this description
 		inline void allocate(uint32 start_pos, auto&& element, auto&&... elements)
@@ -43,7 +56,7 @@ namespace loom
 
 			if constexpr (size > 1)
 				for (uint32 i = 0; i < size; i++)
-					vtxs[start_pos + i] = element[i];
+					vtxs[start_pos + i] = (float)element[i];
 			else vtxs[start_pos] = element;
 
 			allocate(start_pos + size, elements...);
@@ -58,7 +71,7 @@ namespace loom
 
 			if constexpr (size > 1)
 				for (uint32 i = 0; i < size; i++)
-					inds[start_pos + i] = element[i];
+					inds[start_pos + i] = (uint32)element[i];
 			else inds[start_pos] = element;
 
 			index(start_pos + size, elements...);
@@ -67,13 +80,11 @@ namespace loom
 
 		// Combines multiple Mesh's vertices to reduce draw calls
 		// TODO: Finish this description
-		static inline void combine(std::vector<std::shared_ptr<Mesh>>&& meshes)
+		static inline void combine(std::vector<ptr<Mesh>>&& meshes)
 		{
 			std::thread thread{[meshes]()
 			{
-				std::shared_ptr<Mesh> new_mesh;
-
-
+				
 			}};
 			thread.detach();
 		};
@@ -86,40 +97,7 @@ namespace loom
 		void render() override;
 		virtual void subRender() { };
 
-		const uint32 num_vtxs, num_inds;
-		const uint16 render_type;
 		const std::shared_ptr<float[]>	vtxs;
 		const std::shared_ptr<uint32[]>	inds;
-	};
-
-
-	template <int8 vtx_size>
-	struct Mesh3D :
-		virtual public Mesh<vtx_size>,
-		virtual public Loadable
-	{
-		template <typename... ARGS>
-		Mesh3D(ARGS... args) : Mesh<vtx_size>(args...)
-		{ };
-
-		mat4 trns{ 1 };
-		mat4* mvp { &Camera::mvp };
-
-	private:
-		void subRender() override;
-		void load() override;
-		uint32 _mvp=0, _trns=0;
-	};
-
-
-	template <int8 vtx_size>
-	struct Mesh2D :
-		virtual public Mesh<vtx_size>
-	{
-		Mesh2D(auto&&... args) : Mesh<vtx_size>(args...)
-		{ };
-
-	private:
-		void subRender() override;
 	};
 };

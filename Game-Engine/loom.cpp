@@ -57,6 +57,7 @@ namespace loom
 		glEnable(GL_MULTISAMPLE);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glEnable(GL_DOUBLEBUFFER);
+		glEnable(GL_CULL_FACE);
 		glfwSwapInterval(0);
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback([](
