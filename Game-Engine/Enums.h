@@ -41,6 +41,7 @@ namespace loom
 	{
 		SQUARE,
 		PLANE,
+		RECT,
 		CUBE,
 		LINE,
 		RAY,

@@ -2,46 +2,18 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Engine\Sprite</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Control.cpp">
-      <Filter>Engine\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>Engine\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Engine\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Engine\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu.cpp">
-      <Filter>Engine\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Map.cpp">
-      <Filter>Game\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Engine\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Engine\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Engine\Texture</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Testing.cpp" />
+    <ClCompile Include="Testing.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -95,6 +67,9 @@
     <Filter Include="Engine\Data">
       <UniqueIdentifier>{96447134-fbc2-4b5f-91cf-8a65419b7631}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Trash">
+      <UniqueIdentifier>{4647bd2e-8fc8-4448-b298-37c3f7a931aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -142,7 +117,9 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Testing.h" />
+    <ClInclude Include="Testing.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">

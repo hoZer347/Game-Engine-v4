@@ -37,6 +37,7 @@ namespace loom
 	public:
 		GameObject()
 		{
+			int i = 0;
 			assert(!is_in_engine || !Engine::GetIsRunning());
 		};
 		virtual ~GameObject()

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <string>
 
 namespace loom
@@ -16,7 +15,6 @@ namespace loom
 		Texture(std::string file, uint32_t type);
 
 	private:
-		std::function<void()> f;
 		std::string file;
 		uint32_t type = 0;
 		int32_t nrChannels = -1;

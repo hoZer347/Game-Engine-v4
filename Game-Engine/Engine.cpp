@@ -1,21 +1,16 @@
 #include "Engine.h"
 
+#include "Enums.h"
+#include "Data.h"
+#include "Utils.h"
+
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
-
 #include <iostream>
-
-#include "Enums.h"
-#include "Data.h"
-#include "Utils.h"
-#include "Shader.h"
-#include "Camera.h"
-#include "Control.h"
-#include "Text.h"
 
 namespace loom
 {

@@ -7,7 +7,7 @@
 
 namespace loom
 {
-	void InheritanceOrderTest()
+	inline void InheritanceOrderTest()
 	{
 		struct Base
 		{
@@ -33,5 +33,19 @@ namespace loom
 	};
 
 
+	void SpriteTest()
+	{
+		Engine::Init();
 
+		Camera camera;
+		Control control;
+		Camera::InitiateFreeCam(control);
+
+		Texture texture{ "Resources/Anna.png", GL_RGBA };
+		Sprite sprite{ texture, vec2{ 5 * 32, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
+
+		Engine::Add(&texture, &sprite, &camera, &control);
+
+		Engine::Run();
+	};
 };

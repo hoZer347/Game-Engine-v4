@@ -1,18 +1,16 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
+//#include "Game/Map.h"
+
 #include "Loom.h"
 #include "Testing.h"
-
-#include "Engine.h"
-#include "Camera.h"
 #include "Data.h"
-#include "Enums.h"
-#include "Mesh.h"
-#include "Control.h"
-#include "Utils.h"
 #include "Geometry.h"
+#include "Sprite.h"
 using namespace loom;
+using namespace geo;
+
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -27,22 +25,21 @@ using namespace glm;
 // TODO: Hook up renderables to Mesh
 // TODO: Completely rework Map
 // TODO: Change loadable / unloadable to functional implementations
-// TODO: Add some sort of 
 
 
 int main()
 {
 	Engine::Init();
 
-	SpriteTest();
+	Camera camera;
+	Control control;
+	Camera::InitiateFreeCam(control);
 
-	ptr<Camera> camera;
+	Rect<4> rect;
+	rect.trns = translate(vec3(-1, -1, 0));
+	Cube<4> cube;
 
-	ptr<Control> control;
-	Camera::InitiateFreeCam(*control);
-
-	Rect rect;
-	rect.trns *= translate(vec3(-1, -1, 0));
+	Engine::Add(&camera, &control, &rect, &cube);
 
 	Engine::Run();
 

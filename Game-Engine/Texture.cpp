@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-#include "Data.h"
+#include "Engine.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -9,6 +9,7 @@
 #include "stb_image.h"
 
 #include <unordered_map>
+#include <string>
 
 namespace loom
 {
