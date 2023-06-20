@@ -2,17 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Loom.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Engine\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Engine\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="Control.cpp">
       <Filter>Engine\Input</Filter>
@@ -21,7 +15,7 @@
       <Filter>Engine\Text</Filter>
     </ClCompile>
     <ClCompile Include="Data.cpp">
-      <Filter>Engine\Primitives</Filter>
+      <Filter>Engine\Data</Filter>
     </ClCompile>
     <ClCompile Include="Geometry.cpp">
       <Filter>Engine\Geometry</Filter>
@@ -32,18 +26,22 @@
     <ClCompile Include="Menu.cpp">
       <Filter>Engine\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Unit.cpp">
-      <Filter>Game\Unit</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Map.cpp">
       <Filter>Game\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Cell.cpp">
-      <Filter>Game\Cell</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Engine\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Engine\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Engine\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Testing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -57,9 +55,6 @@
     </Filter>
     <Filter Include="Engine\Camera">
       <UniqueIdentifier>{7ba8ea3b-649b-4176-b36b-6443e574014b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Primitives">
-      <UniqueIdentifier>{96447134-fbc2-4b5f-91cf-8a65419b7631}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{204fa360-f970-4e61-90a4-846572f0a777}</UniqueIdentifier>
@@ -91,6 +86,15 @@
     <Filter Include="Engine\Mesh">
       <UniqueIdentifier>{da2bee9b-f9fb-4ba4-9cf9-abdc1702a72b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Texture">
+      <UniqueIdentifier>{6061b09c-dec5-4431-9934-2872e6c1ca1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Shader">
+      <UniqueIdentifier>{323ea8ee-ebe3-4790-b3f1-12421c2bf47b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Data">
+      <UniqueIdentifier>{96447134-fbc2-4b5f-91cf-8a65419b7631}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -105,9 +109,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Engine\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Engine\Primitives</Filter>
-    </ClInclude>
     <ClInclude Include="Control.h">
       <Filter>Engine\Input</Filter>
     </ClInclude>
@@ -115,7 +116,7 @@
       <Filter>Engine\Text</Filter>
     </ClInclude>
     <ClInclude Include="Data.h">
-      <Filter>Engine\Primitives</Filter>
+      <Filter>Engine\Data</Filter>
     </ClInclude>
     <ClInclude Include="Geometry.h">
       <Filter>Engine\Geometry</Filter>
@@ -126,18 +127,22 @@
     <ClInclude Include="Menu.h">
       <Filter>Engine\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Unit.h">
-      <Filter>Game\Unit</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Map.h">
       <Filter>Game\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Cell.h">
-      <Filter>Game\Cell</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Engine\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Engine\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Engine\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Testing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">

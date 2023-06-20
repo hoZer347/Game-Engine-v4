@@ -10,33 +10,35 @@
 namespace loom
 {
 	struct ControlManager :
-		virtual public Loadable,
 		virtual public Renderable
 	{
-		void load() override
+		ControlManager()
 		{
-			Control::inputs.fill(0);
-
-			if (GLFWwindow* window = glfwGetCurrentContext())
+			Engine::DoOnMain([]()
 			{
-				glfwSetScrollCallback(window, [](GLFWwindow* window, double _sx, double _sy)
+				Control::inputs.fill(0);
+
+				if (GLFWwindow* window = glfwGetCurrentContext())
 				{
-					Control::sx += _sx;
-					Control::sy += _sy;
-				});
-				glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h)
-				{
-					glViewport(0, 0, w, h);
-				});
-				glfwSetKeyCallback(window, [](GLFWwindow*, int button, int, int action, int)
-				{
-					Control::inputs[button] = (float)action;
-				});
-				glfwSetMouseButtonCallback(window, [](GLFWwindow*, int button, int action, int)
-				{
-					Control::inputs[button] = (float)action;
-				});
-			};
+					glfwSetScrollCallback(window, [](GLFWwindow* window, double _sx, double _sy)
+					{
+						Control::sx += _sx;
+						Control::sy += _sy;
+					});
+					glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h)
+					{
+						glViewport(0, 0, w, h);
+					});
+					glfwSetKeyCallback(window, [](GLFWwindow*, int button, int, int action, int)
+					{
+						Control::inputs[button] = (float)action;
+					});
+					glfwSetMouseButtonCallback(window, [](GLFWwindow*, int button, int action, int)
+					{
+						Control::inputs[button] = (float)action;
+					});
+				};
+			});
 		};
 		void render() override
 		{

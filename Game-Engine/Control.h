@@ -45,7 +45,7 @@ namespace loom
 		// Clears current layer
 		void clear();
 
-		// Ads a task for the updater to do every frame
+		// Adds a task for the updater to do every frame
 		void AddTask(Task&& task);
 
 		// Adds a task to do when the "next()" function is called

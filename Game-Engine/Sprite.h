@@ -8,9 +8,9 @@ using namespace glm;
 
 namespace loom
 {
-	struct Sprite :
-		public GameObject<Sprite>,
-		virtual public Loadable
+	struct Texture;
+
+	struct Sprite : GameObject<Sprite>
 	{
 		Sprite(Texture& texture, vec2 start, vec2 size, vec2 move, uint16_t ups);
 		
@@ -19,18 +19,11 @@ namespace loom
 
 		static inline const int collision_type = COLLISION::SQUARE;
 		
-	protected:
-		friend struct SpriteManager;
-		static inline ptr<Shader> shader{ "Sprite" };
 		vec4 location;
 
-	private:
-		void load() override;
-
+		vec2 stride;
+		uint32 ups;
 
 		Texture& texture;
-
-		vec2 stride;
-		uint32_t ups;
 	};
 };

@@ -2,6 +2,7 @@
 
 #include "Data.h"
 #include "Enums.h"
+#include "Shader.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -12,8 +13,6 @@ namespace loom
 {
 	Mesh::~Mesh()
 	{ };
-
-
 	void Mesh::print()
 	{
 		std::cout << "Vertices: " << std::endl;
@@ -41,7 +40,7 @@ namespace loom
 	};
 	void Mesh::render()
 	{
-		glUseProgram(shader->id);
+		glUseProgram(shader.id);
 
 		switch (vtx_size)
 		{

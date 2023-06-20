@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Loom.h"
+#include "Engine.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
@@ -12,37 +12,37 @@ using namespace glm;
 #include <iostream>
 #include <type_traits>
 
+template<typename T>
+concept has_render_member_func = requires {
+	{ std::declval<T>().render() } -> std::same_as<void>;
+};
+
+template<typename T>
+concept has_update_member_func = requires {
+	{ std::declval<T>().update() } -> std::same_as<void>;
+};
+
 namespace loom
 {
-	// Getting around thread_local bullshit
-	struct ShaderManager;
-	ShaderManager* GetSMgr();
-	//
+	template <typename T> struct Manager;
 
+	struct Updateable;
+	struct Renderable;
 
-	// Works like an std::shared_ptr, but guarantees certain memory safties within the engine
-	// Modifying certain data during initialization is safe
-	// Create and Deletion are both safe
-	template <typename T>
-	struct ptr : std::shared_ptr<T>
-	{
-		template <typename... ARGS>
-		ptr(ARGS... args) : std::shared_ptr<T>(new T(args...))
-		{
-			Engine::Add(std::shared_ptr<T>::get());
-		};
-		~ptr()
-		{
-			Engine::Rmv(std::shared_ptr<T>::get());
-		};
-	};
-
-
+	
 	// GameObjects
 	template <typename T>
 	struct GameObject
 	{
 	public:
+		GameObject()
+		{
+			assert(!is_in_engine || !Engine::GetIsRunning());
+		};
+		virtual ~GameObject()
+		{
+			assert(!is_in_engine || !Engine::GetIsRunning());
+		};
 		static void access(void(*f)(T&))
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
@@ -56,37 +56,34 @@ namespace loom
 		};
 
 		operator T*() { return static_cast<T*>(this); };
-		 
+
 	protected:
+		template <typename Base>
+		friend struct Manager;
 		friend struct Engine;
-		friend struct ptr<T>;
 		void AddToEngine()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
+			is_in_engine = true;
 			objects.push_back(static_cast<T*>(this));
 		};
 		void RmvFromEngine()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
+			is_in_engine = false;
 			std::erase_if(objects, [this](T* t) { return t == static_cast<T*>(this); });
 		};
 
+		bool is_in_engine = false;
+
 		static inline std::recursive_mutex mut;
 		static inline std::vector<T*> objects;
-	};
-	struct Loadable :
-		public GameObject<Loadable>
-	{
-	protected:
-		friend struct Engine;
-		virtual void load()=0;
 	};
 	struct Renderable :
 		public GameObject<Renderable>
 	{
 	protected:
 		friend struct Engine;
-		friend struct Camera;
 		virtual void render()=0;
 	};
 	struct Updateable :
@@ -95,13 +92,6 @@ namespace loom
 	protected:
 		friend struct Engine;
 		virtual void update()=0;
-	};
-	struct Unloadable :
-		public GameObject<Unloadable>
-	{
-	protected:
-		friend struct Engine;
-		virtual void unload()=0;
 	};
 
 
@@ -112,14 +102,10 @@ namespace loom
 	{
 		if constexpr (std::is_base_of<GameObject<T>, T>::value)
 			t->GameObject<T>::AddToEngine();
-		if constexpr (std::is_base_of<Loadable, T>::value)
-			t->GameObject<Loadable>::AddToEngine();
 		if constexpr (std::is_base_of<Updateable, T>::value)
 			t->GameObject<Updateable>::AddToEngine();
 		if constexpr (std::is_base_of<Renderable, T>::value)
 			t->GameObject<Renderable>::AddToEngine();
-		if constexpr (std::is_base_of<Unloadable, T>::value)
-			t->GameObject<Unloadable>::AddToEngine();
 
 		Add(to_add...);
 	};
@@ -132,60 +118,11 @@ namespace loom
 	{
 		if constexpr (std::is_base_of<GameObject<T>, T>::value)
 			t->GameObject<T>::RmvFromEngine();
-		if constexpr (std::is_base_of<Loadable, T>::value)
-			t->GameObject<Loadable>::RmvFromEngine();
 		if constexpr (std::is_base_of<Updateable, T>::value)
 			t->GameObject<Updateable>::RmvFromEngine();
 		if constexpr (std::is_base_of<Renderable, T>::value)
 			t->GameObject<Renderable>::RmvFromEngine();
-		if constexpr (std::is_base_of<Unloadable, T>::value)
-			t->GameObject<Unloadable>::RmvFromEngine();
 
 		Rmv(to_add...);
-	};
-
-
-	// Shader Object
-	struct Shader final :
-		virtual public Loadable,
-		virtual public Unloadable
-	{
-		// TODO: Make custom class for this, move to new file
-		// TODO: Push ShaderManager into this
-
-		uint32_t id = 0;
-
-		Shader(std::string files...)
-			: files({ files })
-		{ };
-
-	private:
-		void load();
-		void unload() { };
-
-		std::vector<std::string> files;
-	};
-
-
-	// Texture Object
-	struct Texture final :
-		virtual public Loadable,
-		virtual public Unloadable
-	{
-		// TODO: Make custom class for this, move to new file
-
-		uint32_t id = 0;
-		int32_t w = -1, h = -1;
-
-		Texture(std::string file, uint32_t type);
-
-	private:
-		void load();
-		void unload() { };
-
-		std::function<void()> f;
-		std::string file;
-		uint32_t type = 0;
-		int32_t nrChannels = -1;
 	};
 };

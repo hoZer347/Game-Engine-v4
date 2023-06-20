@@ -1,22 +1,25 @@
 #include "Geometry.h"
 
+#include "Loom.h"
+
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-
 namespace loom
 {
-	struct GeometryManager :
-		virtual public Loadable
+	struct GeometryManager
 	{
-		void load() override
+		GeometryManager()
 		{
-			Geometry::_color = glGetUniformLocation(Geometry::shader->id, "color");
-			Geometry::_trns = glGetUniformLocation(Geometry::shader->id, "trns");
-			Geometry::_mvp = glGetUniformLocation(Geometry::shader->id, "mvp");
+			Engine::DoOnMain([]()
+			{
+				Geometry::_color = glGetUniformLocation(Geometry::shader.id, "color");
+				Geometry::_trns = glGetUniformLocation(Geometry::shader.id, "trns");
+				Geometry::_mvp = glGetUniformLocation(Geometry::shader.id, "mvp");
+			});
 		};
 	};
-	static inline ptr<GeometryManager> manager;
+	static inline GeometryManager manager;
 
 
 	Geometry::Geometry(auto&& collision_type, auto&& num_vtxs, auto&& num_inds, auto&& render_type)
@@ -33,7 +36,7 @@ namespace loom
 
 	Cube::Cube() : Geometry(collision_type, 8, 24, GL_QUADS)
 	{
-		allocate(0,	vec4(0, 0, 0, 1),	// 0
+		modify(0,	vec4(0, 0, 0, 1),	// 0
 					vec4(1, 0, 0, 1),	// 1
 					vec4(1, 1, 0, 1),	// 2
 					vec4(0, 1, 0, 1),	// 3
@@ -50,7 +53,7 @@ namespace loom
 	};
 	Rect::Rect() : Geometry(collision_type, 4, 4, GL_QUADS)
 	{
-		allocate(0,	vec4(0, 0, 0, 1),
+		modify(0,	vec4(0, 0, 0, 1),
 					vec4(1, 0, 0, 1),
 					vec4(1, 1, 0, 1),
 					vec4(0, 1, 0, 1));

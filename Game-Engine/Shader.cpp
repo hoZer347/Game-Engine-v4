@@ -1,22 +1,56 @@
 #include "Shader.h"
 
+#include "Data.h"
+
+#include "GLEW/glew.h"
+#include "GLFW/glfw3.h"
+
+#include <unordered_map>
+
 #include <fstream>
 #include <iostream>
 
 namespace loom
 {
-    ShaderManager::ShaderManager()
-    { };
+	struct ShaderManager {
+		ShaderManager()
+		{ };
+		virtual ~ShaderManager()
+		{
+			for (auto& i : shaders)
+				glDeleteShader(i.second);
 
-    ShaderManager::~ShaderManager()
-    {
-        for (auto& i : shaders)
-            glDeleteShader(i.second);
+			for (auto& i : programs)
+				glDeleteProgram(i.second);
+		};
 
-        for (auto& i : programs)
-            glDeleteProgram(i.second);
-    };
+		std::unordered_map<std::string, GLuint> shaders;
+		std::unordered_map<std::string, GLuint> programs;
 
+		void load_shader(std::string file_name, GLuint shader_type, GLuint program);
+
+		GLuint create(std::vector<std::string> file_names);
+		GLuint create(std::string file_name);
+	};
+	static inline std::shared_ptr<ShaderManager> s_mgr = std::make_shared<ShaderManager>();
+
+
+	Shader::Shader(std::string&& name) :
+		files({ name })
+	{
+		Engine::DoOnMain([&]()
+		{
+			id = s_mgr->create(this->files);
+		});
+	};
+	Shader::Shader(std::vector<std::string>&& files)
+		: files(files)
+	{
+		Engine::DoOnMain([&]()
+		{
+			id = s_mgr->create(this->files);
+		});
+	};
     void ShaderManager::load_shader(std::string file_name, GLuint shader_type,  GLuint program)
     {
         if (shaders[file_name]) {
@@ -40,7 +74,6 @@ namespace loom
             shaders[file_name] = shader;
         };
     };
-
     GLuint ShaderManager::create(std::vector<std::string> file_names)
     {
         if (file_names.size() == 1)
@@ -73,7 +106,6 @@ namespace loom
 
         return programs[f] = program;
     };
-
     GLuint ShaderManager::create(std::string file_name)
     {
         if (programs[file_name])

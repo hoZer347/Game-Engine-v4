@@ -1,25 +1,20 @@
 #pragma once
 
-#include "GLEW/glew.h"
-#include "GLFW/glfw3.h"
-
-#include <unordered_map>
 #include <string>
+#include <vector>
+#include <unordered_map>
 
 namespace loom
 {
-    struct ShaderManager {
-        ShaderManager();
-        virtual ~ShaderManager();
+	// Shader Object
+	struct Shader final
+	{
+		uint32_t id = 0;
 
-        std::unordered_map<std::string, GLuint> shaders;
-        std::unordered_map<std::string, GLuint> programs;
+		Shader(std::string&& name);
+		Shader(std::vector<std::string>&& files);
 
-        void load_shader(std::string file_name, GLuint shader_type, GLuint program);
-
-        GLuint create(std::vector<std::string> file_names);
-        GLuint create(std::string file_name);
-    };
-
-    thread_local static inline ShaderManager* s_mgr; // Change to static non-pointer
+	private:
+		std::vector<std::string> files;
+	};
 };

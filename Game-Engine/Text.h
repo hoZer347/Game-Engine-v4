@@ -23,11 +23,10 @@ namespace loom
 	};
 
 	// Storage for the info needed to render text
-	struct Font final :
-		virtual public Loadable,
-		virtual public Unloadable
+	struct Font final
 	{
 		Font(const char*&& font_file, uint32_t&& size = 64);
+		~Font();
 
 	protected:
 		friend struct StaticText;
@@ -36,8 +35,6 @@ namespace loom
 		const uint32_t size;
 
 	private:
-		void load() override;
-		void unload() override;
 
 		std::vector<Letter> letters;
 		const char* font_file;
@@ -47,7 +44,6 @@ namespace loom
 	// Static Text
 	// - Creates a static texture representing text
 	struct StaticText final :
-		virtual public Loadable,
 		virtual public Renderable
 	{
 		StaticText(Font& font, std::string&& body);
@@ -57,7 +53,6 @@ namespace loom
 		mat4& mvp = Camera::mvp;
 
 	private:
-		void load() override;
 		void render() override;
 
 		Font& font;
@@ -75,7 +70,6 @@ namespace loom
 	// DynamicText
 	// - Creates a text object by using the font's texture
 	struct DynamicText final :
-		virtual public Loadable,
 		virtual public Renderable
 	{
 		DynamicText(Font& font, std::string&& body);
@@ -89,7 +83,6 @@ namespace loom
 		void clear();
 
 	private:
-		void load() override;
 		void render() override;
 
 		Font& font;

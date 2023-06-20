@@ -1,23 +1,15 @@
 #pragma once
 
-#include "Data.h"
 #include "Mesh.h"
 #include "Enums.h"
 #include "Camera.h"
+#include "Shader.h"
 
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include <vector>
-
-#ifndef VTX_DEF
-#define VTX_DEF vec4
-#endif
-
 namespace loom
 {
-	typedef vec4 Vtx;
-
 	struct Geometry : public Mesh
 	{
 		Geometry(auto&& collision_type, auto&& num_vtxs, auto&& num_inds, auto&& render_type = 0x0004);
@@ -28,7 +20,7 @@ namespace loom
 
 		const uint8 collision_type;
 
-		static inline ptr<Shader> shader{ "Geometry" };
+		static inline Shader shader{ "Geometry" };
 		static inline uint32_t _color = 0;
 		static inline uint32_t _trns = 0;
 		static inline uint32_t _mvp = 0;

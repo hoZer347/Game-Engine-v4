@@ -2,5 +2,8 @@
 
 namespace loom
 {
-	
+	struct Map
+	{
+		
+	};
 };

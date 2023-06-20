@@ -153,27 +153,26 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Data.cpp" />
-    <ClCompile Include="Game\Cell.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game\Map.cpp" />
-    <ClCompile Include="Game\Unit.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="Control.cpp" />
-    <ClCompile Include="Loom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="Game\Cell.h" />
     <ClInclude Include="Game\Map.h" />
-    <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="Loom.h" />
@@ -181,7 +180,9 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Testing.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
