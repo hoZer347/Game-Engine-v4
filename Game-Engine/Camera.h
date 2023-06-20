@@ -83,48 +83,31 @@ namespace loom
 		control.next([&control]()
 		{
 			// WASD movement relative to where the camera is pointing (x, y)
-			control.AddOutput([](float& f)
+			control.AddTask([]()
 			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_W);
-			control.AddOutput([](float& f)
-			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_A);
-			control.AddOutput([](float& f)
-			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_S);
-			control.AddOutput([](float& f)
-			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_D);
-			control.AddOutput([](float& f)
-			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_SPACE);
-			control.AddOutput([](float& f)
-			{
-				if (f) Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-			}, GLFW_KEY_LEFT_CONTROL);
-
-			// Click and drag m3 to rotate camera
-			control.AddOutput([](float& f)
-			{
-				if (f)
+				if (inputs[GLFW_KEY_W])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_KEY_A])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_KEY_S])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_KEY_D])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_KEY_SPACE])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_KEY_LEFT_CONTROL])
+					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
+				if (inputs[GLFW_MOUSE_BUTTON_MIDDLE])
 				{
-					float dx = (float)(Control::mx - Control::pmx);
-					float dy = (float)(Control::my - Control::pmy);
-
-					Camera::yaww += -dx * CAMERA_ROTATION_SPEED;
-					Camera::roll += -dy * CAMERA_ROTATION_SPEED;
+					Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
+					Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
 
 					if (Camera::roll > 180)
 						Camera::roll = 180;
 					if (Camera::roll < 0)
 						Camera::roll = 0;
 				};
-			}, GLFW_MOUSE_BUTTON_MIDDLE);
+			});
 		});
 	};
 
