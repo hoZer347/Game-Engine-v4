@@ -126,4 +126,45 @@ namespace loom
 
 		Rmv(to_add...);
 	};
+
+
+	template<std::size_t n1, std::size_t ...args>
+	struct mul
+	{
+		static constexpr std::size_t value = n1 * mul<args...>::value;
+	};
+	template<std::size_t n>
+	struct mul<n>
+	{
+		static constexpr std::size_t value = n;
+	};
+	template<std::size_t n1, std::size_t ...args>
+	struct add
+	{
+		static constexpr std::size_t value = n1 + mul<args...>::value;
+	};
+	template<std::size_t n>
+	struct add<n>
+	{
+		static constexpr std::size_t value = n;
+	};
+
+
+	template<size_t N>
+	struct Str {
+		constexpr Str(const char(&str)[N]) {
+			std::copy_n(str, N, value);
+		}
+		char value[N];
+	};
+	template<Str lit>
+	void Print() {
+		// The size of the string is available as a constant expression.
+		constexpr auto size = sizeof(lit.value);
+
+		// and so is the string's content.
+		constexpr auto contents = lit.value;
+
+		std::cout << "Size: " << size << ", Contents: " << contents << std::endl;
+	};
 };

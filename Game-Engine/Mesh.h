@@ -63,7 +63,7 @@ namespace loom
 			for (uint32 i = 0; i < num_inds; i++)
 			{
 				for (uint32 j = 0; j < vtx_size; j++)
-					std::cout << vtxs[inds[i] + j] << " ";
+					std::cout << vtxs[inds[i] * vtx_size + j] << " ";
 				std::cout << std::endl;
 			};
 		};
@@ -113,7 +113,7 @@ namespace loom
 
 
 	protected:
-		void combine(Mesh& mesh) { };
+		inline void combine(Mesh& mesh) { };
 		inline void index(uint32 start_pos) { };
 		inline void modify(uint32 start_pos) { };
 		inline virtual void render()
@@ -175,6 +175,7 @@ namespace loom
 			};
 
 			glUseProgram(0);
+			glBindTexture(GL_TEXTURE_2D, 0);
 		};
 		virtual void subRender() { };
 

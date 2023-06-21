@@ -3,47 +3,34 @@
 #include "../Data.h"
 #include "../Mesh.h"
 #include "../Shader.h"
+#include "../Camera.h"
+#include "../Geometry.h"
 
 namespace loom
 {
 	template <uint16 x_size, uint16 y_size>
 	struct Map :
-		public Mesh<4, GL_QUADS, x_size * y_size, x_size * y_size * Mesh::vtx_size>,
-		virtual public Updateable,
-		virtual public Renderable
+		virtual public Updateable
 	{
-		Map();
-
-		void update() override;
-		void render() override;
-
+		Map()
+		{
+			cells.reserve(x_size * y_size);
 
 
+		};
 
-		static inline Shader shader{ "Map" };
-	};
-};
+		void update() override
+		{ };
+		void subRender() override
+		{ };
 
 
+		static inline mat4* mvp = &Camera::mvp;
+		static inline vec4* color = new vec4{ 1, 0, 0, 1 };
 
 
+		static inline Shader shader{ "Map", "mvp", &mvp, "color", &color };
 
-namespace loom
-{
-	template<uint16 x_size, uint16 y_size>
-	inline Map<x_size, y_size>::Map() :
-		Mesh(shader, 4, GL_QUADS, x_size, y_size)
-	{
-
-	};
-	template<uint16 x_size, uint16 y_size>
-	inline void Map<x_size, y_size>::update()
-	{
-
-	};
-	template<uint16 x_size, uint16 y_size>
-	inline void Map<x_size, y_size>::render()
-	{
-
+		std::vector<Rect<4>> cells;
 	};
 };

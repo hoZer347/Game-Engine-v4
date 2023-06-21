@@ -62,9 +62,6 @@ namespace loom
 		// Adds tasks to do when the current input layer is reentered
 		void AddOnReenter(Task&& task);
 
-		// Adds an Output (std::function<void(float&)>) to process that state of a given input (the aformentioned float&)
-		void AddOutput(Output&& output, Input&& input);
-
 		static inline double mx = 0;	// Mouse X Position
 		static inline double my = 0;	// Mouse Y Position
 		static inline double pmx = 0;	// Previous Mouse X Position
@@ -72,9 +69,11 @@ namespace loom
 		static inline double sx = 0;	// Scroll X Position
 		static inline double sy = 0;	// Scroll Y Position
 
+		static inline std::array<int, NUM_INPUTS> inputs;
+
 	protected:
 		friend struct ControlManager;
-		static inline std::array<float, NUM_INPUTS> inputs;
+		static inline std::array<int, NUM_INPUTS> prev_inputs;
 
 	private:
 		void update() override;
@@ -128,11 +127,11 @@ namespace loom
 				});
 				glfwSetKeyCallback(window, [](GLFWwindow*, int button, int, int action, int)
 				{
-					Control::inputs[button] = (float)action;
+					Control::inputs[button] = action;
 				});
 				glfwSetMouseButtonCallback(window, [](GLFWwindow*, int button, int action, int)
 				{
-					Control::inputs[button] = (float)action;
+					Control::inputs[button] = action;
 				});
 			};
 		});
@@ -151,9 +150,27 @@ namespace loom
 			Control::pmy = Control::my;
 			glfwGetCursorPos(window, &Control::mx, &Control::my);
 			glfwPollEvents();
+
+			for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
+				Control::prev_inputs[i] = glfwGetMouseButton(window, i);
+
+			for (auto i = 32; i < GLFW_KEY_LAST; i++)
+				Control::prev_inputs[i] = glfwGetKey(window, i);
 		};
 	};
+	inline void Control::update()
+	{
+		static Utils::Timer timer;
 
+		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
+			return;
+		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
+
+		for (auto& task : data->tasks)
+			task();
+		inputs.fill(0);
+		inputs.swap(prev_inputs);
+	};
 	inline void Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
@@ -218,23 +235,5 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 		data->on_reenter.emplace_back(task);
-	};
-	inline void Control::AddOutput(Output&& output, Input&& input)
-	{
-		std::scoped_lock<std::recursive_mutex> lock{mut};
-		data->io.emplace_back(input, output);
-	};
-	inline void Control::update()
-	{
-		static Utils::Timer timer;
-
-		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
-			return;
-		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
-
-		for (auto& task : data->tasks)
-			task();
-		for (auto& i : data->io)
-			i.second(inputs[i.first]);
 	};
 };

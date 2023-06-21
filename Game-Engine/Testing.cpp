@@ -35,6 +35,8 @@ namespace loom
 
 	void SpriteTest()
 	{
+		using namespace sprite;
+
 		Engine::Init();
 
 		Camera camera;
