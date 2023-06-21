@@ -163,6 +163,12 @@ namespace loom
 			Control::pmy = Control::my;
 			glfwGetCursorPos(window, &Control::mx, &Control::my);
 			glfwPollEvents();
+		
+			for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
+				inputs[i] = glfwGetMouseButton(window, i);
+
+			for (auto i = 32; i < GLFW_KEY_LAST; i++)
+				inputs[i] = glfwGetKey(window, i);
 		};
 	};
 
