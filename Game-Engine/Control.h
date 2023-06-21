@@ -19,7 +19,7 @@
 #endif
 
 #ifndef NUM_INPUTS
-#define NUM_INPUTS 348
+#define NUM_INPUTS GLFW_KEY_LAST+1
 #endif
 
 namespace loom
@@ -29,9 +29,9 @@ namespace loom
 
 	// ID associated with a raw input
 	typedef uint16 Input;
-
-	// A function that executes on the value of a given raw input
-	typedef std::function<void(float&)> Output;
+	
+	// Keeps track of the states of all the inputs
+	inline std::array<int, NUM_INPUTS> inputs;
 
 	// Handles interactions between the game and the player
 	// Updated at a frequency equal to CONTROL_TICKRATE
@@ -86,7 +86,6 @@ namespace loom
 			std::vector<Task> on_reenter;
 
 			std::shared_ptr<Data> _prev{0};
-			std::vector<std::pair<Input, Output>> io;
 		};
 
 		std::recursive_mutex mut;
@@ -112,7 +111,7 @@ namespace loom
 	{
 		Engine::DoOnMain([]()
 		{
-			Control::inputs.fill(0);
+			inputs.fill(0);
 
 			if (GLFWwindow* window = glfwGetCurrentContext())
 			{
@@ -127,14 +126,28 @@ namespace loom
 				});
 				glfwSetKeyCallback(window, [](GLFWwindow*, int button, int, int action, int)
 				{
-					Control::inputs[button] = action;
+					inputs[button] += action;
 				});
 				glfwSetMouseButtonCallback(window, [](GLFWwindow*, int button, int action, int)
 				{
-					Control::inputs[button] = action;
+					inputs[button] += action;
 				});
 			};
 		});
+	};
+	inline void Control::update()
+	{
+		static Utils::Timer timer;
+
+		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
+			return;
+		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
+
+		for (auto& task : data->tasks)
+			task();
+
+		inputs.fill(0);
+		inputs.swap(prev_inputs);
 	};
 	inline void ControlManager::render()
 	{
@@ -150,27 +163,9 @@ namespace loom
 			Control::pmy = Control::my;
 			glfwGetCursorPos(window, &Control::mx, &Control::my);
 			glfwPollEvents();
-
-			for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
-				Control::prev_inputs[i] = glfwGetMouseButton(window, i);
-
-			for (auto i = 32; i < GLFW_KEY_LAST; i++)
-				Control::prev_inputs[i] = glfwGetKey(window, i);
 		};
 	};
-	inline void Control::update()
-	{
-		static Utils::Timer timer;
 
-		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
-			return;
-		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
-
-		for (auto& task : data->tasks)
-			task();
-		inputs.fill(0);
-		inputs.swap(prev_inputs);
-	};
 	inline void Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
@@ -214,7 +209,6 @@ namespace loom
 		data->tasks.clear();
 		data->on_next.clear();
 		data->on_prev.clear();
-		data->io.clear();
 	};
 	inline void Control::AddTask(Task&& task)
 	{

@@ -85,25 +85,22 @@ namespace loom
 			// WASD movement relative to where the camera is pointing (x, y)
 			control.AddTask([]()
 			{
-				if (Control::inputs[GLFW_KEY_W])
+				if (inputs[GLFW_KEY_W])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_A])
+				if (inputs[GLFW_KEY_A])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_S])
+				if (inputs[GLFW_KEY_S])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_D])
+				if (inputs[GLFW_KEY_D])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_SPACE])
+				if (inputs[GLFW_KEY_SPACE])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_LEFT_CONTROL])
+				if (inputs[GLFW_KEY_LEFT_CONTROL])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_MOUSE_BUTTON_MIDDLE])
+				if (inputs[GLFW_MOUSE_BUTTON_MIDDLE])
 				{
-					float dx = (float)(Control::mx - Control::pmx);
-					float dy = (float)(Control::my - Control::pmy);
-
-					Camera::yaww += -dx * CAMERA_ROTATION_SPEED;
-					Camera::roll += -dy * CAMERA_ROTATION_SPEED;
+					Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
+					Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
 
 					if (Camera::roll > 180)
 						Camera::roll = 180;
