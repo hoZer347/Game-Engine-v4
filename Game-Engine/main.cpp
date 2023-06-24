@@ -20,13 +20,9 @@ using namespace glm;
 // TODO: Make sprites animate
 // TODO: Make GameObject's destructor more efficient
 // TODO: Make a Shader uniform extractor
-// TODO: Make mesh do a big glBufferData first, and make the other stuff use glBufferSubData
-// TODO: Hook up renderables to Mesh
-// TODO: Completely rework Map
-// TODO: Change loadable / unloadable to functional implementations
 // TODO: Optimize sprites
 // TODO: Add diagnostic timer
-// TODO: Rework compiling system
+// TODO: Fix weird camera snapping glitch (most likely problems with double not being atomic)
 
 int main()
 {
