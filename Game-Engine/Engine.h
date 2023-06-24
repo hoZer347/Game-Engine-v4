@@ -16,9 +16,6 @@ namespace loom
 		// Runs the engine using the current thread as an openGL host
 		static void Run();
 
-		// Runs a thread with the given task, guarantees that it won't add another of the same type at the time
-		static void Exec(Task&& task);
-
 		// Returns whether or not the program is running
 		static const bool& GetIsRunning();
 
@@ -31,12 +28,12 @@ namespace loom
 		static const bool& GetIsOnUpdater();
 
 		// Adds the object(s) in the parameters to the engine
-		template <typename T, typename... ARGS>
-		static void Add(T* t, ARGS... to_add);
+		template <typename ARG, typename... ARGS>
+		static void Add(ARG* arg, ARGS&&... args);
 
 		// Removes the object(s) in the parameters to the engine
-		template <typename T, typename... ARGS>
-		static void Rmv(T* t, ARGS... to_add);
+		template <typename ARG, typename... ARGS>
+		static void Rmv(ARG* arg, ARGS&&... args);
 
 		// Sends a task to be done by the Main thread (Renderer)
 		// If ran on main thread, will handle other functions called here
@@ -52,25 +49,4 @@ namespace loom
 		Engine() { };
 	};
 	//
-
-
-	// Guarantees memory safe lifetime management
-	// Works like a std::shared_ptr
-	template <typename T>
-	struct ptr : std::shared_ptr<T>
-	{
-		template <typename... ARGS>
-		ptr(ARGS... args) : std::shared_ptr<T>(new T(args...))
-		{
-			Engine::Add(std::shared_ptr<T>::get());
-		};
-		ptr(T* t) : std::shared_ptr<T>(t)
-		{
-			Engine::Add(std::shared_ptr<T>::get());
-		};
-		virtual ~ptr()
-		{
-			Engine::Rmv(std::shared_ptr<T>::get());
-		};
-	};
 };

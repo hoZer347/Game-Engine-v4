@@ -8,9 +8,6 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Testing.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Engine\Texture</Filter>
     </ClCompile>
@@ -71,6 +68,12 @@
     <Filter Include="Trash">
       <UniqueIdentifier>{4647bd2e-8fc8-4448-b298-37c3f7a931aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Animation">
+      <UniqueIdentifier>{0d197ab0-8da6-4792-8594-61504492789c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Serialization">
+      <UniqueIdentifier>{abb1d4dc-c894-429b-a127-5cc30181b758}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -118,10 +121,19 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Testing.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\Unit.h">
+      <Filter>Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Terrain.h">
+      <Filter>Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Engine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Serialization.h">
+      <Filter>Engine\Serialization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">

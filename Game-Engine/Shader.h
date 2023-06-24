@@ -30,49 +30,19 @@ namespace loom
 	// Shader Object
 	struct Shader final
 	{
-		inline Shader(auto&& files, auto&&... uniforms) :
-			files({ files })
+		inline Shader(auto&&... files) :
+			files({ files... })
 		{
 			Engine::DoOnMain([=]()
 			{
-				id = s_mgr->create(files);
-				unpack(uniforms...);
+				id = s_mgr->create(files...);
 			});
 		};
-		inline void load()
-		{
-			glUseProgram(id);
 
-			for (auto& u : mat4s)
-				if (u.second)
-					glUniformMatrix4fv(u.first, 1, false, (float*)*u.second);
-			for (auto& u : vec4s)
-				if (u.second)
-					glUniform4fv(u.first, 1, (float*)*u.second);
-		};
-
-		enum SHADER
-		{
-			MAT4D,
-			VEC4,
-		};
+		uint32_t id = 0;
 
 	private:
-		inline void unpack() { };
-		inline void unpack(auto&& arg0, mat4** arg1, auto&&... args)
-		{
-			mat4s.emplace_back(glGetUniformLocation(id, arg0), arg1);
-			unpack(args...);
-		};
-		inline void unpack(auto&& arg0, vec4** arg1, auto&&... args)
-		{
-			vec4s.emplace_back(glGetUniformLocation(id, arg0), arg1);
-			unpack(args...);
-		};
-		std::vector<std::pair<int32, mat4**>> mat4s;
-		std::vector<std::pair<int32, vec4**>> vec4s;
 		std::vector<std::string> files;
-		uint32_t id = 0;
 	};
 };
 

@@ -93,20 +93,15 @@ namespace loom
 	};
 
 
-	struct ControlManager :
+	struct ControlManager final :
 		virtual public Renderable
 	{
 		ControlManager();
 		void render() override;
+	
+		static inline ptr<ControlManager> manager;
 	};
-	inline ptr<ControlManager> control_manager;
-};
 
-
-
-
-namespace loom
-{
 	inline ControlManager::ControlManager()
 	{
 		Engine::DoOnMain([]()
