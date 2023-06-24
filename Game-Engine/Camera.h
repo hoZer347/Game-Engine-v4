@@ -101,11 +101,6 @@ namespace loom
 				{
 					Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
 					Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
-
-					if (Camera::roll > 180)
-						Camera::roll = 180;
-					if (Camera::roll < 0)
-						Camera::roll = 0;
 				};
 			});
 		});
