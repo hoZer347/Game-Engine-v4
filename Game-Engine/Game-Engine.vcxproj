@@ -152,25 +152,27 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Testing.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Map.h" />
+    <ClInclude Include="Game\Terrain.h" />
+    <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="Control.h" />
     <ClInclude Include="Loom.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Serialization.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Testing.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Utils.h" />

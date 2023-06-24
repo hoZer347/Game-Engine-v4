@@ -132,11 +132,6 @@ namespace loom
 		is_on_main = true;
 		is_running = false;
 	};
-	void Engine::Exec(Task&& task)
-	{
-		std::thread thread = std::thread([task]() { task(); });
-		thread.detach();
-	};
 	const bool& Engine::GetIsRunning()
 	{
 		return is_running;

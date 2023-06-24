@@ -62,6 +62,7 @@ namespace loom
 	enum LAYERS
 	{
 		HEIGHTS,
+		CELLS,
 		PASSABILITY,
 		HIGHLIGHTS,
 		ALLY_RANGES,

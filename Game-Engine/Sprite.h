@@ -1,75 +1,99 @@
 #pragma once
 
 #include "Data.h"
-#include "Enums.h"
-#include "Camera.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Control.h"
-#include "Geometry.h"
-
-#include <GLEW/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/gtx/transform.hpp>
-
-#include <vector>
+#include "Camera.h"
 
 namespace loom
 {
-	namespace sprite
+	struct Sprite;
+
+	struct SpriteManager :
+		virtual public Updateable,
+		virtual public Renderable
 	{
-		inline mat4* _mvp = &Camera::mvp;
-		inline mat4* _trns;
-		inline vec4* _location;
-		inline Shader shader{ "Sprite", "loc", &_location, "trns", &_trns, "mvp", &_mvp};
+		void update() override;
+		void render() override;
 
-		struct Sprite : geo::Rect<>
+		static inline std::recursive_mutex mut;
+		static inline Shader shader{ "Sprite" };
+		static inline std::vector<vec4> vtxs
 		{
-			Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16_t ups) :
-				geo::Rect<>(sprite::shader),
-				texture(texture),
-				location(start, size),
-				stride(stride),
-				ups(ups)
-			{
-				this->modify(0,
-					vec4(0, 0, 0, 1),
-					vec4(1, 0, 0, 1),
-					vec4(1, 0, 1, 1),
-					vec4(0, 0, 1, 1));
-				this->index(0,
-					0, 1, 2, 3);
-
-				Engine::DoOnMain([this, &texture]()
-				{
-					location.x /= texture.w;
-					location.y /= texture.h;
-					location.z /= texture.w;
-					location.w /= texture.h;
-
-					glBindTexture(GL_TEXTURE_2D, texture.id);
-					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-					glBindTexture(GL_TEXTURE_2D, 0);
-				});
-			};
-			mat4 trns{ 1 };
-
-			static inline const int collision_type = COLLISION::SQUARE;
-
-			vec4 location;
-
-			vec2 stride;
-			uint32 ups;
-
-			Texture& texture;
-
-			inline void subRender() override
-			{
-				glBindTexture(GL_TEXTURE_2D, texture.id);
-				sprite::_trns = &trns;
- 				sprite::_location = &location;
-			};
+			{ 0, 0, 0, 1 },
+			{ 1, 0, 0, 1 },
+			{ 1, 0, 1, 1 },
+			{ 0, 0, 1, 1 },
 		};
+
+		static inline ptr<SpriteManager> manager;
+	};
+
+
+	struct Sprite :
+		public GameObject<Sprite>
+	{
+		Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16 ups) :
+			texture(texture),
+			location(start, size),
+			stride(stride),
+			ups(ups)
+		{
+			Engine::DoOnMain([this, &texture]()
+			{
+				location.x /= texture.w;
+				location.y /= texture.h;
+				location.z /= texture.w;
+				location.w /= texture.h;
+
+				glBindTexture(GL_TEXTURE_2D, texture.id);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			});
+		};
+
+		Texture& texture;
+
+		vec2 stride;
+		uint16 ups;
+		mat4 trns{ 1 };
+		vec4 location;
+	};
+
+
+	void SpriteManager::update()
+	{
+		GameObject<Sprite>::access([](Sprite& sprite)
+		{
+			
+		});
+	};
+	void SpriteManager::render()
+	{
+		glUseProgram(shader.id);
+
+		glEnableVertexAttribArray(VEC4_0_16);
+
+		glUniformMatrix4fv(glGetUniformLocation(shader.id, "mvp"), 1, false, (float*)&Camera::mvp);
+
+		glBufferData(
+			GL_ARRAY_BUFFER,
+			vtxs.size() * sizeof(vec4),
+			vtxs.data(),
+			GL_DYNAMIC_DRAW);
+
+		GameObject<Sprite>::access([](Sprite& sprite)
+		{
+			glBindTexture(GL_TEXTURE_2D, sprite.texture.id);
+
+			glUniformMatrix4fv(glGetUniformLocation(shader.id, "trns"), 1, false, (float*)&sprite.trns);
+			glUniform4fv(glGetUniformLocation(shader.id, "loc"), 1, (float*)&sprite.location);
+
+			glDrawArrays(GL_QUADS, 0, 4);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+		});
+
+		glDisableVertexAttribArray(VEC4_0_16);
 	};
 };
