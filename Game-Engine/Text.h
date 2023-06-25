@@ -5,7 +5,6 @@
 
 #include "Data.h"
 #include "Enums.h"
-#include "Utils.h"
 #include "Camera.h"
 #include "Shader.h"
 

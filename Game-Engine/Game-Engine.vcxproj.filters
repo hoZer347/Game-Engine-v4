@@ -2,16 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Utils.cpp">
-      <Filter>Engine\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Engine\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -100,7 +96,7 @@
     <ClInclude Include="Geometry.h">
       <Filter>Engine\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
+    <ClInclude Include="Timing.h">
       <Filter>Engine\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
@@ -121,7 +117,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Unit.h">
       <Filter>Game\Game</Filter>
     </ClInclude>
@@ -133,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="Serialization.h">
       <Filter>Engine\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Cell.h">
+      <Filter>Game\Cell</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +157,12 @@
     </None>
     <None Include="Sprite.vert">
       <Filter>Engine\Sprite</Filter>
+    </None>
+    <None Include="Game\MapTexture.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapTexture.vert">
+      <Filter>Game\Map</Filter>
     </None>
   </ItemGroup>
 </Project>

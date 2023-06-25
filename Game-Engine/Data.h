@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine.h"
-#include "Utils.h"
 
 #include <glm/glm.hpp>
 using namespace glm;

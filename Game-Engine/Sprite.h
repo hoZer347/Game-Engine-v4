@@ -41,6 +41,8 @@ namespace loom
 		{
 			Engine::DoOnMain([this, &texture]()
 			{
+				if (!this) return;
+
 				location.x /= texture.w;
 				location.y /= texture.h;
 				location.z /= texture.w;

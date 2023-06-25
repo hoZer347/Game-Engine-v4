@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Data.h"
-#include "Utils.h"
+#include "Timing.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -26,57 +26,47 @@ namespace loom
 {
 	// Standard std::function<void()>
 	typedef std::function<void()> Task;
-
-	// ID associated with a raw input
-	typedef uint16 Input;
 	
 	// Keeps track of the states of all the inputs
 	inline std::array<int, NUM_INPUTS> inputs;
 
 	// Handles interactions between the game and the player
 	// Updated at a frequency equal to CONTROL_TICKRATE
-	struct Control final :
-		virtual public Updateable
+	struct Control final
 	{
 		// Creates a control layer above the current one
-		void next(Task&& task = []() {});
+		static void next(Task&& task = []() {});
 
-		// Deletes the current control layer, goes down to the previous one (can be null)
-		void prev(Task&& task = []() {});
+		// Deletes the current control layer, goes down to the previous one
+		static void prev(Task&& task = []() {});
 
 		// Resets back to layer 1
-		void reset(Task&& task = []() {});
+		static void reset(Task&& task = []() {});
 
 		// Clears current layer
-		void clear();
+		static void clear();
 
 		// Adds a task for the updater to do every frame
-		void AddTask(Task&& task);
+		static void AddTask(Task&& task);
 
 		// Adds a task to do when the "next()" function is called
-		void AddOnNext(Task&& task);
+		static void AddOnNext(Task&& task);
 
 		// Adds a task to do when the "prev()" function is called
-		void AddOnPrev(Task&& task);
+		static void AddOnPrev(Task&& task);
 
 		// Adds tasks to do when the current input layer is reentered
-		void AddOnReenter(Task&& task);
+		static void AddOnReenter(Task&& task);
 
-		static inline double mx = 0;	// Mouse X Position
-		static inline double my = 0;	// Mouse Y Position
-		static inline double pmx = 0;	// Previous Mouse X Position
-		static inline double pmy = 0;	// Previous Mouse Y Position
-		static inline double sx = 0;	// Scroll X Position
-		static inline double sy = 0;	// Scroll Y Position
-
-		static inline std::array<int, NUM_INPUTS> inputs;
+		static inline float mx = 0;		// Mouse X Position
+		static inline float my = 0;		// Mouse Y Position
+		static inline float pmx = 0;	// Previous Mouse X Position
+		static inline float pmy = 0;	// Previous Mouse Y Position
+		static inline float sx = 0;		// Scroll X Position
+		static inline float sy = 0;		// Scroll Y Position
 
 	protected:
 		friend struct ControlManager;
-		static inline std::array<int, NUM_INPUTS> prev_inputs;
-
-	private:
-		void update() override;
 
 		struct Data final
 		{
@@ -88,85 +78,82 @@ namespace loom
 			std::shared_ptr<Data> _prev{0};
 		};
 
-		std::recursive_mutex mut;
-		std::shared_ptr<Data> data = std::shared_ptr<Data>(new Data());
+		static inline std::recursive_mutex mut;
+		static inline std::array<int, NUM_INPUTS> prev_inputs;
+		static inline std::shared_ptr<Data> data = std::shared_ptr<Data>(new Data());
+
+	private:
+		Control() { };
 	};
-
-
 	struct ControlManager final :
+		virtual public Updateable,
 		virtual public Renderable
 	{
-		ControlManager();
-		void render() override;
-	
-		static inline ptr<ControlManager> manager;
-	};
-
-	inline ControlManager::ControlManager()
-	{
-		Engine::DoOnMain([]()
+		ControlManager()
 		{
-			inputs.fill(0);
+			Engine::DoOnMain([]()
+			{
+				inputs.fill(0);
+
+				if (GLFWwindow* window = glfwGetCurrentContext())
+				{
+					glfwSetScrollCallback(window, [](GLFWwindow* window, double _sx, double _sy)
+					{
+						Control::sx += (float)_sx;
+						Control::sy += (float)_sy;
+					});
+					glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h)
+					{
+						glViewport(0, 0, w, h);
+					});
+				};
+			});
+		};
+		void update() override
+		{
+			static Timer timer;
+
+			if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
+				return;
+			timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
+
+			std::scoped_lock<std::recursive_mutex> lock{Control::mut};
+
+			for (auto& task : Control::data->tasks)
+				task();
+
+			inputs.swap(Control::prev_inputs);
+			Control::prev_inputs.fill(0);
+		};
+		void render() override
+		{
+			static Timer timer;
+
+			if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
+				return;
+			timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
 
 			if (GLFWwindow* window = glfwGetCurrentContext())
 			{
-				glfwSetScrollCallback(window, [](GLFWwindow* window, double _sx, double _sy)
-				{
-					Control::sx += _sx;
-					Control::sy += _sy;
-				});
-				glfwSetWindowSizeCallback(window, [](GLFWwindow*, int w, int h)
-				{
-					glViewport(0, 0, w, h);
-				});
-				glfwSetKeyCallback(window, [](GLFWwindow*, int button, int, int action, int)
-				{
-					inputs[button] += action;
-				});
-				glfwSetMouseButtonCallback(window, [](GLFWwindow*, int button, int action, int)
-				{
-					inputs[button] += action;
-				});
+				double _mx, _my;
+				glfwGetCursorPos(window, &_mx, &_my);
+				Control::pmx = Control::mx;
+				Control::pmy = Control::my;
+				Control::mx = (float)_mx;
+				Control::my = (float)_my;
+
+				glfwPollEvents();
+
+				for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
+					Control::prev_inputs[i] = glfwGetMouseButton(window, i);
+
+				for (auto i = 32; i < GLFW_KEY_LAST; i++)
+					Control::prev_inputs[i] = glfwGetKey(window, i);
 			};
-		});
-	};
-	inline void Control::update()
-	{
-		static Utils::Timer timer;
-
-		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
-			return;
-		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
-
-		for (auto& task : data->tasks)
-			task();
-
-		inputs.fill(0);
-		inputs.swap(prev_inputs);
-	};
-	inline void ControlManager::render()
-	{
-		static Utils::Timer timer;
-
-		if (timer.GetDiff_mls() < 1000.f / CONTROL_TICKRATE)
-			return;
-		timer.push(std::chrono::milliseconds(1000 / CONTROL_TICKRATE));
-
-		if (GLFWwindow* window = glfwGetCurrentContext())
-		{
-			Control::pmx = Control::mx;
-			Control::pmy = Control::my;
-			glfwGetCursorPos(window, &Control::mx, &Control::my);
-			glfwPollEvents();
-		
-			for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
-				inputs[i] = glfwGetMouseButton(window, i);
-
-			for (auto i = 32; i < GLFW_KEY_LAST; i++)
-				inputs[i] = glfwGetKey(window, i);
 		};
-	};
 
+		static inline ptr<ControlManager> manager;
+	};
 	inline void Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
@@ -176,8 +163,8 @@ namespace loom
 				task();
 
 		std::shared_ptr<Data> data = std::shared_ptr<Data>(new Data());
-		data->_prev = this->data;
-		this->data = data;
+		data->_prev = data;
+		data = data;
 
 		task();
 	};

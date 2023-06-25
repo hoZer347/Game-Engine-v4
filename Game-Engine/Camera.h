@@ -2,7 +2,6 @@
 
 #include "Loom.h"
 #include "Enums.h"
-#include "Utils.h"
 #include "Control.h"
 
 #include "GLEW/glew.h"
@@ -27,7 +26,7 @@ namespace loom
 		// - WASD movement relative to camera rotation around the Z axis
 		// - LEFT_CTRL + SPACE go up and down on the Z axis
 		// - ESCAPE exits Free Cam
-		static void InitiateFreeCam(Control& control);
+		static void InitiateFreeCam();
 
 		static inline mat4	vp			= mat4(1),
 							mvp			= mat4(1),
@@ -60,13 +59,9 @@ namespace loom
 		void render() override;
 	};
 	//
-};
 
 
-
-namespace loom
-{
-	static inline const float
+	inline const float
 		CAMERA_ROTATION_SPEED = .1f,
 		CAMERA_MOVEMENT_SPEED = .1f,
 		CAMERA_ZOOM_SPEED = .4f,
@@ -74,16 +69,16 @@ namespace loom
 		MAX_CAMERA_ZOOM = 20.f;
 
 
-	inline void Camera::InitiateFreeCam(Control& control)
+	inline void Camera::InitiateFreeCam()
 	{
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 
 		// Wrap into one mutex
-		control.next([&control]()
+		Control::next([]()
 		{
 			// WASD movement relative to where the camera is pointing (x, y)
-			control.AddTask([]()
+			Control::AddTask([]()
 			{
 				if (inputs[GLFW_KEY_W])
 					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
@@ -107,7 +102,7 @@ namespace loom
 	};
 
 
-	inline void  calculateRotationMatrix(float& roll, float& pitch, float& yaw, mat4& rotationMatrix) {
+	inline void calculateRotationMatrix(float& roll, float& pitch, float& yaw, mat4& rotationMatrix) {
 		// Convert degrees to radians
 		float rollRad = radians(roll);
 		float pitchRad = radians(pitch);

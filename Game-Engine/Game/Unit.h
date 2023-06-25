@@ -18,13 +18,22 @@ namespace loom
 			MOV = 0;
 	};
 	struct Unit final :
-		public GameObject<Unit>
+		virtual public Updateable
 	{
 		Unit(Sprite& sprite) :
 			sprite(sprite)
 		{ };
 
-		
+		void update() override
+		{
+			mat4 _trns = translate(vec3(pos) + vec3(.5, .5, 0));
+			_trns *= Camera::yaww_mat;
+			_trns *= translate(vec3(-.5, 0, 0));
+
+			sprite.trns = _trns;
+		};
+
+		vec4 pos{ 0, 0, 0, 1 };
 		Sprite& sprite;
 	};
 };

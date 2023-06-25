@@ -2,7 +2,7 @@
 
 #include "Enums.h"
 #include "Data.h"
-#include "Utils.h"
+#include "Timing.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -28,7 +28,7 @@ namespace loom
 
 
 		// TIMER for FPS counting
-		Utils::Timer TIMER;
+		Timer TIMER;
 
 
 		// Preparing openGL
