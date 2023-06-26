@@ -28,20 +28,19 @@ int main()
 	Engine::Init();
 
 	Texture texture{ "Resources/Anna.png", GL_RGBA };
-	Terrain terrain{ &texture };
 
 	Sprite sprite{ texture, vec2{ 5 * 32, 32 * 11 }, vec2{ 32, 32 }, vec2{ 0, 0 }, 0 };
 	Unit unit{ sprite };
 
-	Camera camera;
 	Camera::InitiateFreeCam();
 
 	ptr<Map<32, 32, 4, 4>> map;
-	map->fill_terrain(terrain, 0, 0, 32, 32);
 	map->set_unit(&unit, 5, 5);
+	map->connect_adjacent(0, 0, 32, 32);
+	map->floodfill_hightlights(HIGHLIGHT::PLAYER, 5, map->get_cell_ptr(0, 0));
 	map->generate();
 
-	Engine::Add(&camera, &unit, &sprite);
+	Engine::Add(&unit, &sprite);
 
 	Engine::Run();
 

@@ -176,8 +176,8 @@ namespace loom
 
 
 			// Texture Indices
-			for (auto i = 0; i < x_size + 1; i++)
-				for (auto j = 0; j < y_size + 1; j++)
+			for (auto i = 0; i < x_size; i++)
+				for (auto j = 0; j < y_size; j++)
 				{
 					tnds[i][j][0] = get_vtx_ind(i, j, 0);
 					tnds[i][j][1] = get_vtx_ind(i, j, 1);
@@ -227,11 +227,13 @@ namespace loom
 		vec4 hovered_color = vec4(.5, 0, 0, 1);
 
 	//private:
+		Cell	cells[x_size - x0_buffer - x1_buffer][y_size - y0_buffer - y1_buffer]{};
+		
 		Vtx		vtxs[x_size + 1][y_size + 1][5]{};
 		uint32	inds[x_size-x0_buffer-x1_buffer][y_size-y0_buffer-y1_buffer][16]{};
 		uint32	tnds[x_size][y_size][4]{};
 		uint32	hvrd[4]{ 0, 0, 0, 0 };
-		Cell	cells[x_size-x0_buffer-x1_buffer][y_size-y0_buffer-y1_buffer]{};
+		
 
 		std::vector<uint32> hlts;
 
@@ -271,7 +273,7 @@ namespace loom
 				for (auto i = 0; i < x_size - x0_buffer - x1_buffer; i++)
 					for (auto j = 0; j < y_size - y0_buffer - y1_buffer; j++)
 						if (Unit* unit = cells[i][j].unit)
-							/*unit->pos = vtxs[i + x0_buffer][j + y0_buffer][0]*/;
+							unit->pos = vtxs[i + x0_buffer][j + y0_buffer][0];
 
 
 				// Updating Hovered Cell
