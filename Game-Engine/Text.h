@@ -108,7 +108,7 @@ namespace loom
 {
 	struct Text
 	{
-		static inline Shader shader{ "Text" };
+		static inline ptr<Shader> shader{ "Text" };
 		static inline uint32_t _mvp;
 		static inline uint32_t _trns;
 
@@ -116,8 +116,8 @@ namespace loom
 		{
 			Engine::DoOnMain([]()
 			{
-				_mvp = glGetUniformLocation(shader.id, "mvp");
-				_trns = glGetUniformLocation(shader.id, "trns");
+				_mvp = glGetUniformLocation(shader->id, "mvp");
+				_trns = glGetUniformLocation(shader->id, "trns");
 			});
 		};
 	};
@@ -282,7 +282,7 @@ namespace loom
 	};
 	void DynamicText::render()
 	{
-		glUseProgram(Text::shader.id);
+		glUseProgram(Text::shader->id);
 		glBindTexture(GL_TEXTURE_2D, font.texture);
 
 		glEnableVertexAttribArray(VEC4_0_32);

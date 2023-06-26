@@ -15,6 +15,10 @@ namespace loom
 	struct Cell final
 	{
 		Unit* unit = nullptr;
+
+		uint8 highlight = 0;
+		uint8 difficulty = 1;
+		
 		Cell *U = nullptr, *D = nullptr, *L = nullptr, *R = nullptr;
 	};
 };

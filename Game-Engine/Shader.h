@@ -1,8 +1,6 @@
 #pragma once
 #include "Shader.h"
 
-#include "Data.h"
-
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
@@ -30,6 +28,8 @@ namespace loom
 	// Shader Object
 	struct Shader final
 	{
+		uint32_t id = 0;
+
 		inline Shader(auto&&... files) :
 			files({ files... })
 		{
@@ -39,18 +39,12 @@ namespace loom
 			});
 		};
 
-		uint32_t id = 0;
-
 	private:
 		std::vector<std::string> files;
 	};
-};
 
 
 
-
-namespace loom
-{
 	inline ShaderManager::~ShaderManager()
 	{
 		for (auto& i : shaders)

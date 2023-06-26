@@ -39,11 +39,11 @@ namespace loom
 		glewInit();
 		glClearColor(.5, .5, .5, 0);
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
+		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0);
-		glDepthFunc(GL_LESS);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_MULTISAMPLE);
 		glfwWindowHint(GLFW_SAMPLES, 4);

@@ -16,8 +16,7 @@ using namespace glm;
 
 namespace loom
 {
-	struct Control;
-	struct Camera :
+	struct Camera final :
 		virtual public Renderable
 	{
 		// Initiates "Free Cam"
@@ -55,7 +54,12 @@ namespace loom
 
 		static inline int	screen_w = 1, screen_h = 1;
 
+	protected:
+		friend struct ptr<Camera>;
+		Camera() { };
+
 	private:
+		
 		void render() override;
 	};
 	//
@@ -71,6 +75,7 @@ namespace loom
 
 	inline void Camera::InitiateFreeCam()
 	{
+		static ptr<Camera> camera{ };
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 

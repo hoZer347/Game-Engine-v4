@@ -24,6 +24,10 @@ namespace loom
 			sprite(sprite)
 		{ };
 
+		vec4 pos{ 0, 0, 0, 1 };
+		Sprite& sprite;
+
+	private:
 		void update() override
 		{
 			mat4 _trns = translate(vec3(pos) + vec3(.5, .5, 0));
@@ -32,8 +36,5 @@ namespace loom
 
 			sprite.trns = _trns;
 		};
-
-		vec4 pos{ 0, 0, 0, 1 };
-		Sprite& sprite;
 	};
 };

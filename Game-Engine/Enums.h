@@ -22,64 +22,19 @@ namespace loom
 		VEC4_3_64,
 	};
 
-	enum // Useful Matrices
-	{
-		MVP,
-		MODE,
-		PROJ,
-		VIEW,
-		
-		TRNS,
-		ROTN,
-
-		ROLL,
-		PTCH,
-		YAWW,
-	};
-
-	enum COLLISION // Collision types
-	{
-		SQUARE,
-		PLANE,
-		RECT,
-		CUBE,
-		LINE,
-		RAY,
-		TRIANGLE,
-		CIRCLE,
-		SPHERE,
-	};
-
-	enum THREAD
-	{
-		NONE,
-		UPDATE,
-		RENDER,
-		PHYSICS,
-		LOADER,
-	};
-
-	enum LAYERS
-	{
-		HEIGHTS,
-		CELLS,
-		PASSABILITY,
-		HIGHLIGHTS,
-		ALLY_RANGES,
-		ENEMY_RANGES,
-		MAX,
-	};
-
-	namespace INPUTS
+	namespace HIGHLIGHT
 	{
 		enum
 		{
-			KEYS_END = 256,
-			MOUSE,
-			MOUSE_MAX = MOUSE + 16,
-
-
-			MAX,
+			NONE,
+			PLAYER,
+			ENEMY,
+			ALLY,
+			ATTACK_RANGE,
+			ENEMY2,
+			ENEMY3,
+			ERROR,
+			LAST,
 		};
 	};
 };

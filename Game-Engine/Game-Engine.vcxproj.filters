@@ -132,6 +132,9 @@
     <ClInclude Include="Game\Cell.h">
       <Filter>Game\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="Game\MapHighlights.vert">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">
@@ -146,12 +149,6 @@
     <None Include="Geometry.frag">
       <Filter>Engine\Geometry</Filter>
     </None>
-    <None Include="Game\Map.frag">
-      <Filter>Game\Map</Filter>
-    </None>
-    <None Include="Game\Map.vert">
-      <Filter>Game\Map</Filter>
-    </None>
     <None Include="Sprite.frag">
       <Filter>Engine\Sprite</Filter>
     </None>
@@ -162,6 +159,21 @@
       <Filter>Game\Map</Filter>
     </None>
     <None Include="Game\MapTexture.vert">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapHighlights.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapOutline.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapOutline.vert">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapHovered.frag">
+      <Filter>Game\Map</Filter>
+    </None>
+    <None Include="Game\MapHovered.vert">
       <Filter>Game\Map</Filter>
     </None>
   </ItemGroup>

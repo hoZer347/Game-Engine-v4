@@ -161,6 +161,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Game\Cell.h" />
     <ClInclude Include="Game\Map.h" />
+    <ClInclude Include="Game\MapHighlights.vert" />
     <ClInclude Include="Game\Terrain.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
@@ -176,8 +177,11 @@
     <ClInclude Include="Timing.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Game\Map.frag" />
-    <None Include="Game\Map.vert" />
+    <None Include="Game\MapHighlights.frag" />
+    <None Include="Game\MapHovered.frag" />
+    <None Include="Game\MapHovered.vert" />
+    <None Include="Game\MapOutline.frag" />
+    <None Include="Game\MapOutline.vert" />
     <None Include="Game\MapTexture.frag" />
     <None Include="Game\MapTexture.vert" />
     <None Include="Geometry.frag" />
