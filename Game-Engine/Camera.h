@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Loom.h"
+#include "Data.h"
 #include "Enums.h"
 #include "Control.h"
 
@@ -59,8 +60,8 @@ namespace loom
 		Camera() { };
 
 	private:
-		
 		void render() override;
+		static inline ptr<Camera> camera{ 1 };
 	};
 	//
 
@@ -75,7 +76,6 @@ namespace loom
 
 	inline void Camera::InitiateFreeCam()
 	{
-		static ptr<Camera> camera{ 1 };
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 

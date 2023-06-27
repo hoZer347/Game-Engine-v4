@@ -35,16 +35,19 @@ namespace loom
 	struct Control final
 	{
 		// Creates a control layer above the current one
-		static std::shared_ptr<Control> next(Task&& task = []() {});
+		_NODISCARD static std::shared_ptr<Control> next(Task&& task = []() {});
 
 		// Deletes the current control layer, goes down to the previous one
-		static std::shared_ptr<Control> prev(Task&& task = []() {});
+		void prev(Task&& task = []() {});
 
-		// Resets back to layer 1
+		// Resets back to given layer (default nullptr)
 		static void reset(std::shared_ptr<Control> new_control, Task&& task = []() {});
 
 		// Clears current layer
 		static void clear();
+
+		// Does a task with the guarantee that the curreny control layer will be maintained
+		static void DoOnCurrentLayer(Task&& task);
 
 		// Adds a task for the updater to do every frame
 		static void AddTask(Task&& task);
@@ -55,10 +58,10 @@ namespace loom
 		// Adds a task to do when the "prev()" function is called
 		static void AddOnPrev(Task&& task);
 
-		// Adds tasks to do when the current input layer is reentered
+		// Adds a task to do when the current input layer is reentered
 		static void AddOnReenter(Task&& task);
 
-		// Adds tasks to do when the current input layer is reentered
+		// Adds a task to do when the current input layer is reentered
 		static void AddOnLeave(Task&& task);
 
 		static inline float mx = 0;		// Mouse X Position
@@ -67,6 +70,11 @@ namespace loom
 		static inline float pmy = 0;	// Previous Mouse Y Position
 		static inline float sx = 0;		// Scroll X Position
 		static inline float sy = 0;		// Scroll Y Position
+
+		~Control()
+		{
+			control = _prev;
+		};
 
 	protected:
 		friend struct ControlManager;
@@ -79,10 +87,11 @@ namespace loom
 
 		static inline std::recursive_mutex mut;
 		static inline std::array<int, NUM_INPUTS> prev_inputs;
-		static inline std::shared_ptr<Control> control = nullptr;
+		static inline std::weak_ptr<Control> control;
 
 	private:
 		Control() { };
+		static inline bool same_layer_guarantee = false;
 		std::shared_ptr<Control> _prev{0};
 	};
 	struct ControlManager final :
@@ -119,8 +128,9 @@ namespace loom
 
 			std::scoped_lock<std::recursive_mutex> lock{Control::mut};
 
-			for (auto& task : Control::control->tasks)
-				task();
+			if (!Control::control.expired())
+				for (auto& task : std::shared_ptr<Control>(Control::control)->tasks)
+					task();
 
 			inputs.swap(Control::prev_inputs);
 			Control::prev_inputs.fill(0);
@@ -158,63 +168,90 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 		
-		static bool _next = false;
-		if (_next)
+		if (same_layer_guarantee)
 			return nullptr;
-		_next = true;
+		same_layer_guarantee = true;
 
-		if (control)
+		std::shared_ptr<Control> new_control = std::shared_ptr<Control>(new Control());
+
+		if (!control.expired())
+		{
+			std::shared_ptr<Control> control { Control::control };
+
 			for (auto& task : control->on_next)
 				task();
 
-		if (control)
 			for (auto& task : control->on_leave)
 				task();
 
-		std::shared_ptr<Control> new_control = std::shared_ptr<Control>(new Control());
-		new_control->_prev = control;
+			new_control->_prev = control;
+		};
+		
 		control = new_control;
-
-		if (control)
-			for (auto& task : control->on_reenter)
-				task();
 
 		task();
 
-		_next = false;
+		same_layer_guarantee = false;
 
-		return control;
+		return new_control;
 	};
-	inline std::shared_ptr<Control> Control::prev(Task&& task)
+	inline void Control::prev(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		for (auto& task : control->on_prev)
+		same_layer_guarantee = true;
+
+		std::shared_ptr<Control> new_control { _prev };
+
+		for (auto& task : on_prev)
 			task();
 
-		if (control)
-			for (auto& task : control->on_leave)
-				task();
+		for (auto& task : on_leave)
+			task();
 
-		control = control->_prev;
+		(*this) = (*_prev);
 
-		for (auto& task : control->on_reenter)
+		for (auto& task : on_reenter)
 			task();
 
 		task();
 
-		return control;
+		same_layer_guarantee = false;
+	};
+	inline void Control::DoOnCurrentLayer(Task&& task)
+	{
+		std::scoped_lock<std::recursive_mutex> lock{mut};
+
+		same_layer_guarantee = true;
+		
+		task();
+		
+		same_layer_guarantee = false;
 	};
 	inline void Control::reset(std::shared_ptr<Control> new_control, Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		
+		same_layer_guarantee = true;
+		
+		if (new_control)
+			for (auto& task : new_control->on_leave)
+				task();
+
 		control = new_control;
+		
+		if (new_control)
+			for (auto& task : new_control->on_reenter)
+				task();
+
 		task();
+
+		same_layer_guarantee = false;
 	};
 	inline void Control::clear()
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-
+		std::shared_ptr<Control> control { Control::control };
 		control->tasks.clear();
 		control->on_next.clear();
 		control->on_prev.clear();
@@ -222,26 +259,41 @@ namespace loom
 	inline void Control::AddTask(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		if (!same_layer_guarantee)
+			std::cout << "Task added outside of .next(), .prev() or .DoOnCurrentLayer()" << std::endl;
+		std::shared_ptr<Control> control { Control::control };
 		control->tasks.emplace_back(task);
 	};
 	inline void Control::AddOnNext(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		if (!same_layer_guarantee)
+			std::cout << "Task added outside of .next(), .prev() or .DoOnCurrentLayer()" << std::endl;
+		std::shared_ptr<Control> control { Control::control };
 		control->on_next.emplace_back(task);
 	};
 	inline void Control::AddOnPrev(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		if (!same_layer_guarantee)
+			std::cout << "Task added outside of .next(), .prev() or .DoOnCurrentLayer()" << std::endl;
+		std::shared_ptr<Control> control { Control::control };
 		control->on_prev.emplace_back(task);
 	};
 	inline void Control::AddOnReenter(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		if (!same_layer_guarantee)
+			std::cout << "Task added outside of .next(), .prev() or .DoOnCurrentLayer()" << std::endl;
+		std::shared_ptr<Control> control { Control::control };
 		control->on_reenter.emplace_back(task);
 	}
 	inline void Control::AddOnLeave(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		if (!same_layer_guarantee)
+			std::cout << "Task added outside of .next(), .prev() or .DoOnCurrentLayer()" << std::endl;
+		std::shared_ptr<Control> control { Control::control };
 		control->on_leave.emplace_back(task);
 	};
 };

@@ -7,6 +7,7 @@
 
 #include "Loom.h"
 #include "Data.h"
+#include "Menu.h"
 #include "Engine.h"
 using namespace loom;
 
@@ -39,6 +40,19 @@ int main()
 	map->connect_adjacent(0, 0, 32, 32);
 	map->floodfill_hightlights(HIGHLIGHT::PLAYER, 5, map->get_cell_ptr(0, 0));
 	map->generate();
+
+	CheckForPressed<GLFW_KEY_ESCAPE> option0;
+	option0.on_select = []() { Menu::leave(); };
+
+	CheckForPressed<GLFW_KEY_Q> option1;
+	option1.on_hover = []() { std::cout << "Q" << std::endl; };
+
+	CheckForPressed<GLFW_KEY_W> option2;
+	option2.on_hover = []() { std::cout << "W" << std::endl; };
+
+	Menu::next({ option0, option1, option2 }, []() { return true; });
+
+
 
 	Engine::Run();
 

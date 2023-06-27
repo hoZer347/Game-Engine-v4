@@ -135,6 +135,7 @@
     <ClInclude Include="Game\MapHighlights.vert">
       <Filter>Game\Map</Filter>
     </ClInclude>
+    <ClInclude Include="Option.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">
