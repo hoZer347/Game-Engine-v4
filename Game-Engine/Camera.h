@@ -75,7 +75,7 @@ namespace loom
 
 	inline void Camera::InitiateFreeCam()
 	{
-		static ptr<Camera> camera{ };
+		static ptr<Camera> camera{ 1 };
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 

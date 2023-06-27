@@ -32,13 +32,6 @@ namespace loom
 
 		typedef vec4 Vtx;
 
-		Map()
-		{
-			for (auto i = 0; i < x_size - x0_buffer - x1_buffer; i++)
-				for (auto j = 0; j < y_size - y0_buffer - y1_buffer; j++)
-					cells[i][j].unit = nullptr;
-		};
-
 		// Determines the heights of each cell in terms of z = height_func(x, y)
 		float(*height_func)(float x, float y) = [](float, float) { return 1.f; };
 
@@ -131,7 +124,7 @@ namespace loom
 			// TODO:
 		};
 		// Adds a given unit to the map at (x, y)
-		inline void set_unit(Unit* unit, auto x, auto y)
+		inline void set_unit(ptr<Unit> unit, auto x, auto y)
 		{
 			cells[x][y].unit = unit;
 		};
@@ -226,7 +219,22 @@ namespace loom
 		vec4 outline_color = vec4(1, 0, 0, .5);
 		vec4 hovered_color = vec4(.5, 0, 0, 1);
 
-	//private:
+		~Map()
+		{
+
+		};
+
+	protected:
+		friend struct ptr<Map<x_size, y_size, x0_buffer, y0_buffer, x1_buffer, y1_buffer>>;
+		Map()
+		{
+
+
+
+
+		};
+
+	private:
 		Cell	cells[x_size - x0_buffer - x1_buffer][y_size - y0_buffer - y1_buffer]{};
 		
 		Vtx		vtxs[x_size + 1][y_size + 1][5]{};
@@ -244,71 +252,58 @@ namespace loom
 
 		void update() override
 		{
-			static bool finished = true;
-
-			if (!finished) return;
-
 			static Timer timer;
-			
+
 			if (timer.GetDiff_mls() < 1000.f / 60)
 				return;
 			timer.push(std::chrono::milliseconds(1000 / 60));
 
-			finished = false;
 
-			std::thread thread([this]()
-			{
-				// Updating Heights
-				for (auto i = 0; i < x_size; i++)
-					for (auto j = 0; j < y_size; j++)
+			// Updating Heights
+			for (auto i = 0; i < x_size; i++)
+				for (auto j = 0; j < y_size; j++)
+				{
+					float height = height_func((float)i, (float)j);
+
+					for (auto k = 0; k < 4; k++)
+						vtxs[i][j][k].z = height;
+				};
+
+
+			// Updating Unit Positions
+			for (auto i = 0; i < x_size - x0_buffer - x1_buffer; i++)
+				for (auto j = 0; j < y_size - y0_buffer - y1_buffer; j++)
+					if (ptr<Unit> unit = cells[i][j].unit)
+						unit->pos = vtxs[i + x0_buffer][j + y0_buffer][0];
+
+
+			// Updating Hovered Cell
+			vec2 buh = vec2(0, 0);
+			float d = 0;
+			for (auto i = x0_buffer; i < x_size - x1_buffer; i++)
+				for (auto j = y0_buffer; j < y_size - y1_buffer; j++)
+					if (intersectRayTriangle(
+						vec3(Camera::mpos),
+						vec3(Camera::mdir),
+						vec3(vtxs[i][j][0]),
+						vec3(vtxs[i][j][1]),
+						vec3(vtxs[i][j][2]),
+						buh, d) ||
+						intersectRayTriangle(
+							vec3(Camera::mpos),
+							vec3(Camera::mdir),
+							vec3(vtxs[i][j][0]),
+							vec3(vtxs[i][j][3]),
+							vec3(vtxs[i][j][2]),
+							buh, d))
 					{
-						float height = height_func((float)i, (float)j);
+						hvrd[0] = get_vtx_ind(i, j, 0);
+						hvrd[1] = get_vtx_ind(i, j, 1);
+						hvrd[2] = get_vtx_ind(i, j, 2);
+						hvrd[3] = get_vtx_ind(i, j, 3);
 
-						for (auto k = 0; k < 4; k++)
-							vtxs[i][j][k].z = height;
+						return;
 					};
-
-
-				// Updating Unit Positions
-				for (auto i = 0; i < x_size - x0_buffer - x1_buffer; i++)
-					for (auto j = 0; j < y_size - y0_buffer - y1_buffer; j++)
-						if (Unit* unit = cells[i][j].unit)
-							unit->pos = vtxs[i + x0_buffer][j + y0_buffer][0];
-
-
-				// Updating Hovered Cell
-				vec2 buh = vec2(0, 0);
-				float d = 0;
-				for (auto i = x0_buffer; i < x_size - x1_buffer; i++)
-					for (auto j = y0_buffer; j < y_size - y1_buffer; j++)
-						if (intersectRayTriangle(
-								vec3(Camera::mpos),
-								vec3(Camera::mdir),
-								vec3(vtxs[i][j][0]),
-								vec3(vtxs[i][j][1]),
-								vec3(vtxs[i][j][2]),
-								buh, d) ||
-							intersectRayTriangle(
-								vec3(Camera::mpos),
-								vec3(Camera::mdir),
-								vec3(vtxs[i][j][0]),
-								vec3(vtxs[i][j][3]),
-								vec3(vtxs[i][j][2]),
-								buh, d))
-						{
-							hvrd[0] = get_vtx_ind(i, j, 0);
-							hvrd[1] = get_vtx_ind(i, j, 1);
-							hvrd[2] = get_vtx_ind(i, j, 2);
-							hvrd[3] = get_vtx_ind(i, j, 3);
-
-							goto _break;
-						};
-
-				_break:
-
-				finished = true;
-			});
-			thread.detach();
 		};
 		void render() override
 		{
@@ -375,10 +370,10 @@ namespace loom
 			glDisableVertexAttribArray(VEC4_0_16);
 		};
 
-		ptr<Texture> texture{ "Resources/stone.png", GL_RGB };
-		ptr<Shader> texture_shader{ "Game/MapTexture" };
-		ptr<Shader> outline_shader{ "Game/MapOutline" };
-		ptr<Shader> highlight_shader{ "Game/MapHighlights" };
-		ptr<Shader> hovered_shader{ "Game/MapHovered" };
+		ptr<Texture> texture{ 1, "Resources/stone.png", GL_RGB };
+		ptr<Shader> texture_shader{ 1, "Game/MapTexture" };
+		ptr<Shader> outline_shader{ 1, "Game/MapOutline" };
+		ptr<Shader> highlight_shader{ 1, "Game/MapHighlights" };
+		ptr<Shader> hovered_shader{ 1, "Game/MapHovered" };
 	};
 };

@@ -16,7 +16,7 @@ namespace loom
 	static inline std::unordered_map<std::string, uint32_t> TEXS;
 	Texture::Texture(std::string file, uint32_t type)
 	{
-		Engine::DoOnMain([=]()
+		Engine::DoOnMain([this, file, type]()
 		{
 			// Catching Duplicates
 			if (TEXS[file])

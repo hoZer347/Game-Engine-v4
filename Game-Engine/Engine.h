@@ -27,14 +27,6 @@ namespace loom
 		// TODO: Implement this
 		static const bool& GetIsOnUpdater();
 
-		// Adds the object(s) in the parameters to the engine
-		template <typename ARG, typename... ARGS>
-		static void Add(ARG* arg, ARGS&&... args);
-
-		// Removes the object(s) in the parameters to the engine
-		template <typename ARG, typename... ARGS>
-		static void Rmv(ARG* arg, ARGS&&... args);
-
 		// Sends a task to be done by the Main thread (Renderer)
 		// If ran on main thread, will handle other functions called here
 		static void DoOnMain(Task&& task);
@@ -44,8 +36,6 @@ namespace loom
 		static void DoOnUpdater(Task&& task);
 
 	private:
-		static inline void Add();
-		static inline void Rmv();
 		Engine() { };
 	};
 	//

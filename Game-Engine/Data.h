@@ -21,17 +21,20 @@ namespace loom
 	struct Renderable;
 
 	template<typename T>
-		concept _render_test = requires {
-	{ std::declval<T>().render() } -> std::same_as<void>;
+		concept _render_test = requires
+	{
+		{ std::declval<T>().render() } -> std::same_as<void>;
 	};
 	
 	template<typename T>
-	concept _update_test = requires {
+	concept _update_test = requires
+	{
 		{ std::declval<T>().update() } -> std::same_as<void>;
 	};
 
 	template<typename T, typename S>
-	concept _container_test = requires {
+	concept _container_test = requires
+	{
 		{ std::declval<T>().begin() } -> std::same_as<S&>;
 		{ std::declval<T>().end() } -> std::same_as<S&>;
 	};
@@ -43,12 +46,13 @@ namespace loom
 	public:
 		GameObject()
 		{
-			int i = 0;
-			assert(!is_in_engine || !Engine::GetIsRunning());
+			assert((!is_in_engine || !Engine::GetIsRunning(),
+				"It's dangerous to add something to the engine before it's done constructing!"));
 		};
 		virtual ~GameObject()
 		{
-			assert(!is_in_engine || !Engine::GetIsRunning());
+			assert((!is_in_engine || !Engine::GetIsRunning(),
+				"It's dangerous to delete something before it's done being removed from the engine!"));
 		};
 		static void access(void(*f)(T&))
 		{
@@ -63,9 +67,9 @@ namespace loom
 		};
 
 	protected:
-		template <typename Base>
-		friend struct Manager;
-		friend struct Engine;
+		template <typename T>
+		friend struct ptr;
+		
 		void AddToEngine()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{mut};
@@ -97,37 +101,6 @@ namespace loom
 	protected:
 		friend struct Engine;
 		virtual void update() = 0;
-	};
-
-	inline void Engine::Add()
-	{ };
-	template <typename ARG, typename... ARGS>
-	inline void Engine::Add(ARG* arg, ARGS&&... args)
-	{
-		if constexpr (std::is_base_of<GameObject<ARG>, ARG>::value)
-			arg->GameObject<ARG>::AddToEngine();
-		if constexpr (std::is_base_of<Updateable, ARG>::value)
-			arg->GameObject<Updateable>::AddToEngine();
-		if constexpr (std::is_base_of<Renderable, ARG>::value)
-			arg->GameObject<Renderable>::AddToEngine();
-
-		Add(args...);
-	};
-
-
-	inline void Engine::Rmv()
-	{ };
-	template <typename ARG, typename... ARGS>
-	inline void Engine::Rmv(ARG* arg, ARGS&&... args)
-	{
-		if constexpr (std::is_base_of<GameObject<ARG>, ARG>::value)
-			arg->GameObject<ARG>::RmvFromEngine();
-		if constexpr (std::is_base_of<Updateable, ARG>::value)
-			arg->GameObject<Updateable>::RmvFromEngine();
-		if constexpr (std::is_base_of<Renderable, ARG>::value)
-			arg->GameObject<Renderable>::RmvFromEngine();
-
-		Rmv(args...);
 	};
 
 
@@ -172,19 +145,35 @@ namespace loom
 	};
 
 
-	// Guarantees memory safe lifetime management
-	// Works like a std::shared_ptr
+	// Works like a std::shared_ptr, guarantees memory safe lifetime management inside the engine
 	template <typename T>
 	struct ptr : std::shared_ptr<T>
 	{
-		template <typename... ARGS>
-		ptr(ARGS... args) : std::shared_ptr<T>(new T(args...))
+		ptr() : std::shared_ptr<T>(nullptr)
 		{
-			Engine::Add(std::shared_ptr<T>::get());
+
+		};
+		template <typename... ARGS>
+		ptr(bool nothing, ARGS... args) : std::shared_ptr<T>(new T(args...))
+		{
+			if constexpr (std::is_base_of<GameObject<T>, T>::value)
+				(*this)->GameObject<T>::AddToEngine();
+			if constexpr (std::is_base_of<Updateable, T>::value)
+				(*this)->GameObject<Updateable>::AddToEngine();
+			if constexpr (std::is_base_of<Renderable, T>::value)
+				(*this)->GameObject<Renderable>::AddToEngine();
 		};
 		virtual ~ptr()
 		{
-			Engine::Rmv(std::shared_ptr<T>::get());
+			if (std::shared_ptr<T>::use_count() == 1)
+			{
+				if constexpr (std::is_base_of<GameObject<T>, T>::value)
+					(*this)->GameObject<T>::RmvFromEngine();
+				if constexpr (std::is_base_of<Updateable, T>::value)
+					(*this)->GameObject<Updateable>::RmvFromEngine();
+				if constexpr (std::is_base_of<Renderable, T>::value)
+					(*this)->GameObject<Renderable>::RmvFromEngine();
+			};
 		};
 	};
 };

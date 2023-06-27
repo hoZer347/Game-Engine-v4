@@ -108,7 +108,7 @@ namespace loom
 {
 	struct Text
 	{
-		static inline ptr<Shader> shader{ "Text" };
+		static inline ptr<Shader> shader{ 1, "Text" };
 		static inline uint32_t _mvp;
 		static inline uint32_t _trns;
 

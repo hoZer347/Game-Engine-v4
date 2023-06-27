@@ -17,7 +17,7 @@ namespace loom
 		void render() override;
 
 		static inline std::recursive_mutex mut;
-		static inline Shader shader{ "Sprite" };
+		static inline ptr<Shader> shader{ 1, "Sprite" };
 		static inline std::vector<vec4> vtxs
 		{
 			{ 0, 0, 0, 1 },
@@ -26,35 +26,35 @@ namespace loom
 			{ 0, 0, 1, 1 },
 		};
 
-		static inline ptr<SpriteManager> manager;
+		static inline ptr<SpriteManager> manager { 1 };
 	};
 
 
 	struct Sprite :
 		public GameObject<Sprite>
 	{
-		Sprite(Texture& texture, vec2 start, vec2 size, vec2 stride, uint16 ups) :
+		Sprite(ptr<Texture> texture, vec2 start, vec2 size, vec2 stride, uint16 ups) :
 			texture(texture),
 			location(start, size),
 			stride(stride),
 			ups(ups)
 		{
-			Engine::DoOnMain([this, &texture]()
+			Engine::DoOnMain([this]()
 			{
 				if (!this) return;
 
-				location.x /= texture.w;
-				location.y /= texture.h;
-				location.z /= texture.w;
-				location.w /= texture.h;
+				location.x /= this->texture->w;
+				location.y /= this->texture->h;
+				location.z /= this->texture->w;
+				location.w /= this->texture->h;
 
-				glBindTexture(GL_TEXTURE_2D, texture.id);
+				glBindTexture(GL_TEXTURE_2D, this->texture->id);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glBindTexture(GL_TEXTURE_2D, 0);
 			});
 		};
 
-		Texture& texture;
+		ptr<Texture> texture;
 
 		vec2 stride;
 		uint16 ups;
@@ -72,11 +72,11 @@ namespace loom
 	};
 	void SpriteManager::render()
 	{
-		glUseProgram(shader.id);
+		glUseProgram(shader->id);
 
 		glEnableVertexAttribArray(VEC4_0_16);
 
-		glUniformMatrix4fv(glGetUniformLocation(shader.id, "mvp"), 1, false, (float*)&Camera::mvp);
+		glUniformMatrix4fv(glGetUniformLocation(shader->id, "mvp"), 1, false, (float*)&Camera::mvp);
 
 		glBufferData(
 			GL_ARRAY_BUFFER,
@@ -86,10 +86,10 @@ namespace loom
 
 		GameObject<Sprite>::access([](Sprite& sprite)
 		{
-			glBindTexture(GL_TEXTURE_2D, sprite.texture.id);
+			glBindTexture(GL_TEXTURE_2D, sprite.texture->id);
 
-			glUniformMatrix4fv(glGetUniformLocation(shader.id, "trns"), 1, false, (float*)&sprite.trns);
-			glUniform4fv(glGetUniformLocation(shader.id, "loc"), 1, (float*)&sprite.location);
+			glUniformMatrix4fv(glGetUniformLocation(shader->id, "trns"), 1, false, (float*)&sprite.trns);
+			glUniform4fv(glGetUniformLocation(shader->id, "loc"), 1, (float*)&sprite.location);
 
 			glDrawArrays(GL_QUADS, 0, 4);
 

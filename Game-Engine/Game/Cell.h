@@ -14,7 +14,7 @@ namespace loom
 
 	struct Cell final
 	{
-		Unit* unit = nullptr;
+		ptr<Unit> unit;
 
 		uint8 highlight = 0;
 		uint8 difficulty = 1;

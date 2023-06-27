@@ -1,5 +1,6 @@
 #pragma once
-#include "Shader.h"
+
+#include "Data.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -26,11 +27,14 @@ namespace loom
 
 
 	// Shader Object
-	struct Shader final
+	struct Shader final :
+		public GameObject<Shader>
 	{
 		uint32_t id = 0;
 
-		inline Shader(auto&&... files) :
+	protected:
+		friend struct ptr<Shader>;
+		Shader(auto&&... files) :
 			files({ files... })
 		{
 			Engine::DoOnMain([=]()

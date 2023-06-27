@@ -68,19 +68,17 @@ namespace loom
 	protected:
 		friend struct ControlManager;
 
-		struct Data final
-		{
-			std::vector<Task> tasks;
-			std::vector<Task> on_next;
-			std::vector<Task> on_prev;
-			std::vector<Task> on_reenter;
+		std::vector<Task> tasks;
+		std::vector<Task> on_next;
+		std::vector<Task> on_prev;
+		std::vector<Task> on_reenter;
+		std::vector<Task> on_leave;
 
-			std::shared_ptr<Data> _prev{0};
-		};
+		std::shared_ptr<Control> _prev{0};
 
 		static inline std::recursive_mutex mut;
 		static inline std::array<int, NUM_INPUTS> prev_inputs;
-		static inline std::shared_ptr<Data> data = std::shared_ptr<Data>(new Data());
+		static inline std::shared_ptr<Control> control = nullptr;
 
 	private:
 		Control() { };
@@ -119,7 +117,7 @@ namespace loom
 
 			std::scoped_lock<std::recursive_mutex> lock{Control::mut};
 
-			for (auto& task : Control::data->tasks)
+			for (auto& task : Control::control->tasks)
 				task();
 
 			inputs.swap(Control::prev_inputs);
@@ -152,19 +150,27 @@ namespace loom
 			};
 		};
 
-		static inline ptr<ControlManager> manager;
+		static inline ptr<ControlManager> manager { 1 };
 	};
 	inline void Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		if (data)
-			for (auto& task : data->on_next)
+		if (control)
+			for (auto& task : control->on_next)
 				task();
 
-		std::shared_ptr<Data> data = std::shared_ptr<Data>(new Data());
-		data->_prev = data;
-		data = data;
+		if (control)
+			for (auto& task : control->on_leave)
+				task();
+
+		std::shared_ptr<Control> new_control = std::shared_ptr<Control>(new Control());
+		new_control->_prev = control;
+		control = new_control;
+
+		if (control)
+			for (auto& task : control->on_reenter)
+				task();
 
 		task();
 	};
@@ -172,12 +178,16 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		for (auto& task : data->on_prev)
+		for (auto& task : control->on_prev)
 			task();
 
-		data = data->_prev;
+		if (control)
+			for (auto& task : control->on_leave)
+				task();
 
-		for (auto& task : data->on_reenter)
+		control = control->_prev;
+
+		for (auto& task : control->on_reenter)
 			task();
 
 		task();
@@ -186,7 +196,7 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		data = std::shared_ptr<Data>(new Data());
+		control = std::shared_ptr<Control>(new Control());
 
 		task();
 	};
@@ -194,28 +204,28 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
-		data->tasks.clear();
-		data->on_next.clear();
-		data->on_prev.clear();
+		control->tasks.clear();
+		control->on_next.clear();
+		control->on_prev.clear();
 	};
 	inline void Control::AddTask(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-		data->tasks.emplace_back(task);
+		control->tasks.emplace_back(task);
 	};
 	inline void Control::AddOnNext(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-		data->on_next.emplace_back(task);
+		control->on_next.emplace_back(task);
 	};
 	inline void Control::AddOnPrev(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-		data->on_prev.emplace_back(task);
+		control->on_prev.emplace_back(task);
 	};
 	inline void Control::AddOnReenter(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-		data->on_reenter.emplace_back(task);
+		control->on_reenter.emplace_back(task);
 	};
 };

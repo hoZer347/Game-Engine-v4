@@ -20,12 +20,14 @@ namespace loom
 	struct Unit final :
 		virtual public Updateable
 	{
-		Unit(Sprite& sprite) :
+		vec4 pos{ 0, 0, 0, 1 };
+		ptr<Sprite> sprite;
+
+	protected:
+		friend struct ptr<Unit>;
+		Unit(ptr<Sprite> sprite) :
 			sprite(sprite)
 		{ };
-
-		vec4 pos{ 0, 0, 0, 1 };
-		Sprite& sprite;
 
 	private:
 		void update() override
@@ -34,7 +36,7 @@ namespace loom
 			_trns *= Camera::yaww_mat;
 			_trns *= translate(vec3(-.5, 0, 0));
 
-			sprite.trns = _trns;
+			sprite->trns = _trns;
 		};
 	};
 };
