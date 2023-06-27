@@ -58,6 +58,9 @@ namespace loom
 		// Adds tasks to do when the current input layer is reentered
 		static void AddOnReenter(Task&& task);
 
+		// Adds tasks to do when the current input layer is reentered
+		static void AddOnLeave(Task&& task);
+
 		static inline float mx = 0;		// Mouse X Position
 		static inline float my = 0;		// Mouse Y Position
 		static inline float pmx = 0;	// Previous Mouse X Position
@@ -155,6 +158,11 @@ namespace loom
 	inline void Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
+		
+		static bool _next = false;
+		if (_next)
+			return;
+		_next = true;
 
 		if (control)
 			for (auto& task : control->on_next)
@@ -173,6 +181,8 @@ namespace loom
 				task();
 
 		task();
+
+		_next = false;
 	};
 	inline void Control::prev(Task&& task)
 	{
@@ -227,5 +237,10 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 		control->on_reenter.emplace_back(task);
+	}
+	inline void Control::AddOnLeave(Task&& task)
+	{
+		std::scoped_lock<std::recursive_mutex> lock{mut};
+		control->on_leave.emplace_back(task);
 	};
 };

@@ -17,7 +17,7 @@ namespace loom
 
 	struct Menu final
 	{
-		static _NODISCARD ptr<Control>&& next(std::vector<Option>&& options);
+		static _NODISCARD void next(std::vector<Option>&& options);
 		static void prev();
 		static void leave();
 
@@ -25,9 +25,9 @@ namespace loom
 	};
 
 
-	inline ptr<Control>&& Menu::next(std::vector<Option>&& new_options)
+	inline void Menu::next(std::vector<Option>&& new_options)
 	{
-		return Control::next([new_options]()
+		Control::next([new_options]()
 		{
 			options = new_options;
 

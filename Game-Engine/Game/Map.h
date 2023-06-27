@@ -228,10 +228,7 @@ namespace loom
 		friend struct ptr<Map<x_size, y_size, x0_buffer, y0_buffer, x1_buffer, y1_buffer>>;
 		Map()
 		{
-
-
-
-
+			
 		};
 
 	private:
