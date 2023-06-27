@@ -13,6 +13,7 @@ namespace loom
 		virtual public Updateable,
 		virtual public Renderable
 	{
+	private:
 		void update() override;
 		void render() override;
 
@@ -25,7 +26,6 @@ namespace loom
 			{ 1, 0, 1, 1 },
 			{ 0, 0, 1, 1 },
 		};
-
 		static inline ptr<SpriteManager> manager { 1 };
 	};
 

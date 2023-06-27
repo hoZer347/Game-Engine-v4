@@ -48,7 +48,6 @@ namespace loom
 	};
 
 
-
 	inline ShaderManager::~ShaderManager()
 	{
 		for (auto& i : shaders)

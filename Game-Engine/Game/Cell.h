@@ -5,13 +5,6 @@
 
 namespace loom
 {
-	enum CELL
-	{
-		GRASS,
-		WATER,
-	};
-
-
 	struct Cell final
 	{
 		ptr<Unit> unit;

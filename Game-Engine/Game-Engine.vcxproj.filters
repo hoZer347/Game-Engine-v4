@@ -58,9 +58,6 @@
     <Filter Include="Engine\Data">
       <UniqueIdentifier>{96447134-fbc2-4b5f-91cf-8a65419b7631}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Trash">
-      <UniqueIdentifier>{4647bd2e-8fc8-4448-b298-37c3f7a931aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Animation">
       <UniqueIdentifier>{0d197ab0-8da6-4792-8594-61504492789c}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,9 @@
     </Filter>
     <Filter Include="Engine\Control">
       <UniqueIdentifier>{204fa360-f970-4e61-90a4-846572f0a777}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\System">
+      <UniqueIdentifier>{0df3f429-925a-404a-9cd7-eb83aa7a4969}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -117,12 +117,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Unit.h">
-      <Filter>Game\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Terrain.h">
-      <Filter>Game\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Engine\Animation</Filter>
     </ClInclude>
@@ -137,6 +131,15 @@
     </ClInclude>
     <ClInclude Include="Option.h">
       <Filter>Engine\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Unit.h">
+      <Filter>Game\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Engine\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Terrain.h">
+      <Filter>Game\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

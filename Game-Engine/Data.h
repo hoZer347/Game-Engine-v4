@@ -146,6 +146,7 @@ namespace loom
 
 
 	// Works like a std::shared_ptr, guarantees memory safe lifetime management inside the engine
+	// Automatically adds and removes itself based on lifetime
 	template <typename T>
 	struct ptr : std::shared_ptr<T>
 	{

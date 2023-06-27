@@ -26,14 +26,14 @@ namespace loom
 {
 	// Standard std::function<void()>
 	typedef std::function<void()> Task;
-	
-	// Keeps track of the states of all the inputs
-	inline std::array<int, NUM_INPUTS> inputs;
 
 	// Handles interactions between the game and the player
 	// Updated at a frequency equal to CONTROL_TICKRATE
 	struct Control final
 	{
+		// Keeps track of the states of all the inputs
+		static inline std::array<int, NUM_INPUTS> inputs;
+
 		// Creates a control layer above the current one
 		// When nested inside another next call, combines the 2
 		_NODISCARD static std::shared_ptr<Control> next(Task&& task = []() {});
@@ -43,7 +43,7 @@ namespace loom
 		void prev(Task&& task = []() {});
 
 		// Resets back to given layer (default nullptr)
-		static void reset(std::shared_ptr<Control> new_control, Task&& task = []() {});
+		static void reset(std::shared_ptr<Control> new_control = nullptr, Task&& task = []() {});
 
 		// Clears current layer
 		static void clear();
@@ -104,11 +104,13 @@ namespace loom
 		virtual public Updateable,
 		virtual public Renderable
 	{
+	protected:
+		friend struct ptr<ControlManager>;
 		ControlManager()
 		{
 			Engine::DoOnMain([]()
 			{
-				inputs.fill(0);
+				Control::inputs.fill(0);
 
 				if (GLFWwindow* window = glfwGetCurrentContext())
 				{
@@ -124,6 +126,7 @@ namespace loom
 				};
 			});
 		};
+	private:
 		void update() override
 		{
 			static Timer timer;
@@ -138,7 +141,7 @@ namespace loom
 				for (auto& task : std::shared_ptr<Control>(Control::control)->tasks)
 					task();
 
-			inputs.swap(Control::prev_inputs);
+			Control::inputs.swap(Control::prev_inputs);
 			Control::prev_inputs.fill(0);
 		};
 		void render() override
@@ -167,7 +170,6 @@ namespace loom
 					Control::prev_inputs[i] = glfwGetKey(window, i);
 			};
 		};
-
 		static inline ptr<ControlManager> manager { 1 };
 	};
 	inline std::shared_ptr<Control> Control::next(Task&& task)

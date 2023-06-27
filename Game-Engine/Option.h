@@ -30,7 +30,7 @@ namespace loom
 		{
 			hover_check = []()
 			{
-				return (bool)inputs[input];
+				return (bool)Control::inputs[input];
 			};
 		};
 	};
