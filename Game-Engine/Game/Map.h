@@ -219,11 +219,6 @@ namespace loom
 		vec4 outline_color = vec4(1, 0, 0, .5);
 		vec4 hovered_color = vec4(.5, 0, 0, 1);
 
-		~Map()
-		{
-
-		};
-
 	protected:
 		friend struct ptr<Map<x_size, y_size, x0_buffer, y0_buffer, x1_buffer, y1_buffer>>;
 		Map()

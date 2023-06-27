@@ -35,13 +35,13 @@ namespace loom
 	struct Control final
 	{
 		// Creates a control layer above the current one
-		static void next(Task&& task = []() {});
+		static std::shared_ptr<Control> next(Task&& task = []() {});
 
 		// Deletes the current control layer, goes down to the previous one
-		static void prev(Task&& task = []() {});
+		static std::shared_ptr<Control> prev(Task&& task = []() {});
 
 		// Resets back to layer 1
-		static void reset(Task&& task = []() {});
+		static void reset(std::shared_ptr<Control> new_control, Task&& task = []() {});
 
 		// Clears current layer
 		static void clear();
@@ -77,14 +77,13 @@ namespace loom
 		std::vector<Task> on_reenter;
 		std::vector<Task> on_leave;
 
-		std::shared_ptr<Control> _prev{0};
-
 		static inline std::recursive_mutex mut;
 		static inline std::array<int, NUM_INPUTS> prev_inputs;
 		static inline std::shared_ptr<Control> control = nullptr;
 
 	private:
 		Control() { };
+		std::shared_ptr<Control> _prev{0};
 	};
 	struct ControlManager final :
 		virtual public Updateable,
@@ -155,13 +154,13 @@ namespace loom
 
 		static inline ptr<ControlManager> manager { 1 };
 	};
-	inline void Control::next(Task&& task)
+	inline std::shared_ptr<Control> Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 		
 		static bool _next = false;
 		if (_next)
-			return;
+			return nullptr;
 		_next = true;
 
 		if (control)
@@ -183,8 +182,10 @@ namespace loom
 		task();
 
 		_next = false;
+
+		return control;
 	};
-	inline void Control::prev(Task&& task)
+	inline std::shared_ptr<Control> Control::prev(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
@@ -201,13 +202,13 @@ namespace loom
 			task();
 
 		task();
+
+		return control;
 	};
-	inline void Control::reset(Task&& task)
+	inline void Control::reset(std::shared_ptr<Control> new_control, Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-
-		control = std::shared_ptr<Control>(new Control());
-
+		control = new_control;
 		task();
 	};
 	inline void Control::clear()

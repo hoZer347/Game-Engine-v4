@@ -79,8 +79,7 @@ namespace loom
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 
-		// Wrap into one mutex
-		Control::next([]()
+		static std::shared_ptr<Control> control = Control::next([]()
 		{
 			// WASD movement relative to where the camera is pointing (x, y)
 			Control::AddTask([]()
