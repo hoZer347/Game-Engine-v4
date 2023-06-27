@@ -22,9 +22,6 @@
     <Filter Include="Engine\Camera">
       <UniqueIdentifier>{7ba8ea3b-649b-4176-b36b-6443e574014b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Input">
-      <UniqueIdentifier>{204fa360-f970-4e61-90a4-846572f0a777}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Text">
       <UniqueIdentifier>{1302366d-7860-4d07-98e6-86ffc8a35f5b}</UniqueIdentifier>
     </Filter>
@@ -70,6 +67,9 @@
     <Filter Include="Engine\Serialization">
       <UniqueIdentifier>{abb1d4dc-c894-429b-a127-5cc30181b758}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Control">
+      <UniqueIdentifier>{204fa360-f970-4e61-90a4-846572f0a777}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Loom.h">
@@ -85,7 +85,7 @@
       <Filter>Engine\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Control.h">
-      <Filter>Engine\Input</Filter>
+      <Filter>Engine\Control</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
       <Filter>Engine\Text</Filter>
@@ -135,7 +135,9 @@
     <ClInclude Include="Game\MapHighlights.vert">
       <Filter>Game\Map</Filter>
     </ClInclude>
-    <ClInclude Include="Option.h" />
+    <ClInclude Include="Option.h">
+      <Filter>Engine\Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">

@@ -35,9 +35,11 @@ namespace loom
 	struct Control final
 	{
 		// Creates a control layer above the current one
+		// When nested inside another next call, combines the 2
 		_NODISCARD static std::shared_ptr<Control> next(Task&& task = []() {});
 
 		// Deletes the current control layer, goes down to the previous one
+		// When nested inside another prev call, combines the 2
 		void prev(Task&& task = []() {});
 
 		// Resets back to given layer (default nullptr)
@@ -73,7 +75,9 @@ namespace loom
 
 		~Control()
 		{
-			control = _prev;
+			std::scoped_lock<std::recursive_mutex> lock{Control::mut};
+			if (control.expired())
+				control = _prev;
 		};
 
 	protected:
@@ -91,6 +95,8 @@ namespace loom
 
 	private:
 		Control() { };
+		static inline bool inside_next = false;
+		static inline bool inside_prev = false;
 		static inline bool same_layer_guarantee = false;
 		std::shared_ptr<Control> _prev{0};
 	};
@@ -167,9 +173,13 @@ namespace loom
 	inline std::shared_ptr<Control> Control::next(Task&& task)
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
-		
-		if (same_layer_guarantee)
+	
+		if (inside_next)
+		{
+			task();
 			return nullptr;
+		};
+		inside_next = true;
 		same_layer_guarantee = true;
 
 		std::shared_ptr<Control> new_control = std::shared_ptr<Control>(new Control());
@@ -191,6 +201,7 @@ namespace loom
 
 		task();
 
+		inside_next = false;
 		same_layer_guarantee = false;
 
 		return new_control;
@@ -199,6 +210,12 @@ namespace loom
 	{
 		std::scoped_lock<std::recursive_mutex> lock{mut};
 
+		if (inside_prev)
+		{
+			task();
+			return;
+		};
+		inside_prev = true;
 		same_layer_guarantee = true;
 
 		std::shared_ptr<Control> new_control { _prev };
@@ -216,6 +233,7 @@ namespace loom
 
 		task();
 
+		inside_prev = false;
 		same_layer_guarantee = false;
 	};
 	inline void Control::DoOnCurrentLayer(Task&& task)

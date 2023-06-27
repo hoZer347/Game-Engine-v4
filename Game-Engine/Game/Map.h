@@ -223,7 +223,10 @@ namespace loom
 		friend struct ptr<Map<x_size, y_size, x0_buffer, y0_buffer, x1_buffer, y1_buffer>>;
 		Map()
 		{
-			
+			control = Control::next([]()
+			{
+				Camera::InitiateFreeCam();
+			});
 		};
 
 	private:
@@ -234,8 +237,9 @@ namespace loom
 		uint32	tnds[x_size][y_size][4]{};
 		uint32	hvrd[4]{ 0, 0, 0, 0 };
 		
-
 		std::vector<uint32> hlts;
+
+		std::shared_ptr<Control> control;
 
 		uint32 inline get_vtx_ind(auto x, auto y, auto offset=0)
 		{
