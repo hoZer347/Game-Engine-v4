@@ -8,9 +8,8 @@
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
 
-#include <glm/gtx/transform.hpp>
-
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 using namespace glm;
 
 #include <vector>
