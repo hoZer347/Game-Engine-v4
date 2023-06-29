@@ -24,7 +24,6 @@ namespace loom
 		// - Press and hold middle mouse button to rotate camera
 		// - WASD movement relative to camera rotation around the Z axis
 		// - LEFT_CTRL + SPACE go up and down on the Z axis
-		// - ESCAPE exits Free Cam
 		static void InitiateFreeCam();
 
 		static inline mat4	vp			= mat4(1),
@@ -54,13 +53,11 @@ namespace loom
 
 		static inline int	screen_w = 1, screen_h = 1;
 
-	protected:
-		friend struct ptr<Camera>;
 		Camera() { };
 
 	private:
 		void render() override;
-		static inline ptr<Camera> camera{ 1 };
+		static inline ptr<Camera> camera { 1 };
 	};
 	//
 
@@ -78,7 +75,9 @@ namespace loom
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 
-		static std::shared_ptr<Control> control = Control::next([]()
+		static std::shared_ptr<Control> control;
+		control.reset();
+		control = Control::next([]()
 		{
 			// WASD movement relative to where the camera is pointing (x, y)
 			Control::AddTask([]()

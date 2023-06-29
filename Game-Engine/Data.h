@@ -154,8 +154,11 @@ namespace loom
 		{
 
 		};
-		template <typename... ARGS>
-		ptr(bool nothing, ARGS... args) : std::shared_ptr<T>(new T(args...))
+		ptr(T* t) : std::shared_ptr<T>(t)
+		{
+
+		};
+		ptr(bool nothing, auto&&... args) : std::shared_ptr<T>(new T(args...))
 		{
 			if constexpr (std::is_base_of<GameObject<T>, T>::value)
 				(*this)->GameObject<T>::AddToEngine();

@@ -7,8 +7,6 @@
 
 namespace loom
 {
-	typedef unsigned int uint32;
-
 	// Option to be used by Menus
 	// on_hover: Executes once whenever hover_check passes
 	// on_unhover: Executes once whenever another object's hover_check passes, and this ones doesn't
@@ -22,6 +20,7 @@ namespace loom
 		bool(*hover_check)() = []() { return false; };
 	};
 
+
 	// Option that is hovered whenever the given input is pressed
 	template <uint32 input>
 	struct CheckForPressed final : public Option
@@ -33,5 +32,11 @@ namespace loom
 				return (bool)Control::inputs[input];
 			};
 		};
+	};
+
+
+	struct TextOption : public Option
+	{
+
 	};
 };

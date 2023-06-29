@@ -129,7 +129,7 @@ namespace loom
 		window = nullptr;
 		glfwTerminate();
 
-		is_on_main = true;
+		is_on_main = false;
 		is_running = false;
 	};
 	const bool& Engine::GetIsRunning()

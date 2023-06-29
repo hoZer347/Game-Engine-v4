@@ -19,7 +19,7 @@ namespace loom
 		Texture(std::string file, uint32_t type);
 
 	private:
-		std::string file;
+		std::string file = "";
 		uint32_t type = 0;
 		int32_t nrChannels = -1;
 	};

@@ -141,6 +141,12 @@
     <ClInclude Include="Game\Terrain.h">
       <Filter>Game\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Game\MapControl.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\MapImpl.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Text.frag">

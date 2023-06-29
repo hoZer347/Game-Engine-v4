@@ -42,6 +42,9 @@ namespace loom
 		// When nested inside another prev call, combines the 2
 		void prev(Task&& task = []() {});
 
+		// Does ::next(task) when an input is pressed, then released
+		void NextOnInputPressThenRelease(std::shared_ptr<Control>* control, int input, Task&& task);
+
 		// Resets back to given layer (default nullptr)
 		static void reset(std::shared_ptr<Control> new_control = nullptr, Task&& task = []() {});
 
@@ -76,6 +79,8 @@ namespace loom
 		~Control()
 		{
 			std::scoped_lock<std::recursive_mutex> lock{Control::mut};
+			for (auto& task : on_leave)
+				task();
 			if (control.expired())
 				control = _prev;
 		};
@@ -90,7 +95,6 @@ namespace loom
 		std::vector<Task> on_leave;
 
 		static inline std::recursive_mutex mut;
-		static inline std::array<int, NUM_INPUTS> prev_inputs;
 		static inline std::weak_ptr<Control> control;
 
 	private:
@@ -140,9 +144,6 @@ namespace loom
 			if (!Control::control.expired())
 				for (auto& task : std::shared_ptr<Control>(Control::control)->tasks)
 					task();
-
-			Control::inputs.swap(Control::prev_inputs);
-			Control::prev_inputs.fill(0);
 		};
 		void render() override
 		{
@@ -164,10 +165,10 @@ namespace loom
 				glfwPollEvents();
 
 				for (auto i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
-					Control::prev_inputs[i] = glfwGetMouseButton(window, i);
+					Control::inputs[i] = glfwGetMouseButton(window, i);
 
 				for (auto i = 32; i < GLFW_KEY_LAST; i++)
-					Control::prev_inputs[i] = glfwGetKey(window, i);
+					Control::inputs[i] = glfwGetKey(window, i);
 			};
 		};
 		static inline ptr<ControlManager> manager { 1 };
@@ -237,6 +238,22 @@ namespace loom
 
 		inside_prev = false;
 		same_layer_guarantee = false;
+	};
+	inline void Control::NextOnInputPressThenRelease(std::shared_ptr<Control>* control, int input, Task&& task)
+	{
+		Control::AddTask([control, input, task]()
+		{
+			assert((control, "Control is nullptr"));
+
+			if (Control::inputs[input])
+				*control = Control::next([control, input, task]()
+				{
+					assert((control, "Control is nullptr"));
+
+					if (Control::inputs[input])
+						(*control)->prev((Task)task);
+				});
+		});
 	};
 	inline void Control::DoOnCurrentLayer(Task&& task)
 	{

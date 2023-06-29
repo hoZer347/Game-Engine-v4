@@ -1,30 +1,19 @@
 #pragma once
 
 #include "Data.h"
+#include "Timing.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+using namespace glm;
 
 namespace loom
 {
-	typedef bool(*AnimateTask)(mat4&);
-
-	struct Animation final :
-		virtual public Updateable
+	void Animate_MoveTowards(vec4& pos, const vec4 goal, float speed, float frequency = 60)
 	{
-		Animation(mat4& trns) :
-			trns(trns)
-		{ };
-		void update() override
-		{
-			if (!animations.empty() && animations.back()(trns))
-				animations.pop_back();
-		};
-		void assign(AnimateTask&& task)
-		{
-			assert((Engine::GetIsOnUpdater(), "Animation accessed outside updater"));
-			animations.emplace_back(task);
-		};
-
-	private:
-		mat4& trns;
-		std::vector<AnimateTask> animations;
+		if (pos != goal) pos += normalize(goal - pos) * speed;
+		if (std::abs(pos.x - goal.x) < speed) pos.x = goal.x;
+		if (std::abs(pos.y - goal.y) < speed) pos.y = goal.y;
+		if (std::abs(pos.z - goal.z) < speed) pos.z = goal.z;
 	};
 };

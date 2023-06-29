@@ -161,7 +161,9 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Game\Cell.h" />
     <ClInclude Include="Game\Map.h" />
+    <ClInclude Include="Game\MapControl.h" />
     <ClInclude Include="Game\MapHighlights.vert" />
+    <ClInclude Include="Game\MapImpl.h" />
     <ClInclude Include="Game\Terrain.h" />
     <ClInclude Include="Game\Unit.h" />
     <ClInclude Include="Geometry.h" />
