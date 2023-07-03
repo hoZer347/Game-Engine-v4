@@ -16,6 +16,9 @@ namespace loom
 		// Runs the engine using the current thread as an openGL host
 		static void Run();
 
+		// Exits the engine and deallocates everything
+		static void Exit();
+
 		// Returns whether or not the program is running
 		static const bool& GetIsRunning();
 

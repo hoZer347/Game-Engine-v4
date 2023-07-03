@@ -144,6 +144,7 @@ namespace loom
 		std::cout << "Size: " << size << ", Contents: " << contents << std::endl;
 	};
 
+	struct DynamicText;
 
 	// Works like a std::shared_ptr, guarantees memory safe lifetime management inside the engine
 	// Automatically adds and removes itself based on lifetime
@@ -179,5 +180,7 @@ namespace loom
 					(*this)->GameObject<Renderable>::RmvFromEngine();
 			};
 		};
+		template <typename S>
+		operator ptr<S>() { return ptr<S>(static_cast<S*>(std::shared_ptr<T>::get())); };
 	};
 };

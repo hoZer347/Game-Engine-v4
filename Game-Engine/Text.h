@@ -30,20 +30,20 @@ namespace loom
 		uint8_t* data;
 	};
 
+
 	// Storage for the info needed to render text
 	struct Font final
 	{
-		Font(const char*&& font_file, uint32_t&& size = 64);
 		~Font();
 
 	protected:
+		friend struct ptr<Font>;
 		friend struct StaticText;
 		friend struct DynamicText;
+		Font(const char* font_file, uint32_t&& size = 64);
+
 		uint32_t texture = 0;
 		const uint32_t size;
-
-	private:
-
 		std::vector<Letter> letters;
 		const char* font_file;
 	};
@@ -54,16 +54,19 @@ namespace loom
 	struct StaticText final :
 		virtual public Renderable
 	{
-		StaticText(Font& font, std::string&& body);
+		mat4 trns = mat4(1);
+		mat4& mvp;
+
 		virtual ~StaticText();
 
-		mat4 trns = mat4(1);
-		mat4& mvp = Camera::mvp;
+	protected:
+		friend struct ptr<StaticText>;
+		StaticText(ptr<Font> font, std::string&& body, mat4& mvp = Camera::mvp);
 
 	private:
 		void render() override;
 
-		Font& font;
+		ptr<Font> font;
 		std::string body;
 		static inline std::vector<vec4> vtxs =
 		{
@@ -74,43 +77,44 @@ namespace loom
 		};
 	};
 
+	struct Option;
 
 	// DynamicText
 	// - Creates a text object by using the font's texture
 	struct DynamicText final :
 		virtual public Renderable
 	{
-		DynamicText(Font& font, std::string&& body);
 		virtual ~DynamicText();
 
-		mat4 trns = mat4(1);
+		mat4 trns{ 1 };
 		mat4& mvp = Camera::mvp;
+		vec4 color = vec4(0, 0, 0, 1);
 
 		void push(std::string&& body);
-		void pop(uint32_t amount=1);
+		void pop(int amount = 1);
 		void clear();
 
-	private:
+	protected:
+		friend struct ptr<DynamicText>;
+		friend ptr<Option> TextOption(const ptr<DynamicText> text, Task on_select);
+		DynamicText(ptr<Font> font, std::string&& body, mat4& mvp = Camera::mvp);
+
 		void render() override;
 
-		Font& font;
+		ptr<Font> font;
 		std::string body;
-		vec4 curr_pos = vec4(0, 0, 0, 0);
+		vec4 curr_pos = vec4(0, 0, 0, 1);
 		struct Vtx final { vec4 pos, cds; };
 		std::vector<Vtx> vtxs;
 	};
-};
 
 
-
-
-namespace loom
-{
 	struct Text
 	{
-		static inline ptr<Shader> shader{ "Text" };
-		static inline uint32_t _mvp;
-		static inline uint32_t _trns;
+		static inline ptr<Shader> shader{ 1, "Text" };
+		static inline uint32 _mvp;
+		static inline uint32 _trns;
+		static inline uint32 _color;
 
 		Text()
 		{
@@ -118,24 +122,28 @@ namespace loom
 			{
 				_mvp = glGetUniformLocation(shader->id, "mvp");
 				_trns = glGetUniformLocation(shader->id, "trns");
+				_color = glGetUniformLocation(shader->id, "color");
 			});
 		};
 	};
-	inline Text manager;
+	static inline Text manager;
 
 
-	Font::Font(const char*&& font_file, uint32_t&& size) :
+	inline Font::Font(const char* font_file, uint32_t&& size) :
 		font_file(font_file),
 		size(size)
 	{
-		Engine::DoOnMain([&]()
+		letters.reserve(128);
+		letters.resize(128);
+
+		Engine::DoOnMain([this]()
 		{
 			// Initializing OpenGL Stuff
 			FT_Face face;
 			FT_Library library;
 			FT_Init_FreeType(&library);
-			FT_New_Face(library, font_file, 0, &face);
-			FT_Set_Pixel_Sizes(face, 0, size);
+			FT_New_Face(library, this->font_file, 0, &face);
+			FT_Set_Pixel_Sizes(face, 0, this->size);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
@@ -143,34 +151,32 @@ namespace loom
 
 			// Extracting info from FT_Face
 			uint32_t _w = 2, _h = 2;
-			letters.reserve(128);
 			for (unsigned char c = 0; c < 128; c++)
 			{
 				if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-				{
-					letters.emplace_back();
 					continue;
-				};
 
-				letters.emplace_back(
+				letters[c] =
+				{
 					vec2{
 						face->glyph->bitmap.width,
 						face->glyph->bitmap.rows, },
-						vec2{
-							face->glyph->bitmap_left,
-							face->glyph->bitmap_top, },
-							vec2{
-								face->glyph->advance.x >> 6,
-								face->glyph->advance.y >> 6, },
-								vec4{
-									_w,
-									_h,
-									_w + face->glyph->bitmap.width,
-									_h + face->glyph->bitmap.rows + 2, },
-									(uint8_t*)malloc(face->glyph->bitmap.width * face->glyph->bitmap.rows));
+					vec2{
+						face->glyph->bitmap_left,
+						face->glyph->bitmap_top, },
+					vec2{
+						face->glyph->advance.x >> 6,
+						face->glyph->advance.y >> 6, },
+					vec4{
+						_w,
+						_h,
+						_w + face->glyph->bitmap.width,
+						_h + face->glyph->bitmap.rows + 2, },
+					(uint8_t*)malloc(face->glyph->bitmap.width * face->glyph->bitmap.rows)
+				};
 
 				std::memcpy(
-					letters.back().data,
+					letters[c].data,
 					face->glyph->bitmap.buffer,
 					face->glyph->bitmap.width * face->glyph->bitmap.rows);
 
@@ -184,7 +190,7 @@ namespace loom
 				0,
 				GL_ALPHA,
 				_w,
-				_h = size * 2,
+				_h = this->size * 2,
 				0,
 				GL_ALPHA,
 				GL_UNSIGNED_BYTE,
@@ -208,9 +214,9 @@ namespace loom
 					GL_UNSIGNED_BYTE,
 					letter.data);
 
-				letter.size /= size;
-				letter.bearing /= size;
-				letter.stride /= size;
+				letter.size /= this->size;
+				letter.bearing /= this->size;
+				letter.stride /= this->size;
 				letter.texCoords /= vec4(_w, _h, _w, _h);
 			};
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -224,7 +230,7 @@ namespace loom
 			FT_Done_FreeType(library);
 		});
 	};
-	Font::~Font()
+	inline Font::~Font()
 	{
 		Engine::DoOnMain([this]()
 		{
@@ -233,63 +239,90 @@ namespace loom
 	};
 
 
-	StaticText::StaticText(Font& font, std::string&& body) :
+	inline StaticText::StaticText(ptr<Font> font, std::string&& body, mat4& mvp) :
 		font(font),
-		body(body)
+		body(body),
+		mvp(mvp)
 	{ };
-	StaticText::~StaticText()
+	inline StaticText::~StaticText()
 	{ };
-	void StaticText::render()
+	inline void StaticText::render()
 	{ };
 
 
-	DynamicText::DynamicText(Font& font, std::string&& body) :
+	inline DynamicText::DynamicText(ptr<Font> font, std::string&& body, mat4& mvp) :
 		font(font),
-		body(body)
+		body(body),
+		mvp(mvp)
 	{
-		Engine::DoOnMain([&]() { push(body.c_str()); });
+		Engine::DoOnMain([this]() { push(this->body.c_str()); });
 	};
-	DynamicText::~DynamicText()
+	inline DynamicText::~DynamicText()
 	{ };
-	void DynamicText::push(std::string&& body)
+	inline void DynamicText::push(std::string&& body)
 	{
+		std::scoped_lock<std::recursive_mutex> lock {GameObject<Renderable>::mut};
+
 		vtxs.reserve(body.size() * 4);
 		for (auto c : body)
 		{
-			Letter& l = font.letters[c];
+			Letter& l = font->letters[c];
+
+			if (c == '\n')
+			{
+				curr_pos.x = 0;
+				curr_pos.y += 1;
+				continue;
+			};
 
 			vtxs.emplace_back(
-				curr_pos + vec4(l.bearing.x, l.bearing.y - l.size.y, 0, 1),
+				curr_pos + vec4(l.bearing.x, l.bearing.y - l.size.y, 0, 0),
 				vec4(l.texCoords.x, l.texCoords.w, 0, 1));
 			vtxs.emplace_back(
-				curr_pos + vec4(l.size.x + l.bearing.x, l.bearing.y - l.size.y, 0, 1),
+				curr_pos + vec4(l.size.x + l.bearing.x, l.bearing.y - l.size.y, 0, 0),
 				vec4(l.texCoords.z, l.texCoords.w, 0, 1));
 			vtxs.emplace_back(
-				curr_pos + vec4(l.size.x + l.bearing.x, l.bearing.y, 0, 1),
+				curr_pos + vec4(l.size.x + l.bearing.x, l.bearing.y, 0, 0),
 				vec4(l.texCoords.z, l.texCoords.y, 0, 1));
 			vtxs.emplace_back(
-				curr_pos + vec4(l.bearing.x, l.bearing.y, 0, 1),
+				curr_pos + vec4(l.bearing.x, l.bearing.y, 0, 0),
 				vec4(l.texCoords.x, l.texCoords.y, 0, 1));
-
-			this->body += body;
 
 			curr_pos.x += l.stride.x;
 		};
+
+		this->body += body;
 	};
-	void DynamicText::pop(uint32_t amount)
+	inline void DynamicText::pop(int amount)
 	{
-		vtxs.resize(-4 * amount);
+		std::scoped_lock<std::recursive_mutex> lock {GameObject<Renderable>::mut};
+
+		for (auto i = 0; i < amount; i++)
+		{
+			curr_pos.x -= font->letters[body.back()].stride.x;
+			body.pop_back();
+		};
+
+		vtxs.resize(vtxs.size() - 4 * amount);
 	};
-	void DynamicText::render()
+	inline void DynamicText::clear()
+	{
+		std::scoped_lock<std::recursive_mutex> lock {GameObject<Renderable>::mut};
+
+		vtxs.clear();
+		body.clear();
+	};
+	inline void DynamicText::render()
 	{
 		glUseProgram(Text::shader->id);
-		glBindTexture(GL_TEXTURE_2D, font.texture);
+		glBindTexture(GL_TEXTURE_2D, font->texture);
 
 		glEnableVertexAttribArray(VEC4_0_32);
 		glEnableVertexAttribArray(VEC4_1_32);
 
-		glUniformMatrix4fv(Text::_mvp, 1, GL_FALSE, &Camera::mvp[0][0]);
+		glUniformMatrix4fv(Text::_mvp, 1, GL_FALSE, &mvp[0][0]);
 		glUniformMatrix4fv(Text::_trns, 1, GL_FALSE, &trns[0][0]);
+		glUniform4fv(Text::_color, 1, &color[0]);
 
 		glBufferData(
 			GL_ARRAY_BUFFER,
@@ -305,10 +338,4 @@ namespace loom
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glUseProgram(0);
 	};
-	void DynamicText::clear()
-	{
-		vtxs.clear();
-		body.clear();
-	};
 };
-

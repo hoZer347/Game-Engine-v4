@@ -16,24 +16,21 @@ namespace loom
 {
 	static inline bool is_running = false;
 	thread_local static inline bool is_on_main = false, is_on_updater = false;
+	static inline std::atomic<bool> KILL = false;
+	thread_local static inline GLFWwindow* window = nullptr;
+	static inline GLuint _vtxs = 0, _inds = 0;
+	static inline std::thread updater;
 
 	void Engine::Init()
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	};
-	void Engine::Run()
-	{
+
 		is_running = true;
 		is_on_main = true;
 
-
-		// TIMER for FPS counting
-		Timer TIMER;
-
-
 		// Preparing openGL
 		glfwInit();
-		thread_local static GLFWwindow* window = glfwCreateWindow(640, 640, "Title", nullptr, nullptr);
+		window = glfwCreateWindow(640, 640, "Title", nullptr, nullptr);
 		glewExperimental = true;
 		glfwMakeContextCurrent(window);
 		glewInit();
@@ -49,7 +46,7 @@ namespace loom
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glEnable(GL_DOUBLEBUFFER);
 		glEnable(GL_CULL_FACE);
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback([](
 			GLenum source,
@@ -68,7 +65,6 @@ namespace loom
 				std::cout << message << std::endl;
 			};
 		}, nullptr);
-		GLuint _vtxs, _inds;
 		glGenBuffers(1, &_vtxs);
 		glGenBuffers(1, &_inds);
 		glBindBuffer(GL_ARRAY_BUFFER, _vtxs);
@@ -80,46 +76,61 @@ namespace loom
 		glVertexAttribPointer(VEC4_1_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(1 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_2_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(2 * sizeof(vec4)));
 		glVertexAttribPointer(VEC4_3_64, 4, GL_FLOAT, GL_FALSE, 64, (void*)(3 * sizeof(vec4)));
+	};
+	void Engine::Run()
+	{
+		is_running = true;
+		is_on_main = true;
 
+		KILL = false;
+		if (updater.joinable())
+		{	
+			KILL = true;
+			updater.join();
+			KILL = false;
+		};
 
 		// Initializing updater
-		std::atomic<bool> KILL = false;
-		std::thread updater {[&]()
+		updater = std::thread{ [&]()
 		{
 			is_on_updater = true;
 			while (!KILL)
 			{
-				DoOnUpdater([]() { });
+				DoOnUpdater([]() {});
 				Updateable::access([](auto& object) { object.update(); });
 			};
 		}};
 
-
 		// Main loop
-		while (!glfwWindowShouldClose(window))
-		{
-			// Doing openGL or main-thread-required tasks
-			DoOnMain([]() {});
+		glfwSetWindowShouldClose(window, false);
+		while (!glfwWindowShouldClose(glfwGetCurrentContext()) && !KILL)
+			if (GLFWwindow* window = glfwGetCurrentContext())
+			{
+				// Doing openGL or main-thread-required tasks
+				DoOnMain([]() {});
 
 
-			// Rendering Things
-			Renderable::access([](auto& object) { object.render(); });
+				// Rendering Things
+				Renderable::access([](auto& object) { object.render(); });
 
 
-			// OpenGL Stuff
-			glfwSwapBuffers(window);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				// OpenGL Stuff
+				glfwSwapBuffers(window);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-			// Recording FPS
-			// TODO: Once text rendering is done, show on screen
-			glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
-			TIMER.restart();
-		};
-
-
+				// Recording FPS
+				// TODO: Once text rendering is done, show on screen
+				static Timer TIMER;
+				glfwSetWindowTitle(window, std::to_string(1 / TIMER.GetDiff_s()).c_str());
+				TIMER.restart();
+			};
+	};
+	void Engine::Exit()
+	{
 		// Deallocating everything allocated that uses openGL
 		KILL = true;
+		glfwSetWindowShouldClose(window, true);
 		updater.join();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -135,11 +146,11 @@ namespace loom
 	const bool& Engine::GetIsRunning()
 	{
 		return is_running;
-	}
+	};
 	const bool& Engine::GetIsOnMain()
 	{
 		return is_on_main;
-	}
+	};
 	const bool& Engine::GetIsOnUpdater()
 	{
 		return is_on_updater;

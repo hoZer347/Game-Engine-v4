@@ -11,7 +11,7 @@ namespace loom
 	struct Menu final
 	{
 		// Opens a new menu, creating a new control layer
-		static void next(std::vector<Option>&& options, bool(*select_check)());
+		static void next(auto&& option, auto&&... options);
 		
 		// Goes to previous control layer of the menu
 		static void prev();
@@ -19,53 +19,54 @@ namespace loom
 		// Relinquishes any menu control
 		static void leave();
 		
-	private:
 		static inline std::shared_ptr<Control> control;
-		static inline bool(*select_check)() = []() { return false; };
-		static inline std::vector<Option> options;
-		static inline Option* hovered = nullptr;
+
+	private:
+		static void next();
+		
+		static inline std::vector<ptr<Option>> options;
+		static inline ptr<Option> hovered;
 	};
 
 
-	inline void Menu::next(std::vector<Option>&& new_options, bool(*select_check)())
+	inline void Menu::next()
 	{
-		Menu::control = Control::next([new_options, select_check]()
+		control = Control::next();
+		
+		control->AddTask([]()
 		{
-			Menu::options = new_options;
-			Menu::select_check = select_check;
+			if (Control::inputs[GLFW_MOUSE_BUTTON_2])
+			{
+				Menu::leave();
+				return;
+			};
 
-			Control::AddOnReenter([new_options, select_check]()
+			if (Control::inputs[GLFW_MOUSE_BUTTON_1] && hovered)
 			{
-				Menu::options = new_options;
-				Menu::select_check = select_check;
-			});
-			Control::AddOnLeave([]()
-			{
-				hovered = nullptr;
-				options.clear();
-			});
-			Control::AddTask([]()
-			{
-				for (auto& option : options)
-					if (option.hover_check())
+				hovered->on_select();
+				Menu::leave();
+				return;
+			};
+
+			for (auto& option : options)
+				if (option->hover_check())
+				{
+					if (option != hovered)
 					{
-						if (&option != Menu::hovered)
-						{
-							if (Menu::hovered)
-								hovered->on_unhover();
-							option.on_hover();
-							hovered = &option;
-						};
-
-						if (Menu::select_check())
-							option.on_select();
-
-						return;
+						if (hovered)
+							hovered->on_unhover();
+						option->on_hover();
+						hovered = option;
 					};
 
-				hovered = nullptr;
-			});
+					return;
+				};
 		});
+	};
+	inline void Menu::next(auto&& option, auto&&... options)
+	{
+		Menu::options.push_back(static_cast<ptr<Option>>(option));
+		Menu::next(options...);
 	};
 	inline void Menu::prev()
 	{

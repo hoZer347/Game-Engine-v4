@@ -8,6 +8,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Engine\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Loader.cpp">
+      <Filter>Game\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -70,11 +73,17 @@
     <Filter Include="Engine\System">
       <UniqueIdentifier>{0df3f429-925a-404a-9cd7-eb83aa7a4969}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Terrain">
+      <UniqueIdentifier>{945d7e87-3259-4c78-a5dc-a2f13003cf3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Map\MapShaders">
+      <UniqueIdentifier>{c93858a9-64f4-4aeb-b114-c47dabbf9149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Dialogue">
+      <UniqueIdentifier>{ea40fdda-16bb-43c1-baad-084544a91364}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Loom.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Engine\Sprite</Filter>
     </ClInclude>
@@ -126,9 +135,6 @@
     <ClInclude Include="Game\Cell.h">
       <Filter>Game\Cell</Filter>
     </ClInclude>
-    <ClInclude Include="Game\MapHighlights.vert">
-      <Filter>Game\Map</Filter>
-    </ClInclude>
     <ClInclude Include="Option.h">
       <Filter>Engine\Menu</Filter>
     </ClInclude>
@@ -138,14 +144,26 @@
     <ClInclude Include="System.h">
       <Filter>Engine\System</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Terrain.h">
-      <Filter>Game\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Game\MapControl.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
     <ClInclude Include="Game\MapImpl.h">
       <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Loader.h">
+      <Filter>Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Terrain.h">
+      <Filter>Game\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\MapHighlights.vert">
+      <Filter>Game\Map\MapShaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Dialogue.h">
+      <Filter>Game\Dialogue</Filter>
+    </ClInclude>
+    <ClInclude Include="TextOption.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -167,26 +185,29 @@
     <None Include="Sprite.vert">
       <Filter>Engine\Sprite</Filter>
     </None>
-    <None Include="Game\MapTexture.frag">
-      <Filter>Game\Map</Filter>
-    </None>
-    <None Include="Game\MapTexture.vert">
-      <Filter>Game\Map</Filter>
-    </None>
     <None Include="Game\MapHighlights.frag">
-      <Filter>Game\Map</Filter>
-    </None>
-    <None Include="Game\MapOutline.frag">
-      <Filter>Game\Map</Filter>
-    </None>
-    <None Include="Game\MapOutline.vert">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapHovered.frag">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapHovered.vert">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Map\MapShaders</Filter>
+    </None>
+    <None Include="Game\MapOutline.frag">
+      <Filter>Game\Map\MapShaders</Filter>
+    </None>
+    <None Include="Game\MapOutline.vert">
+      <Filter>Game\Map\MapShaders</Filter>
+    </None>
+    <None Include="Game\MapTexture.frag">
+      <Filter>Game\Map\MapShaders</Filter>
+    </None>
+    <None Include="Game\MapTexture.vert">
+      <Filter>Game\Map\MapShaders</Filter>
+    </None>
+    <None Include="Game\MapTexture.geom">
+      <Filter>Game\Map\MapShaders</Filter>
     </None>
   </ItemGroup>
 </Project>

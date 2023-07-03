@@ -1,10 +1,8 @@
 #pragma one
 
+#include "Data.h"
+
 namespace loom
 {
-	template <typename T>
-	struct Mesh
-	{
 
-	};
 };

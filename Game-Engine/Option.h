@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Control.h"
+#include "Data.h"
 
 #include "GLEW/glew.h"
 #include "GLFW/glfw3.h"
@@ -12,31 +12,28 @@ namespace loom
 	// on_unhover: Executes once whenever another object's hover_check passes, and this ones doesn't
 	// on_select: Exectues once whenever this object is hovered and selected
 	// hover_check: Determines whether or not this object is hovered
-	struct Option
+	struct Option final
 	{
-		void(*on_hover)() = []() {};
-		void(*on_unhover)() = []() {};
-		void(*on_select)() = []() {};
-		bool(*hover_check)() = []() { return false; };
+		Task on_hover    = [](){};
+		Task on_unhover  = [](){};
+		Task on_select   = [](){};
+		std::function<bool()> hover_check = []() { return false; };
 	};
 
 
-	// Option that is hovered whenever the given input is pressed
+
 	template <uint32 input>
-	struct CheckForPressed final : public Option
+	ptr<Option> CheckForPressed(Task on_select, Task on_hover = []() { }, Task on_unhover = []() { })
 	{
-		CheckForPressed() : Option()
-		{
-			hover_check = []()
+		return ptr<Option> {
+			1,
+			on_hover,
+			on_unhover,
+			on_select,
+			[]()
 			{
 				return (bool)Control::inputs[input];
-			};
+			}
 		};
-	};
-
-
-	struct TextOption : public Option
-	{
-
 	};
 };

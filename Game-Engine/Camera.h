@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Loom.h"
 #include "Data.h"
 #include "Enums.h"
 #include "Control.h"
@@ -14,6 +13,7 @@ using namespace glm;
 
 #include <vector>
 
+
 namespace loom
 {
 	struct Camera final :
@@ -24,7 +24,7 @@ namespace loom
 		// - Press and hold middle mouse button to rotate camera
 		// - WASD movement relative to camera rotation around the Z axis
 		// - LEFT_CTRL + SPACE go up and down on the Z axis
-		static void InitiateFreeCam();
+		static void InitiateFreeCam(std::shared_ptr<Control> control);
 
 		static inline mat4	vp			= mat4(1),
 							mvp			= mat4(1),
@@ -70,36 +70,32 @@ namespace loom
 		MAX_CAMERA_ZOOM = 20.f;
 
 
-	inline void Camera::InitiateFreeCam()
+	inline void Camera::InitiateFreeCam(std::shared_ptr<Control> control)
 	{
 		static mat4 mvp;
 		mvp = (mat4)Camera::mvp;
 
-		static std::shared_ptr<Control> control;
-		control.reset();
-		control = Control::next([]()
+		
+		// WASD movement relative to where the camera is pointing (x, y)
+		control->Control::AddTask([]()
 		{
-			// WASD movement relative to where the camera is pointing (x, y)
-			Control::AddTask([]()
+			if (Control::inputs[GLFW_KEY_W])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_KEY_A])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_KEY_S])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_KEY_D])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_KEY_SPACE])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_KEY_LEFT_CONTROL])
+				Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
+			if (Control::inputs[GLFW_MOUSE_BUTTON_MIDDLE])
 			{
-				if (Control::inputs[GLFW_KEY_W])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, -1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_A])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_S])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 1, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_D])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(-1, 0, 0, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_SPACE])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, -1, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_KEY_LEFT_CONTROL])
-					Camera::trns *= translate(vec3(Camera::yaww_mat * vec4(0, 0, 1, 1)) * CAMERA_MOVEMENT_SPEED);
-				if (Control::inputs[GLFW_MOUSE_BUTTON_MIDDLE])
-				{
-					Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
-					Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
-				};
-			});
+				Camera::yaww += -(float)(Control::mx - Control::pmx) * CAMERA_ROTATION_SPEED;
+				Camera::roll += -(float)(Control::my - Control::pmy) * CAMERA_ROTATION_SPEED;
+			};
 		});
 	};
 
