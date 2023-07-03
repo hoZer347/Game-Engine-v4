@@ -65,12 +65,14 @@ namespace loom
 	};
 	inline void Menu::next(auto&& option, auto&&... options)
 	{
-		Menu::options.push_back(static_cast<ptr<Option>>(option));
+		if constexpr (std::is_same<decltype(option), std::vector<ptr<Option>>&&>::value)
+			Menu::options = option;
+		else Menu::options.push_back(static_cast<ptr<Option>>(option));
 		Menu::next(options...);
 	};
 	inline void Menu::prev()
 	{
-		assert((Menu::control, "Tried to .prev() an empty control layer"));
+		assert((Menu::control, "Tried to .Menu::prev() an empty control layer"));
 		Menu::control->prev();
 	};
 	inline void Menu::leave()

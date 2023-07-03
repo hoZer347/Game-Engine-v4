@@ -82,6 +82,12 @@
     <Filter Include="Game\Dialogue">
       <UniqueIdentifier>{ea40fdda-16bb-43c1-baad-084544a91364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Items">
+      <UniqueIdentifier>{ecf90c6f-5f52-43de-9470-e523c2b31d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Sound">
+      <UniqueIdentifier>{c6d635e0-c6e4-42c3-aa9b-f93ef153b5a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Sprite.h">
@@ -164,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="TextOption.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Items.h">
+      <Filter>Game\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Engine\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ using namespace glm;
 
 namespace loom
 {
-	ptr<Option> TextOption(const ptr<DynamicText> text, Task on_select)
+	ptr<Option> TextOption(const ptr<DynamicText> text, float offset, Task on_select)
 	{
 		text->color = vec4(.3, .3, .3, 1);
 		return ptr<Option>

@@ -136,7 +136,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\GameDev\freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GameDev\FMOD\api\core\inc;C:\GameDev\freetype\include;C:\GameDev\GLEW\include;C:\GameDev\GLFW\include;C:\GameDev\GLM;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -144,8 +144,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OpenGL32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib;glew32.lib;glew32s.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glfw3.lib;glfw3_mt.lib;glfw3dll.lib;glew32.lib;glew32s.lib;freetype.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\GameDev\FMOD\api\core\lib\x64;C:\GameDev\GLFW\lib-vc2022;C:\GameDev\GLEW\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -162,6 +162,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Game\Cell.h" />
     <ClInclude Include="Game\Dialogue.h" />
+    <ClInclude Include="Game\Items.h" />
     <ClInclude Include="Game\Loader.h" />
     <ClInclude Include="Game\Map.h" />
     <ClInclude Include="Game\MapControl.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="Option.h" />
     <ClInclude Include="Serialization.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />

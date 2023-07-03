@@ -21,6 +21,8 @@ using namespace glm;
 // TODO: Make a Shader uniform extractor
 // TODO: Optimize sprites (do one draw call per texture)
 // TODO: Add diagnostic timer
+// TODO: Add special effects to sounds (i.e. reverb, 3D / 2D - ification, etc.)
+// TODO: Implement a better compiler, then seperate .h and .cpp files
 
 int main()
 {
