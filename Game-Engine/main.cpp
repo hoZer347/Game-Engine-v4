@@ -23,12 +23,16 @@ using namespace glm;
 // TODO: Add diagnostic timer
 // TODO: Add special effects to sounds (i.e. reverb, 3D / 2D - ification, etc.)
 // TODO: Implement a better compiler, then seperate .h and .cpp files
+// TODO: Make Control work with ptr<>
+// TODO: Remove floodfilling from map, move it to unit
 
 int main()
 {
 	Engine::Init();
 	
-	LoadMap<1>();
+	auto map = LoadMap<1>();
+
+	Engine::Run();
 
 	Engine::Exit();
 

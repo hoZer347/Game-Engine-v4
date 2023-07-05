@@ -57,7 +57,7 @@ namespace loom
 
 	private:
 		void render() override;
-		static inline ptr<Camera> camera { 1 };
+		static inline ptr<Camera> camera { 0 };
 	};
 	//
 

@@ -22,7 +22,6 @@
 #define NUM_INPUTS GLFW_KEY_LAST+1
 #endif
 
-
 namespace loom
 {
 	// Standard std::function<void()>
@@ -86,6 +85,7 @@ namespace loom
 
 		static inline std::recursive_mutex mut;
 		static inline std::weak_ptr<Control> control;
+		static inline bool should_exit_iteration = false;
 
 	private:
 		Control() { };
@@ -130,9 +130,14 @@ namespace loom
 
 			if (!Control::control.expired())
 				if (std::shared_ptr<Control> control { Control::control })
-					if (control->tasks.size())
-						for (auto& task : control->tasks)
+					for (auto& task : control->tasks)
+						if (!Control::should_exit_iteration)
 							task();
+						else
+						{
+							Control::should_exit_iteration = false;
+							break;
+						};
 		};
 		void render() override
 		{
@@ -160,7 +165,7 @@ namespace loom
 					Control::inputs[i] = glfwGetKey(window, i);
 			};
 		};
-		static inline ptr<ControlManager> manager { 1 };
+		static inline ptr<ControlManager> manager { 0 };
 	};
 	inline std::shared_ptr<Control> Control::next()
 	{
@@ -183,6 +188,8 @@ namespace loom
 		
 		control = new_control;
 
+		should_exit_iteration = true;
+
 		return new_control;
 	};
 	inline void Control::prev()
@@ -201,6 +208,8 @@ namespace loom
 
 		for (auto& task : on_reenter)
 			task();
+
+		should_exit_iteration = true;
 	};
 	inline void Control::clear()
 	{

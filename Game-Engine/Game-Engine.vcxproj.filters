@@ -168,14 +168,14 @@
     <ClInclude Include="Game\Dialogue.h">
       <Filter>Game\Dialogue</Filter>
     </ClInclude>
-    <ClInclude Include="TextOption.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Items.h">
       <Filter>Game\Items</Filter>
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Engine\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="TextMenu.h">
+      <Filter>Engine\Menu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,5 +221,10 @@
     <None Include="Game\MapTexture.geom">
       <Filter>Game\Map\MapShaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Game\Assets\DefaultDialogue.txt">
+      <Filter>Game\Dialogue</Filter>
+    </Text>
   </ItemGroup>
 </Project>

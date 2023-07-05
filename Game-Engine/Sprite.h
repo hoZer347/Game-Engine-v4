@@ -18,7 +18,7 @@ namespace loom
 		void render() override;
 
 		static inline std::recursive_mutex mut;
-		static inline ptr<Shader> shader{ 1, "Sprite" };
+		static inline ptr<Shader> shader{ 0, "Sprite" };
 		static inline std::vector<vec4> vtxs
 		{
 			{ 0, 0, 0, 1 },
@@ -26,7 +26,7 @@ namespace loom
 			{ 1, 0, 1, 1 },
 			{ 0, 0, 1, 1 },
 		};
-		static inline ptr<SpriteManager> manager { 1 };
+		static inline ptr<SpriteManager> manager { 0 };
 	};
 
 

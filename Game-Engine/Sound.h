@@ -36,21 +36,20 @@ namespace loom
 			unsigned int version;
 
 			if (FMOD_RESULT result = FMOD::System_Create(&system))
-				std::cout << FMOD_ErrorString(result) << std::endl << __LINE__ << std::endl;
+				std::cout << FMOD_ErrorString(result) << " at Line: " << __LINE__ << std::endl;
 			
 			if (FMOD_RESULT result = system->init(LOOM_MAX_SOUND_CHANNELS, FMOD_INIT_NORMAL, nullptr))
-				std::cout << FMOD_ErrorString(result) << std::endl << __LINE__ << std::endl;
+				std::cout << FMOD_ErrorString(result) << " at Line: " << __LINE__ << std::endl;
 			
 			if (FMOD_RESULT result = system->getVersion(&version))
-				std::cout << FMOD_ErrorString(result) << std::endl << __LINE__ << std::endl;
+				std::cout << FMOD_ErrorString(result) << " at Line: " << __LINE__ << std::endl;
 
 			assert((version == FMOD_VERSION, "Incorrect Version"));
 		};
 
-		void update() override { system->update(); };
-
 	private:
-		static inline ptr<Sound> manager { 1 };
+		void update() override { system->update(); };
+		static inline ptr<Sound> manager { 0 };
 	};
 
 

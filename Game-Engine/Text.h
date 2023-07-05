@@ -90,6 +90,8 @@ namespace loom
 		mat4& mvp = Camera::mvp;
 		vec4 color = vec4(0, 0, 0, 1);
 
+		vec4 curr_pos = vec4(0, 0, 0, 1);
+
 		void push(std::string&& body);
 		void pop(int amount = 1);
 		void clear();
@@ -103,7 +105,6 @@ namespace loom
 
 		ptr<Font> font;
 		std::string body;
-		vec4 curr_pos = vec4(0, 0, 0, 1);
 		struct Vtx final { vec4 pos, cds; };
 		std::vector<Vtx> vtxs;
 	};
@@ -111,7 +112,7 @@ namespace loom
 
 	struct Text
 	{
-		static inline ptr<Shader> shader{ 1, "Text" };
+		static inline ptr<Shader> shader{ 0, "Text" };
 		static inline uint32 _mvp;
 		static inline uint32 _trns;
 		static inline uint32 _color;

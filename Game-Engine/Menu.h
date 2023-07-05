@@ -8,47 +8,42 @@
 
 namespace loom
 {
-	struct Menu final
+	// Opens a new menu on the provided layer
+	struct Menu
 	{
-		// Opens a new menu, creating a new control layer
-		static void next(auto&& option, auto&&... options);
-		
-		// Goes to previous control layer of the menu
-		static void prev();
+		~Menu();
 
-		// Relinquishes any menu control
-		static void leave();
-		
-		static inline std::shared_ptr<Control> control;
+	protected:
+		friend struct ptr<Menu>;
+		Menu(std::shared_ptr<Control> control, std::vector<ptr<Option>> options);
 
 	private:
-		static void next();
-		
-		static inline std::vector<ptr<Option>> options;
-		static inline ptr<Option> hovered;
+		std::shared_ptr<Control> control;
+		std::vector<ptr<Option>> options;
+		ptr<Option> hovered;
 	};
 
 
-	inline void Menu::next()
+	inline Menu::Menu(std::shared_ptr<Control> control, std::vector<ptr<Option>> options) :
+		control(control),
+		options(options)
 	{
-		control = Control::next();
-		
-		control->AddTask([]()
+		control->AddTask([this]()
 		{
 			if (Control::inputs[GLFW_MOUSE_BUTTON_2])
 			{
-				Menu::leave();
+				this->control.reset();
 				return;
 			};
 
 			if (Control::inputs[GLFW_MOUSE_BUTTON_1] && hovered)
 			{
 				hovered->on_select();
-				Menu::leave();
+				this->control.reset();
 				return;
 			};
 
-			for (auto& option : options)
+			for (auto& option : this->options)
 				if (option->hover_check())
 				{
 					if (option != hovered)
@@ -63,21 +58,8 @@ namespace loom
 				};
 		});
 	};
-	inline void Menu::next(auto&& option, auto&&... options)
+	inline Menu::~Menu()
 	{
-		if constexpr (std::is_same<decltype(option), std::vector<ptr<Option>>&&>::value)
-			Menu::options = option;
-		else Menu::options.push_back(static_cast<ptr<Option>>(option));
-		Menu::next(options...);
-	};
-	inline void Menu::prev()
-	{
-		assert((Menu::control, "Tried to .Menu::prev() an empty control layer"));
-		Menu::control->prev();
-	};
-	inline void Menu::leave()
-	{
-		assert((Menu::control, "Menu is already out of control"));
-		Menu::control.reset();
+		
 	};
 };

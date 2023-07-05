@@ -144,7 +144,21 @@ namespace loom
 		std::cout << "Size: " << size << ", Contents: " << contents << std::endl;
 	};
 
-	struct DynamicText;
+	
+	template <typename T> struct ptr;
+	
+
+	// Used to store multiple ptr<T>s with different types, maintains ownership of them
+	struct Container final
+	{
+		Container(auto... args) :
+			tasks({ [args...]() { } })
+		{ };
+
+	private:
+		std::vector<Task> tasks;
+	};
+
 
 	// Works like a std::shared_ptr, guarantees memory safe lifetime management inside the engine
 	// Automatically adds and removes itself based on lifetime
@@ -159,7 +173,7 @@ namespace loom
 		{
 
 		};
-		ptr(bool nothing, auto&&... args) : std::shared_ptr<T>(new T(args...))
+		ptr(int nothing, auto&&... args) : std::shared_ptr<T>(new T(args...))
 		{
 			if constexpr (std::is_base_of<GameObject<T>, T>::value)
 				(*this)->GameObject<T>::AddToEngine();
@@ -180,7 +194,5 @@ namespace loom
 					(*this)->GameObject<Renderable>::RmvFromEngine();
 			};
 		};
-		template <typename S>
-		operator ptr<S>() { return ptr<S>(static_cast<S*>(std::shared_ptr<T>::get())); };
 	};
 };

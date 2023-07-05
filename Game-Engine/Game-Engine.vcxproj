@@ -181,7 +181,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Text.h" />
-    <ClInclude Include="TextOption.h" />
+    <ClInclude Include="TextMenu.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timing.h" />
   </ItemGroup>
@@ -200,6 +200,9 @@
     <None Include="Sprite.vert" />
     <None Include="Text.frag" />
     <None Include="Text.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Game\Assets\DefaultDialogue.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
