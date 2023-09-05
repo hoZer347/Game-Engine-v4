@@ -43,9 +43,6 @@
     <Filter Include="Engine\Geometry">
       <UniqueIdentifier>{d146e509-3eac-456e-b9eb-96bfc86c7789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Map">
-      <UniqueIdentifier>{c675e85b-b798-4c99-aec2-bbbe0f30b176}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Cell">
       <UniqueIdentifier>{d3970cf5-8c8b-4e59-8ed9-c2ead66aa78f}</UniqueIdentifier>
     </Filter>
@@ -76,9 +73,6 @@
     <Filter Include="Game\Terrain">
       <UniqueIdentifier>{945d7e87-3259-4c78-a5dc-a2f13003cf3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Map\MapShaders">
-      <UniqueIdentifier>{c93858a9-64f4-4aeb-b114-c47dabbf9149}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Dialogue">
       <UniqueIdentifier>{ea40fdda-16bb-43c1-baad-084544a91364}</UniqueIdentifier>
     </Filter>
@@ -87,6 +81,12 @@
     </Filter>
     <Filter Include="Engine\Sound">
       <UniqueIdentifier>{c6d635e0-c6e4-42c3-aa9b-f93ef153b5a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Items\Map">
+      <UniqueIdentifier>{c675e85b-b798-4c99-aec2-bbbe0f30b176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Items\Map\MapShaders">
+      <UniqueIdentifier>{c93858a9-64f4-4aeb-b114-c47dabbf9149}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +118,7 @@
       <Filter>Engine\Menu</Filter>
     </ClInclude>
     <ClInclude Include="Game\Map.h">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Items\Map</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Engine\Mesh</Filter>
@@ -151,10 +151,10 @@
       <Filter>Engine\System</Filter>
     </ClInclude>
     <ClInclude Include="Game\MapControl.h">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Items\Map</Filter>
     </ClInclude>
     <ClInclude Include="Game\MapImpl.h">
-      <Filter>Game\Map</Filter>
+      <Filter>Game\Items\Map</Filter>
     </ClInclude>
     <ClInclude Include="Game\Loader.h">
       <Filter>Game\Game</Filter>
@@ -163,7 +163,7 @@
       <Filter>Game\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="Game\MapHighlights.vert">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </ClInclude>
     <ClInclude Include="Game\Dialogue.h">
       <Filter>Game\Dialogue</Filter>
@@ -198,28 +198,31 @@
       <Filter>Engine\Sprite</Filter>
     </None>
     <None Include="Game\MapHighlights.frag">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapHovered.frag">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapHovered.vert">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapOutline.frag">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapOutline.vert">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapTexture.frag">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapTexture.vert">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
     </None>
     <None Include="Game\MapTexture.geom">
-      <Filter>Game\Map\MapShaders</Filter>
+      <Filter>Game\Items\Map\MapShaders</Filter>
+    </None>
+    <None Include="GrayScaleSprite.frag">
+      <Filter>Engine\Sprite</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

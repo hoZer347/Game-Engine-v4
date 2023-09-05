@@ -39,7 +39,7 @@ namespace loom
 		{
 			Engine::DoOnMain([=]()
 			{
-				id = s_mgr->create(files...);
+				id = s_mgr->create(this->files);
 			});
 		};
 

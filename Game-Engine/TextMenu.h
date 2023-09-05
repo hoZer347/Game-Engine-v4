@@ -19,12 +19,10 @@ namespace loom
 			[text]()
 			{
 				text->color = vec4(0, 0, 0, 1);
-				std::cout << "On" << std::endl;
 			},
 			[text]()
 			{
 				text->color = vec4(.3, .3, .3, 1);
-				std::cout << "Off" << std::endl;
 			},
 			on_select,
 			[text]()

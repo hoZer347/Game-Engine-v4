@@ -196,6 +196,7 @@
     <None Include="Game\MapTexture.vert" />
     <None Include="Geometry.frag" />
     <None Include="Geometry.vert" />
+    <None Include="GrayScaleSprite.frag" />
     <None Include="Sprite.frag" />
     <None Include="Sprite.vert" />
     <None Include="Text.frag" />
